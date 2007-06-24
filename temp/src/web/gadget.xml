@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE Module [
+        <!ENTITY ext1 SYSTEM "test.html">
+        <!ENTITY ext2 SYSTEM "gadget.js">
+        ]>
+<Module>
+    <ModulePrefs title="hello world example"/>
+    <Content type="html"><![CDATA[
+
+function showRTE__MODULE_ID__(textarea_id)
+{
+    var wysi = _gel("wysi_" + textarea_id);
+
+    //prevent two rte from appearing
+    if (wysi == undefined)
+    {
+        var note_id = getNoteId__MODULE_ID__(textarea_id);
+
+        //hide rte div
+        var rteDiv = _gel("rte__MODULE_ID___" + note_id);
+        if (rteDiv)
+        {
+            rteDiv.style.display = "none";
+        }
+
+        //add a rte
+        var level = parseInt("__UP_useRichTextEditor__");
+
+        generate_wysiwyg(textarea_id, note_id, "__MODULE_ID__", (level == 2 ? true : false));
+
+        //do a resize to make sure it sits in the note
+        resizeTextArea__MODULE_ID__(note_id);
+
+        debugMessage__MODULE_ID__("showRTE__MODULE_ID__: Created rte for " + textarea_id);
+
+        //focus the rte: todo fix in ie!
+        var rte = _gel("wysiwyg" + textarea_id);
+
+        //fill rte with the right contents to edit
+
+        var doc = rte.contentWindow.document;
+        //.body.innerHTML = rteDiv.innerHTML;
+        doc.open();
+        doc.write(rteDiv.innerHTML);
+        doc.close();
+
+        rte.contentWindow.focus();
+
+        if (document.addEventListener)
+        {
+            document.addEventListener("mouseup", function ()
+            {
+                if (checkHideRTE__MODULE_ID__(textarea_id))
+                {
+                    this.removeEventListener("mouseup", arguments.callee, true);
+                }
+            }, true);
+        }
+        else if (document.attachEvent)
+        {
+            //thanks to Tino!
+            document.attachEvent('onmouseup', function(e)
+            {
+                if (checkHideRTE__MODULE_ID__(textarea_id)) document.detachEvent('onmouseup', arguments.callee);
+            });
+        }
+    }
+}
+
+]]></Content>
+</Module>
