@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">
+<html>
+    <head><title> Google Calendar </title>
+        <link href="e2d465362571541ef8812927c83703bbgadgetcompiled.css" type="text/css" rel="stylesheet">
+        <script src="http://www.google.com/ig/f/8_YIKZc2xYA/lib/libcore.js" type="text/javascript"></script>
+        <script src="http://www.google.com/ig/f/9i3N-61bTFU/lib/libdynamic-height.js" type="text/javascript"></script>
+        <script src="http://www.google.com/ig/f/c64nWSZKWFg/lib/libsetprefs.js" type="text/javascript"></script>
+        <script type="text/javascript"><!--
+
+        function _init()
+        {
+            _onload("qiladan@gmail.com", "");
+        }
+        //--> </script>
+        <script src="e2d465362571541ef8812927c83703bbauthgadgetcompiled__en.js" type="text/javascript"></script>
+    </head>
+    <body onload="_init()" class=" en ">
+        <div style="display: none; margin: 4px auto 0; width: 16em" id="msgtable">
+            <div class="t1 msg_yellow">&nbsp;</div>
+            <div style="margin:0 1px" class="t1 msg_yellow">&nbsp;</div>
+            <div style="padding: 0 4px" id="msgarea" class=" msg_yellow"></div>
+            <div style="margin:0 1px" class="t1 msg_yellow">&nbsp;</div>
+            <div class="t1 msg_yellow">&nbsp;</div>
+        </div>
+        <div style="width: 16em; margin: 4px auto 0" id="datepicker">
+            <div class="t1 dp_blue">&nbsp;</div>
+            <div style="margin:0 1px" class="t1 dp_blue">&nbsp;</div>
+            <div style="padding: 0 2px" id="content" class=" dp_blue"></div>
+            <div style="margin:0 1px" class="t1 dp_blue">&nbsp;</div>
+            <div class="t1 dp_blue">&nbsp;</div>
+        </div>
+        <div style="padding-top: 1px; text-align: center; display: none" id="linkbar" class=" en ">
+            <span id="qa" onclick="_toggleQuickAdd()" class="fakelink">Quick Add</span>&nbsp;&nbsp;<a style="color:rgb(0,0,204)" href="event?action=TEMPLATE" target="_BLANK" title="Opens the Create Event form in Google Calendar in a new window">Create Event</a>&nbsp;&nbsp;<span class="fakelink" style="color:rgb(119,119,204)" id="toggleA" onmousedown="_toggleAgenda()"></span>
+            <img src="images/btn_menu6.gif" style="vertical-align: text-bottom; cursor: pointer" title="Select which calendars you would like to display" height="14px" width="15px" alt="Select which calendars you would like to display" id="calListPopup">
+        </div>
+        <center style="display:none" id="quickadd">
+            <div style="width: 17em">
+                <div class="t1 dp_blue">&nbsp;</div>
+                <div style="margin:0 1px" class="t1 dp_blue">&nbsp;</div>
+                <div style="background-color: rgb(195, 217, 255);">
+                    <textarea style="overflow: auto; width: 96%; font-family: Arial; font-size: 93%" rows="3" cols="1" id="quickAddText"></textarea>
+                    <br> <input value="Quick Add" type="BUTTON" id="doQuickAdd" onclick="_quickAdd()">
+                    <input value="Cancel" type="BUTTON" id="cancelQuickAdd" onclick="_hideQuickAdd()"></div>
+                <div style="margin:0 1px" class="t1 dp_blue">&nbsp;</div>
+                <div class="t1 dp_blue">&nbsp;</div>
+            </div>
+        </center>
+        <div style="display: none" id="agenda">
+            <div style="font-size: medium" id="agendaTable"></div>
+        </div>
+    </body>
+</html>

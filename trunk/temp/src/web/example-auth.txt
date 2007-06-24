@@ -1,0 +1,25 @@
+
+    var httpauthrq = createRequestObject__MODULE_ID__();
+    httpauthrq.open('POST', "http://www.google.com/accounts/ClientLogin");
+    httpauthrq.setRequestHeader('Content-type', 'application/x-www-form-urlencoded');
+
+    //    httpauthrq.setRequestHeader("Content-length", parameters.length);
+    httpauthrq.send("Email=qiladan@gmail.com&Passwd=artemis2&service=cl&source=simonknott-timesheetgadget-1");
+
+    httpauthrq.onreadystatechange = function ()
+    {
+        if (httpauthrq.readyState == 4)
+        {
+            var responseHeaders = httpauthrq.getAllResponseHeaders();
+            var response = eval(httpauthrq.responseText);
+        }
+    }
+
+
+
+
+
+
+Taskname
+
+version|160607[16301730,16301730]|160607[16301730,16301730]

@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gCal='http://schemas.google.com/gCal/2005' xmlns:gd='http://schemas.google.com/g/2005'>
+    <category scheme='http://schemas.google.com/g/2005' term='http://schemas.google.com/g/2005#event'></category>
+    <category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/g/2005#event'></category>
+    <title type='text'>Testing testing 1 2 3</title>
+    <content type='text'>Some content here</content>
+    <gd:eventStatus value='http://schemas.google.com/g/2005#event.confirmed'></gd:eventStatus>
+    <gd:visibility value='http://schemas.google.com/g/2005#event.default'></gd:visibility>
+    <gd:transparency value='http://schemas.google.com/g/2005#event.opaque'></gd:transparency>
+    <gCal:sendEventNotifications value='false'></gCal:sendEventNotifications>
+    <gd:when startTime='2007-06-18T11:00:00.000+01:00' endTime='2007-06-18T11:30:00.000+01:00'></gd:when>
+    <gd:where></gd:where>
+</entry>

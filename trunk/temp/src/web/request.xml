@@ -1,0 +1,16 @@
+<entry xmlns:gd="http://schemas.google.com/g/2005">
+    <category scheme="http://schemas.google.com/g/2005#kind" term="http://schemas.google.com/g/2005#event"/>
+    <title>Discuss BazMat API</title>
+    <content>We will discuss integrating GData with BazMat.</content>
+    <author>
+        <name>Jo March</name>
+        <email>jo@example.com</email>
+    </author>
+    <gd:when startTime='2007-06-18T13:00:00Z' endTime='2007-06-18T13:30:00Z'>
+        <gd:reminder minutes='15'/>
+    </gd:when>
+    <gd:where valueString='Building 41, Room X'/>
+    <gd:eventStatus value="http://schemas.google.com/g/2005#event.confirmed"/>
+    <gd:visibility value="http://schemas.google.com/g/2005#event.public"/>
+    <gd:transparency value="http://schemas.google.com/g/2005#event.transparent"/>
+</entry>
