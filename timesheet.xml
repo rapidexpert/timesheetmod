@@ -4,38 +4,38 @@
         <Require feature="setprefs"/>
     </ModulePrefs>
     <UserPref name="calauth" display_name="Cal Auth" required="false"/>
-    <UserPref name="event_data_1" display_name="Event Data 1" required="false"/>
-    <UserPref name="event_data_2" display_name="Event Data 2" required="false"/>
-    <UserPref name="event_data_3" display_name="Event Data 3" required="false"/>
-    <UserPref name="event_data_4" display_name="Event Data 4" required="false"/>
-    <UserPref name="event_data_5" display_name="Event Data 5" required="false"/>
-    <UserPref name="event_data_6" display_name="Event Data 6" required="false"/>
-    <UserPref name="event_data_7" display_name="Event Data 7" required="false"/>
-    <UserPref name="event_data_8" display_name="Event Data 8" required="false"/>
-    <UserPref name="event_data_9" display_name="Event Data 9" required="false"/>
-    <UserPref name="event_data_10" display_name="Event Data 10" required="false"/>
-    <UserPref name="event_data_11" display_name="Event Data 11" required="false"/>
-    <UserPref name="event_data_12" display_name="Event Data 12" required="false"/>
-    <UserPref name="event_data_13" display_name="Event Data 13" required="false"/>
-    <UserPref name="event_data_14" display_name="Event Data 14" required="false"/>
-    <UserPref name="event_data_15" display_name="Event Data 15" required="false"/>
-    <UserPref name="event_data_16" display_name="Event Data 16" required="false"/>
-    <UserPref name="event_data_17" display_name="Event Data 17" required="false"/>
-    <UserPref name="event_data_18" display_name="Event Data 18" required="false"/>
-    <UserPref name="event_data_19" display_name="Event Data 19" required="false"/>
-    <UserPref name="event_data_20" display_name="Event Data 20" required="false"/>
-    <UserPref name="event_data_21" display_name="Event Data 21" required="false"/>
-    <UserPref name="event_data_22" display_name="Event Data 22" required="false"/>
-    <UserPref name="event_data_23" display_name="Event Data 23" required="false"/>
-    <UserPref name="event_data_24" display_name="Event Data 24" required="false"/>
-    <UserPref name="event_data_25" display_name="Event Data 25" required="false"/>
-    <UserPref name="event_data_26" display_name="Event Data 26" required="false"/>
-    <UserPref name="event_data_27" display_name="Event Data 27" required="false"/>
-    <UserPref name="event_data_28" display_name="Event Data 28" required="false"/>
-    <UserPref name="event_data_29" display_name="Event Data 29" required="false"/>
-    <UserPref name="event_data_30" display_name="Event Data 30" required="false"/>
-    <UserPref name="event_data_31" display_name="Event Data 31" required="false"/>
-    <UserPref name="current_event" display_name="Current Event" required="false"/>
+    <UserPref name="event_data_1" display_name="Event Data 1" required="false" datatype="hidden"/>
+    <UserPref name="event_data_2" display_name="Event Data 2" required="false" datatype="hidden"/>
+    <UserPref name="event_data_3" display_name="Event Data 3" required="false" datatype="hidden"/>
+    <UserPref name="event_data_4" display_name="Event Data 4" required="false" datatype="hidden"/>
+    <UserPref name="event_data_5" display_name="Event Data 5" required="false" datatype="hidden"/>
+    <UserPref name="event_data_6" display_name="Event Data 6" required="false" datatype="hidden"/>
+    <UserPref name="event_data_7" display_name="Event Data 7" required="false" datatype="hidden"/>
+    <UserPref name="event_data_8" display_name="Event Data 8" required="false" datatype="hidden"/>
+    <UserPref name="event_data_9" display_name="Event Data 9" required="false" datatype="hidden"/>
+    <UserPref name="event_data_10" display_name="Event Data 10" required="false" datatype="hidden"/>
+    <UserPref name="event_data_11" display_name="Event Data 11" required="false" datatype="hidden"/>
+    <UserPref name="event_data_12" display_name="Event Data 12" required="false" datatype="hidden"/>
+    <UserPref name="event_data_13" display_name="Event Data 13" required="false" datatype="hidden"/>
+    <UserPref name="event_data_14" display_name="Event Data 14" required="false" datatype="hidden"/>
+    <UserPref name="event_data_15" display_name="Event Data 15" required="false" datatype="hidden"/>
+    <UserPref name="event_data_16" display_name="Event Data 16" required="false" datatype="hidden"/>
+    <UserPref name="event_data_17" display_name="Event Data 17" required="false" datatype="hidden"/>
+    <UserPref name="event_data_18" display_name="Event Data 18" required="false" datatype="hidden"/>
+    <UserPref name="event_data_19" display_name="Event Data 19" required="false" datatype="hidden"/>
+    <UserPref name="event_data_20" display_name="Event Data 20" required="false" datatype="hidden"/>
+    <UserPref name="event_data_21" display_name="Event Data 21" required="false" datatype="hidden"/>
+    <UserPref name="event_data_22" display_name="Event Data 22" required="false" datatype="hidden"/>
+    <UserPref name="event_data_23" display_name="Event Data 23" required="false" datatype="hidden"/>
+    <UserPref name="event_data_24" display_name="Event Data 24" required="false" datatype="hidden"/>
+    <UserPref name="event_data_25" display_name="Event Data 25" required="false" datatype="hidden"/>
+    <UserPref name="event_data_26" display_name="Event Data 26" required="false" datatype="hidden"/>
+    <UserPref name="event_data_27" display_name="Event Data 27" required="false" datatype="hidden"/>
+    <UserPref name="event_data_28" display_name="Event Data 28" required="false" datatype="hidden"/>
+    <UserPref name="event_data_29" display_name="Event Data 29" required="false" datatype="hidden"/>
+    <UserPref name="event_data_30" display_name="Event Data 30" required="false" datatype="hidden"/>
+    <UserPref name="event_data_31" display_name="Event Data 31" required="false" datatype="hidden"/>
+    <UserPref name="current_event" display_name="Current Event" required="false" datatype="hidden"/>
     <UserPref name="active_task_ids" display_name="Active Task Ids" required="false" datatype="list"/>
     <UserPref name="task_names" display_name="Task Names" required="false" datatype="list"/>
     <UserPref name="cssGadgetContentFile" datatype="hidden" default_value="timesheet.css"/>
