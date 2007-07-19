@@ -50,9 +50,11 @@
 }
 
 #content #task_list {
-    width: 100%;
+    width: 99%;
     overflow: visible;
     clear: both;
+	margin-left: 2px;
+	margin-right: 1px;
 }
 
 #content #tasks {
@@ -159,7 +161,7 @@
 }
 
 .task_name {
-    width: 43%;
+    width: auto;
 }
 
 .total_time {
@@ -1048,6 +1050,7 @@ function createNewTask(taskId, setActiveTaskData)
 <script type="text/javascript">
     _IG_RegisterOnloadHandler(initialiseTaskList());
 </script>
+
 
 
 ]]>
