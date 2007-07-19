@@ -280,7 +280,7 @@
     margin-top: 20px;
 }
 
-a.delbox {
+/*a.delbox {
     background-image: url( "../ig/images/x_blue.gif" );
 }
 
@@ -294,7 +294,7 @@ a.maxbox {
 
 a.maxbox:hover {
     background-image: url( "../ig/images/max_blue_highlight.gif" );
-}
+}*/
 
 /*  To Be Removed */
 
