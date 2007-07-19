@@ -1,0 +1,1054 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<Module>
+    <ModulePrefs title="Timesheet" height="250">
+        <Require feature="setprefs"/>
+    </ModulePrefs>
+    <UserPref name="calauth" display_name="Cal Auth" required="false"/>
+    <UserPref name="event_data_1" display_name="Event Data 1" required="false"/>
+    <UserPref name="event_data_2" display_name="Event Data 2" required="false"/>
+    <UserPref name="event_data_3" display_name="Event Data 3" required="false"/>
+    <UserPref name="event_data_4" display_name="Event Data 4" required="false"/>
+    <UserPref name="event_data_5" display_name="Event Data 5" required="false"/>
+    <UserPref name="event_data_6" display_name="Event Data 6" required="false"/>
+    <UserPref name="event_data_7" display_name="Event Data 7" required="false"/>
+    <UserPref name="event_data_8" display_name="Event Data 8" required="false"/>
+    <UserPref name="event_data_9" display_name="Event Data 9" required="false"/>
+    <UserPref name="event_data_10" display_name="Event Data 10" required="false"/>
+    <UserPref name="event_data_11" display_name="Event Data 11" required="false"/>
+    <UserPref name="event_data_12" display_name="Event Data 12" required="false"/>
+    <UserPref name="event_data_13" display_name="Event Data 13" required="false"/>
+    <UserPref name="event_data_14" display_name="Event Data 14" required="false"/>
+    <UserPref name="event_data_15" display_name="Event Data 15" required="false"/>
+    <UserPref name="event_data_16" display_name="Event Data 16" required="false"/>
+    <UserPref name="event_data_17" display_name="Event Data 17" required="false"/>
+    <UserPref name="event_data_18" display_name="Event Data 18" required="false"/>
+    <UserPref name="event_data_19" display_name="Event Data 19" required="false"/>
+    <UserPref name="event_data_20" display_name="Event Data 20" required="false"/>
+    <UserPref name="event_data_21" display_name="Event Data 21" required="false"/>
+    <UserPref name="event_data_22" display_name="Event Data 22" required="false"/>
+    <UserPref name="event_data_23" display_name="Event Data 23" required="false"/>
+    <UserPref name="event_data_24" display_name="Event Data 24" required="false"/>
+    <UserPref name="event_data_25" display_name="Event Data 25" required="false"/>
+    <UserPref name="event_data_26" display_name="Event Data 26" required="false"/>
+    <UserPref name="event_data_27" display_name="Event Data 27" required="false"/>
+    <UserPref name="event_data_28" display_name="Event Data 28" required="false"/>
+    <UserPref name="event_data_29" display_name="Event Data 29" required="false"/>
+    <UserPref name="event_data_30" display_name="Event Data 30" required="false"/>
+    <UserPref name="event_data_31" display_name="Event Data 31" required="false"/>
+    <UserPref name="current_event" display_name="Current Event" required="false"/>
+    <UserPref name="active_task_ids" display_name="Active Task Ids" required="false" datatype="list"/>
+    <UserPref name="task_names" display_name="Task Names" required="false" datatype="list"/>
+    <UserPref name="cssGadgetContentFile" datatype="hidden" default_value="timesheet.css"/>
+    <UserPref name="jsGadgetContentFile" datatype="hidden" default_value="timesheet.js"/>
+    <UserPref name="htmlGadgetContentFile" datatype="hidden" default_value="timesheet.html"/>
+    <Content type="html-inline">
+    <![CDATA[
+<style type="text/css">
+<!--
+
+#content {
+}
+
+#content #task_list {
+    width: 100%;
+    overflow: visible;
+    clear: both;
+}
+
+#content #tasks {
+    width: 100%;
+    overflow: visible;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#content #tasks li {
+    width: 100%;
+    margin: 0;
+    float: left;
+    clear: both;
+}
+
+#content #tasks table {
+    width: 100%;
+    margin: 0;
+    float: left;
+    clear: both;
+    border-collapse: collapse;
+}
+
+#content #tasks table tr {
+}
+
+#content #tasks table td {
+    border-width: 0 1px 1px 1px;
+    border-style: solid;
+}
+
+#content #title table {
+    width: 100%;
+    margin: 0;
+    float: left;
+    clear: both;
+    border-collapse: collapse;
+}
+
+#content #current_task table {
+    width: 100%;
+    margin: 0;
+    float: left;
+    clear: both;
+    border-collapse: collapse;
+}
+
+#content #title table tr {
+}
+
+#content #title table td {
+    border-width: 1px;
+    border-style: solid;
+}
+
+.title {
+    width: 100%;
+}
+
+.title_heading {
+    font-weight: bold;
+    font-size: smaller;
+    border: solid;
+    border-width: 1px;
+    text-align: center;
+    float: none;
+    line-height: 21px;
+    vertical-align: middle;
+    cursor: default;
+    padding: 2px;
+}
+
+.no_left_border {
+    border-left: none;
+}
+
+.task_data {
+    font-weight: normal;
+    border: solid;
+    border-top: none;
+    text-align: left;
+    float: none;
+    vertical-align: middle;
+    cursor: default;
+    padding: 2px;
+    height: auto;
+    font-size: smaller;
+}
+
+.invisihandle {
+    border: thin hidden;
+    width: 3%;
+    cursor: auto;
+    padding: 0px;
+}
+
+.handle {
+    border: thin hidden;
+    width: 3%;
+    cursor: move;
+    padding: 0px;
+}
+
+.task_name {
+    width: 43%;
+}
+
+.total_time {
+    border-left: none;
+    text-align: center;
+    width: 25%;
+}
+
+.status {
+    border-left: none;
+    width: 20%;
+}
+
+.change {
+    text-align: center;
+    border-left: none;
+    width: 6%;
+}
+
+.change a {
+    float: left;
+    font-size: smaller;
+}
+
+.control {
+    text-align: center;
+    font-size: smaller;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.control:hover {
+    cursor:pointer;
+    text-decoration: underline overline;
+}
+
+
+.control a {
+    text-decoration: none;
+}
+
+.control a:hover {
+    cursor:pointer;
+    text-decoration: underline overline;
+}
+
+.name_data {
+    float: left;
+}
+
+#buttons {
+    clear: both;
+}
+
+.stealImage {
+    margin: 0px;
+    padding-bottom: 0px;
+    float: left;
+}
+
+.addTaskControl {
+    float: right;
+    padding: 5px;
+    height: 23px;
+    margin: 5px;
+}
+
+.addTaskEntry {
+    border: solid 1px;
+    height: 21px;
+    clear: right;
+    float: right;
+    visibility: hidden;
+    display: none;
+    width: 200px;
+    padding: 5px;
+    margin: 5px;
+}
+
+.addTaskEntryTextbox {
+    height: 18px;
+    float: left;
+    width: 150px;
+    border: solid 1px;
+    font-weight: normal;
+    cursor: text;
+}
+
+#errorMessages {
+    clear: both;
+    float: left;
+    margin-top: 20px;
+    margin-left: 5px;
+    color: #ff3300;
+}
+
+.currentTimer {
+    font-style: oblique;
+}
+
+.empty {
+    border: none;
+    background-color: transparent;
+}
+
+.current_total_time {
+    border: solid 1px;
+    border-left: none;
+    text-align: center;
+    width: 25%;
+}
+
+/*  To Be Removed */
+
+#dataDiv {
+    clear: both;
+    float: left;
+    margin-top: 20px;
+}
+
+a.delbox {
+    background-image: url( "../ig/images/x_blue.gif" );
+}
+
+a.delbox:hover {
+    background-image: url( "../ig/images/x_blue_highlight.gif" );
+}
+
+a.maxbox {
+    background-image: url( "../ig/images/max_blue.gif" );
+}
+
+a.maxbox:hover {
+    background-image: url( "../ig/images/max_blue_highlight.gif" );
+}
+
+/*  To Be Removed */
+
+-->
+</style>
+
+<script src="http://timesheetmod.googlecode.com/svn/trunk/js/prototype.js" type="text/javascript"></script>
+<script src="http://timesheetmod.googlecode.com/svn/trunk/js/scriptaculous.js" type="text/javascript"></script>
+<script src="http://timesheetmod.googlecode.com/svn/trunk/js/BasicTime.js" type="text/javascript"></script>
+<script src="http://timesheetmod.googlecode.com/svn/trunk/js/TimerEvent.js" type="text/javascript"></script>
+<script src="http://timesheetmod.googlecode.com/svn/trunk/js/Total.js" type="text/javascript"></script>
+<script src="http://timesheetmod.googlecode.com/svn/trunk/js/Task.js" type="text/javascript"></script>
+<script src="http://timesheetmod.googlecode.com/svn/trunk/js/DateRecord.js" type="text/javascript"></script>
+<!--<script src="http://qiladan.shackspace.com/ig/timesheet.js" type="text/javascript"></script>-->
+
+
+<div id="content">
+    <div id="sync_div" style="float:right; height:23px;">
+        <div class="control addTaskControl" style="float:right; height:23px;" id="synchronise_calendar_div">
+            <a href="javascript:addTask();">SYNCHRONISE WITH GOOGLE CALENDAR</a></div>
+    </div>
+    <div id="controls" style="float:right;">
+        <div class="control addTaskControl" id="add_task_control">
+            <a href="javascript:addTask();">ADD TASK</a></div>
+        <div id="add_task_entry" class="modtitle tabtitle addTaskEntry">
+            <input class="selectedtab tabtitle addTaskEntryTextbox" type="text" id="new_task_name"/>
+            <a href="javascript:closeAddTask();" class="stealImage delbox"></a>
+            <a href="javascript:submitNewTaskName();" class="stealImage maxbox"></a></div>
+    </div>
+    <div id="task_list">
+        <div id="title" class="title">
+            <table id="timer_header_table" cellspacing="0" cellpadding="2">
+                <tr>
+                    <td id="no_handle" class="modtitle tabtitle task_data invisihandle">&nbsp;</td>
+                    <td id="task_name_title_div" class="modtitle title_heading task_name">TASK NAME</td>
+                    <td id="total_time_title_div" class="modtitle title_heading total_time">TOTAL</td>
+                    <td id="status_title_div" class="modtitle title_heading status">STATUS</td>
+                    <td id="change_title_div" class="modtitle title_heading change">&nbsp;</td>
+                </tr>
+            </table>
+        </div>
+        <ul id="tasks">
+        </ul>
+        <div id="current_task" style="clear:both;">
+            <br/>
+            <table id="current_task_timer_header_table" cellspacing="0" cellpadding="2">
+                <tr>
+                    <td id="current_task_no_handle" class="modtitle tabtitle task_data invisihandle" style="border: solid 1px;">&nbsp;</td>
+                    <td id="current_task_title_td" class="modtitle title_heading task_name">CURRENT TASK DURATION</td>
+                    <td id="current_task_total_time_td" class="selectedtab tabtitle task_data current_total_time">
+                        <span id="current_task_total_time_span" style="width:100%">None</span>
+                    </td>
+                    <td id="current_task_status_title_div" class="selectedtab title_heading status empty">&nbsp;</td>
+                    <td id="current_task_change_title_div" class="selectedtab title_heading change empty">&nbsp;</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script type="text/javascript" language="javascript">
+        Sortable.create('tasks', {handle:'handle',ghosting:true,constraint:false})
+    </script>
+
+    <div id="errorMessages">
+    </div>
+
+    <div id="something"><!--<br/>
+        <span id="event_data_19_heading">event_data_19 - </span>
+        <span id="event_data_19">190707103435!|0:0:103438:103440||0:0:103442:103444||0:0:103729:105119|!|0:001354|</span>
+        <br/>
+        <span id="task_names_heading">task_names - </span>
+        <span id="task_names">test2|test3</span>
+        <br/>
+        <span id="active_task_ids_heading">active_task_ids - </span>
+        <span id="active_task_ids">0|1</span>
+        <br/>
+        <span id="current_event_heading">current_event - </span>
+        <span id="current_event">1:190707105120</span>-->
+    </div>
+</div>
+
+<script type="text/javascript">
+var currentEvent;
+var timer;
+
+function monitorTaskOrder()
+{
+    var taskList = _gel("tasks");
+
+    var tasks = taskList.childNodes;
+    var prefs = new _IG_Prefs(__MODULE_ID__);
+    var activeTaskIds = prefs.getArray("active_task_ids");
+
+    if (activeTaskIds && activeTaskIds.length > 0 && tasks.length == activeTaskIds.length)
+    {
+        var newOrder = new Array();
+        for (var i = 0; i < tasks.length; i++)
+        {
+            var idSplit = tasks[i].id.split("_");
+            var taskId = idSplit[idSplit.length - 1];
+            newOrder[i] = taskId;
+        }
+        prefs.setArray("active_task_ids", newOrder);
+    }
+
+    setTimeout("monitorTaskOrder()", 5000);
+}
+
+function startStopTimer(source)
+{
+    var nameSplit = source.id.split("_");
+    var taskId = eval(nameSplit[nameSplit.length - 1]);
+    var currentTime = new Date();
+    var prefs = new _IG_Prefs(__MODULE_ID__);
+
+    if (currentEvent)
+    {
+        clearTimeout(timer);
+        if (!currentEvent.getEnd())
+        {
+            var endTime = new BasicTime();
+            endTime.setDataFromDate(currentTime);
+            currentEvent.setEnd(endTime);
+        }
+
+        var oldTaskId = currentEvent.getTask().getId();
+        var timersButton = _gel("status_div_" + oldTaskId);
+        timersButton.innerHTML = 'START';
+
+        prefs.set("current_event", "");
+        addNewEvent(currentEvent);
+        var timeSpan = _gel("total_time_span_" + oldTaskId);
+        var currentTotalTimeSpan = _gel("current_task_total_time_span");
+        var total = todaysEventData.getTotalForTask(oldTaskId);
+        var totalDuration = total.getDuration();
+
+        timeSpan.innerHTML = getDurationDisplayString(totalDuration);
+        timeSpan.className = "";
+        currentTotalTimeSpan.className = "";
+        currentTotalTimeSpan.innerHTML = "None";
+        prefs.set("event_data_" + todaysEventData.getDate().getDate(), todaysEventData.toString());
+    }
+
+    if (!currentEvent || currentEvent.getTask().getId() != taskId)
+    {
+        currentEvent = new TimerEvent();
+        var task = new Task();
+        task.setId(taskId);
+
+        var startTime = new BasicTime();
+        startTime.setDataFromDate(currentTime);
+        currentEvent.setTask(task);
+        currentEvent.setStart(startTime);
+
+        source.innerHTML = 'STOP';
+        prefs.set("current_event", currentEvent.toString());
+        refreshCurrentTimer();
+    }
+    else
+    {
+        currentEvent = null;
+    }
+}
+
+function addNewEvent(event)
+{
+    var eventsToAdd = event.splitDates();
+
+    for (var i = 0; i < eventsToAdd.length; i++)
+    {
+        var newEvent = eventsToAdd[i];
+        var startDate = newEvent.getStart().toDate();
+
+        var dateRecord = getDateRecord(startDate);
+        dateRecord.addNewEvent(newEvent);
+        updateDateRecord(dateRecord);
+    }
+}
+
+function refreshCurrentTimer()
+{
+    var taskId = currentEvent.getTask().getId();
+    var currentTime = new Date();
+
+    var timeSpan = _gel("total_time_span_" + taskId);
+    var currentTotalTimeSpan = _gel("current_task_total_time_span");
+    timeSpan.className = "currentTimer";
+    currentTotalTimeSpan.className = "currentTimer";
+
+    var endTime = new BasicTime();
+    endTime.setDataFromDate(currentTime);
+    currentEvent.setEnd(endTime);
+
+    var eventDuration = currentEvent.getDuration();
+
+    var tempDuration = new BasicTime();
+
+    var total = todaysEventData.getTotalForTask(taskId);
+    if (total)
+    {
+        var totalDuration = total.getDuration();
+        tempDuration.addSeconds(totalDuration.getSeconds());
+        tempDuration.addMinutes(totalDuration.getMinutes());
+        tempDuration.addHours(totalDuration.getHours());
+    }
+
+    tempDuration.addSeconds(eventDuration.getSeconds());
+    tempDuration.addMinutes(eventDuration.getMinutes());
+    tempDuration.addHours(eventDuration.getHours());
+
+    currentTotalTimeSpan.innerHTML = getDurationDisplayString(eventDuration);
+
+    if (eval(tempDuration.getHours()) / 24 > 1)
+    {
+        tempDuration.setHours(currentEvent.getEnd().getHours());
+        tempDuration.setMinutes(currentEvent.getEnd().getMinutes());
+        tempDuration.setSeconds(currentEvent.getEnd().getSeconds());
+    }
+
+    timeSpan.innerHTML = getDurationDisplayString(tempDuration);
+
+    timer = setTimeout("refreshCurrentTimer()", 1000);
+}
+
+function getDurationDisplayString(duration)
+{
+    var durationString;
+    if (duration)
+    {
+        durationString = duration.getHours() + "h " + duration.getMinutes() + "m " + duration.getSeconds() + "s";
+    }
+    else
+    {
+        durationString = "00h 00m 00s";
+    }
+    return durationString;
+}
+
+function replaceWithTextBox(source)
+{
+    source.onclick = null;
+    var currentContent = source.innerHTML;
+
+    var nameSplit = source.id.split("_");
+    var taskId = eval(nameSplit[nameSplit.length - 1]);
+
+    var textElementId = "rename_text_" + taskId;
+    source.innerHTML = "<input type=\'text\' id=\'" + textElementId + "\' onBlur=\'replaceWithContent(this);\'/>";
+
+    var textElement = _gel(textElementId);
+
+    if (currentContent != '&nbsp;')
+    {
+        textElement.value = currentContent;
+    }
+    textElement.select();
+}
+
+var todaysEventData;
+var monthsEvents = new Array();
+
+function getDateRecord(date)
+{
+    var today = new Date();
+    var currentDate = date.getDate();
+    var dateRecord = monthsEvents[currentDate];
+
+    var dateCorrectedMonth = date.getMonth() + 1;
+    if (!dateRecord || eval(dateRecord.getDate().getMonth()) != dateCorrectedMonth)
+    {
+        dateRecord = new DateRecord();
+        var newDate = new BasicTime();
+        newDate.setDataFromDate(date);
+        dateRecord.setDate(newDate);
+        monthsEvents[currentDate] = dateRecord;
+        updateDateRecord(dateRecord);
+
+        var dateRecordDate = eval(dateRecord.getDate().getDate());
+        var dateRecordMonth = eval(dateRecord.getDate().getMonth());
+        if (dateRecordDate == today.getDate() && dateRecordMonth == (today.getMonth() + 1))
+        {
+            todaysEventData = dateRecord;
+        }
+    }
+
+    return dateRecord;
+}
+
+function updateDateRecord(dateRecord)
+{
+    var prefs = new _IG_Prefs(__MODULE_ID__);
+    prefs.set("event_data_" + eval(dateRecord.getDate().getDate()), dateRecord.toString());
+}
+
+function initialiseTaskList()
+{
+    var prefs = new _IG_Prefs(__MODULE_ID__);
+
+    for (var i = 0; i < 32; i++)
+    {
+        var eventDataString = prefs.getString("event_data_" + i);
+        var eventData = new DateRecord();
+        if (eventDataString)
+        {
+            eventData.setDataFromString(eventDataString);
+            monthsEvents[i] = eventData;
+        }
+    }
+
+    var today = new Date();
+    todaysEventData = getDateRecord(today);
+
+    var activeTaskIds = prefs.getArray("active_task_ids");
+
+    if (activeTaskIds && activeTaskIds.length > 0)
+    {
+        for (i = 0; i < activeTaskIds.length; i++)
+        {
+            createNewTask(activeTaskIds[i], false);
+        }
+
+        var currentEventData = prefs.getString("current_event");
+
+        if (currentEventData && _trim(currentEventData).length > 0)
+        {
+            currentEvent = new TimerEvent();
+            currentEvent.setDataFromString(currentEventData);
+
+            var taskId = currentEvent.getTask().getId();
+            var statusControl = _gel("status_div_" + taskId);
+            statusControl.innerHTML = 'STOP';
+            refreshCurrentTimer();
+        }
+    }
+    else
+    {
+        displayNoTaskMessage(true);
+    }
+
+    monitorTaskOrder();
+}
+
+function displayNoTaskMessage(display)
+{
+    var timerHeaderTable = _gel("timer_header_table");
+    var messageRow = _gel("no_task_message");
+
+    if (!messageRow && display)
+    {
+        var lastRow = timerHeaderTable.rows.length;
+        var newMessageRow = timerHeaderTable.insertRow(lastRow);
+        newMessageRow.id = "no_task_message";
+
+        var noHandleTd = document.createElement("td");
+        var messageTd = document.createElement("td");
+        noHandleTd.className = "modtitle tabtitle task_data invisihandle";
+        messageTd.className = "selectedtab tabtitle task_data";
+        messageTd.colSpan = "4";
+
+        noHandleTd.innerHTML = "&nbsp;";
+        messageTd.innerHTML = "There are currently no enabled tasks.";
+
+        newMessageRow.appendChild(noHandleTd);
+        newMessageRow.appendChild(messageTd);
+
+        newMessageRow.style.visibility = "visible";
+    }
+    else if (messageRow && !display)
+    {
+        var rowIndex = messageRow.sectionRowIndex;
+        timerHeaderTable.deleteRow(rowIndex);
+    }
+}
+
+function replaceWithContent(source)
+{
+    var nameSplit = source.id.split("_");
+    var taskId = eval(nameSplit[nameSplit.length - 1]);
+
+    var containingDiv = _gel("name_div_" + taskId);
+    var taskName = _trim(source.value);
+    var textEntry = _gel("rename_text_" + taskId);
+
+    if (taskName.length == 0)
+    {
+        var miniMessage = new _IG_MiniMessage(__MODULE_ID__, _gel("errorMessages"));
+        miniMessage.createTimerMessage("Please enter a task name", 2);
+        textEntry.focus();
+    }
+    else
+    {
+        var existingTaskId = getTaskId(taskName);
+        var existingTaskName = getTaskName(existingTaskId);
+
+        if (existingTaskId == taskId || !existingTaskName)
+        {
+            setTaskName(taskId, taskName);
+            containingDiv.innerHTML = taskName;
+            containingDiv.onclick = function()
+            {
+                replaceWithTextBox(this);
+            };
+        }
+        else if (isActiveTask(existingTaskId))
+        {
+            var miniMessage = new _IG_MiniMessage(__MODULE_ID__, _gel("errorMessages"));
+            miniMessage.createTimerMessage("There is already an active task with that name, please enter another.", 4);
+            textEntry.focus();
+        }
+        else
+        {
+            var choice = confirm("There is already an existing task with this name, would you like to switch to it?")
+
+            if (choice)
+            {
+                containingDiv.innerHTML = taskName;
+                containingDiv.onclick = function()
+                {
+                    replaceWithTextBox(this);
+                };
+
+                var taskRow = _gel("li_row_" + taskId);
+                taskRow.id = "li_row_" + existingTaskId;
+                var html = taskRow.innerHTML;
+                var regex = new RegExp("_" + taskId, "g");
+                var regex2 = new RegExp("disableTask\\(" + taskId, "g");
+                html = html.replace(regex, "_" + existingTaskId);
+                html = html.replace(regex2, "disableTask(" + existingTaskId);
+                taskRow.innerHTML = html;
+
+                var nameDiv = _gel("name_div_" + existingTaskId);
+                var statusDiv = _gel("status_div_" + existingTaskId);
+                nameDiv.onclick = function()
+                {
+                    replaceWithTextBox(this);
+                };
+                statusDiv.onclick = function()
+                {
+                    startStopTimer(this);
+                };
+
+                var totalSpan = _gel("total_time_span_" + existingTaskId);
+                var total = todaysEventData.getTotalForTask(existingTaskId);
+
+                var durationString;
+                if (total)
+                {
+                    durationString = getDurationDisplayString(total.getDuration());
+                }
+                else
+                {
+                    durationString = getDurationDisplayString();
+                }
+
+                totalSpan.innerHTML = durationString;
+
+                var prefs = new _IG_Prefs(__MODULE_ID__);
+                var activeTaskIds = prefs.getArray("active_task_ids");
+
+                for (var i = 0; i < activeTaskIds.length; i++)
+                {
+                    var activeTaskId = activeTaskIds[i];
+                    if (taskId == activeTaskId)
+                    {
+                        activeTaskIds[i] = "" + existingTaskId;
+                    }
+                }
+
+                prefs.setArray("active_task_ids", activeTaskIds);
+            }
+        }
+    }
+}
+
+function setTaskName(taskId, taskName)
+{
+    var taskNamesPref = "task_names";
+    var prefs = new _IG_Prefs(__MODULE_ID__);
+    var allTaskNames = prefs.getArray(taskNamesPref);
+
+    if (!allTaskNames)
+    {
+        allTaskNames = new Array();
+    }
+    allTaskNames[taskId] = taskName;
+    prefs.setArray(taskNamesPref, allTaskNames);
+}
+
+function addTask()
+{
+    var addTaskDiv = _gel("add_task_entry");
+    var addTaskControlDiv = _gel("add_task_control");
+    addTaskDiv.style.visibility = 'visible';
+    addTaskControlDiv.style.display = 'none';
+    addTaskDiv.style.display = 'block';
+    var newTaskName = _gel("new_task_name");
+    newTaskName.focus();
+}
+
+function closeAddTask()
+{
+    var addTaskDiv = _gel("add_task_entry");
+    var newTaskName = _gel("new_task_name");
+    newTaskName.value = '';
+    addTaskDiv.style.display = 'none';
+    var addTaskControlDiv = _gel("add_task_control");
+    addTaskControlDiv.style.display = 'block';
+}
+
+function disableTask(taskId, prompt)
+{
+    var choice = false;
+
+    if (prompt)
+    {
+        choice = confirm("Are you sure you wish to disable this task?")
+    }
+
+    if (choice || !prompt)
+    {
+        if (currentEvent)
+        {
+            var timerTaskId = currentEvent.getTask().getId();
+            if (timerTaskId == taskId)
+            {
+                var timersButton = _gel("status_div_" + timerTaskId);
+                startStopTimer(timersButton);
+            }
+        }
+
+        var taskList = _gel("tasks");
+        var rowToRemove = _gel("li_row_" + taskId);
+        taskList.removeChild(rowToRemove);
+
+        removeTaskFromActiveList(taskId);
+    }
+}
+
+function removeTaskFromActiveList(taskId)
+{
+    var prefs = new _IG_Prefs(__MODULE_ID__);
+    var activeTaskIds = prefs.getArray("active_task_ids");
+
+    var newActiveTaskIds = new Array();
+
+    for (var i = 0, j = 0; i < activeTaskIds.length; i++)
+    {
+        var activeTaskId = activeTaskIds[i];
+        if (taskId != activeTaskId)
+        {
+            newActiveTaskIds[j++] = activeTaskId;
+        }
+    }
+
+    if (newActiveTaskIds.length == 0)
+    {
+        displayNoTaskMessage(true);
+    }
+
+    prefs.setArray("active_task_ids", newActiveTaskIds);
+}
+
+function submitNewTaskName()
+{
+    var newTaskName = _gel("new_task_name");
+    var taskName = _trim(newTaskName.value);
+
+    if (taskName.length == 0)
+    {
+        var miniMessage = new _IG_MiniMessage(__MODULE_ID__, _gel("errorMessages"));
+        miniMessage.createTimerMessage("Please enter a task name", 2);
+        newTaskName.focus();
+    }
+    else
+    {
+        var taskId = getTaskId(taskName);
+        setTaskName(taskId, taskName);
+
+        if (isActiveTask(taskId))
+        {
+            var miniMessage = new _IG_MiniMessage(__MODULE_ID__, _gel("errorMessages"));
+            miniMessage.createTimerMessage("There is already an active task with that name, please enter another.", 4);
+            newTaskName.focus();
+        }
+        else
+        {
+            closeAddTask();
+            createNewTask(taskId, true);
+        }
+    }
+}
+
+function isActiveTask(taskId)
+{
+    var prefs = new _IG_Prefs(__MODULE_ID__);
+    var activeTaskIds = prefs.getArray("active_task_ids");
+
+    var found = false;
+
+    if (activeTaskIds && activeTaskIds.length > 0)
+    {
+        for (var i = 0; i < activeTaskIds.length && !found; i++)
+        {
+            if (activeTaskIds[i] == taskId)
+            {
+                found = true;
+            }
+        }
+    }
+
+    return found;
+}
+
+function addActiveTask(taskId)
+{
+    var prefs = new _IG_Prefs(__MODULE_ID__);
+    var activeTaskIds = prefs.getArray("active_task_ids");
+
+    if (!activeTaskIds)
+    {
+        activeTaskIds = new Array();
+    }
+
+    activeTaskIds[activeTaskIds.length] = "" + taskId;
+    prefs.setArray("active_task_ids", activeTaskIds);
+}
+
+function getTaskId(taskName)
+{
+    var prefs = new _IG_Prefs(__MODULE_ID__);
+    var allTaskNames = prefs.getArray("task_names");
+    var taskId = 0;
+
+    if (allTaskNames)
+    {
+        for (; taskId < allTaskNames.length; taskId++)
+        {
+            if (allTaskNames[taskId] == taskName)
+            {
+                allTaskNames[taskId] = taskName;
+                break;
+            }
+        }
+    }
+
+    return taskId;
+}
+
+function getTaskName(taskId)
+{
+    var prefs = new _IG_Prefs(__MODULE_ID__);
+    var allTaskNames = prefs.getArray("task_names");
+
+    var name = null;
+
+    if (allTaskNames)
+    {
+        name = allTaskNames[taskId];
+    }
+
+    return name;
+}
+
+function createNewTask(taskId, setActiveTaskData)
+{
+    displayNoTaskMessage(false);
+
+    if (setActiveTaskData)
+    {
+        addActiveTask(taskId);
+    }
+    var taskList = _gel("tasks");
+    var listRow = document.createElement("li")
+    var taskTable = document.createElement("table");
+    var lastRow = taskTable.rows.length;
+    var taskRow = taskTable.insertRow(lastRow);
+
+    var handleTd = document.createElement("td");
+    var nameTd = document.createElement("td");
+    var nameDiv = document.createElement("div");
+    var totalTimeTd = document.createElement("td");
+    var totalTimeSpan = document.createElement("span");
+    var statusTd = document.createElement("td");
+    var statusDiv = document.createElement("div");
+    var disableTd = document.createElement("td");
+
+    listRow.id = "li_row_" + taskId;
+    listRow.style.position = 'relative';
+    taskTable.id = "table_" + taskId;
+    taskRow.id = "row_" + taskId;
+    handleTd.id = "handle_td_" + taskId;
+    handleTd.className = "modtitle tabtitle task_data handle";
+    nameTd.id = "name_td_" + taskId;
+    nameTd.className = 'selectedtab tabtitle task_data task_name';
+    nameDiv.id = "name_div_" + taskId;
+    nameDiv.style.width = "100%";
+    nameDiv.onclick = function()
+    {
+        replaceWithTextBox(this);
+    };
+    totalTimeTd.id = "total_time_td_" + taskId;
+    totalTimeTd.className = 'selectedtab tabtitle task_data total_time';
+    totalTimeSpan.id = "total_time_span_" + taskId;
+    totalTimeSpan.style.width = "100%"
+    statusTd.id = "status_td_" + taskId;
+    statusTd.className = 'selectedtab tabtitle task_data status control';
+    statusDiv.id = "status_div_" + taskId;
+    statusDiv.onclick = function()
+    {
+        startStopTimer(this);
+    };
+    disableTd.id = "disable_td_" + taskId;
+    disableTd.className = 'selectedtab tabtitle task_data change';
+
+    var taskName = getTaskName(taskId);
+
+    handleTd.innerHTML = "&nbsp;";
+    nameDiv.innerHTML = taskName;
+    var total = todaysEventData.getTotalForTask(taskId);
+    if (total)
+    {
+        totalTimeSpan.innerHTML = getDurationDisplayString(total.getDuration());
+    }
+    else
+    {
+        totalTimeSpan.innerHTML = getDurationDisplayString();
+    }
+    statusDiv.innerHTML = 'START';
+    disableTd.innerHTML = '<a href="javascript:disableTask(' + taskId + ', true);" class="delbox stealImage"></a>';
+
+    taskRow.appendChild(handleTd);
+    nameTd.appendChild(nameDiv);
+    taskRow.appendChild(nameTd);
+    totalTimeTd.appendChild(totalTimeSpan);
+    taskRow.appendChild(totalTimeTd);
+    statusTd.appendChild(statusDiv)
+    taskRow.appendChild(statusTd);
+    taskRow.appendChild(disableTd);
+
+    listRow.appendChild(taskTable);
+    listRow.style.display = "none";
+
+    taskList.appendChild(listRow);
+
+    Effect.BlindDown(listRow.id);
+    Sortable.create('tasks', {handle:'handle',ghosting:true,constraint:false})
+}
+
+</script>
+
+<script type="text/javascript">
+    _IG_RegisterOnloadHandler(initialiseTaskList());
+</script>
+
+]]>
+    </Content>
+</Module>
