@@ -708,7 +708,7 @@ function updateDateRecord(dateRecord)
 function initialise()
 {
     initialiseTaskList();
-    var tabs = new _IG_Tabs(__MODULE_ID__, "task_list");
+    var tabs = new _IG_Tabs(__MODULE_ID__, "Today");
     tabs.addTab("Today", "taskContent");
     tabs.addTab("Summary", "summaryContent", initialiseSummary);
 }
