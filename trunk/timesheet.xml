@@ -484,12 +484,13 @@ function getDateRecord(date)
             monthsEvents[currentDate] = dateRecord;
             updateDateRecord(dateRecord);
         }
-        var dateRecordDate = eval(dateRecord.getDate().getDate());
-        var dateRecordMonth = eval(dateRecord.getDate().getMonth());
-        if (dateRecordDate == today.getDate() && dateRecordMonth == (today.getMonth() + 1))
-        {
-            todaysEventData = dateRecord;
-        }
+    }
+
+    var dateRecordDate = eval(dateRecord.getDate().getDate());
+    var dateRecordMonth = eval(dateRecord.getDate().getMonth());
+    if (dateRecordDate == today.getDate() && dateRecordMonth == (today.getMonth() + 1))
+    {
+        todaysEventData = dateRecord;
     }
 
     return dateRecord;
