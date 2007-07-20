@@ -1224,14 +1224,13 @@ function drawPeriod(week)
     }
 
     var summaryTable = _gel("summary_table");
-
     var tableRowsToRemove = summaryTable.rows;
 
     if (tableRowsToRemove.length > 1)
     {
         for (i = 1; i < tableRowsToRemove.length; i++)
         {
-            var currentRow = tableRowsToRemove[i];
+            var currentRow = tableRowsToRemove[1];
             summaryTable.deleteRow(currentRow.rowIndex);
         }
     }
