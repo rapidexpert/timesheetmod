@@ -1223,6 +1223,16 @@ function drawPeriod(week)
         startDate.setTime(startDateValue);
     }
 
+    var summaryTable = _gel("summary_table");
+
+    var tableRowsToRemove = summaryTable.childNodes;
+
+    for (i = 1; j < tableRowsToRemove.length; j++)
+    {
+        var currentRow = tableRowsToRemove[j];
+        summaryTable.deleteRow(currentRow.rowIndex);
+    }
+
     for (i = 0; i < taskIds.length; i++)
     {
         var taskIdPointer = taskIds[i];
@@ -1232,9 +1242,9 @@ function drawPeriod(week)
             var dayCounter = 0;
             var dayTotal;
 
-            var summaryTable = _gel("summary_table");
             var lastRow = summaryTable.rows.length;
             var newRow = summaryTable.insertRow(lastRow);
+            newRow.id = "summary_row_" + taskId;
 
             var taskNameTd = document.createElement("td");
             taskNameTd.innerHTML = getTaskName(taskId);
