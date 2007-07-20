@@ -2,7 +2,9 @@
 <Module>
     <ModulePrefs title="Timesheet" height="250">
         <Require feature="setprefs"/>
+        <Require feature="tabs"/>
     </ModulePrefs>
+    <UserPref name="selectedTab" datatype="hidden"/>
     <UserPref name="calauth" display_name="Cal Auth" required="false"/>
     <UserPref name="event_data_1" display_name="Event Data 1" required="false" datatype="hidden"/>
     <UserPref name="event_data_2" display_name="Event Data 2" required="false" datatype="hidden"/>
@@ -46,18 +48,18 @@
 <style type="text/css">
 <!--
 
-#content {
+#taskContent {
 }
 
-#content #task_list {
+#taskContent #task_list {
     width: 99%;
     overflow: visible;
     clear: both;
-	margin-left: 2px;
-	margin-right: 1px;
+    margin-left: 2px;
+    margin-right: 1px;
 }
 
-#content #tasks {
+#taskContent #tasks {
     width: 100%;
     overflow: visible;
     list-style-type: none;
@@ -65,14 +67,14 @@
     padding: 0;
 }
 
-#content #tasks li {
+#taskContent #tasks li {
     width: 100%;
     margin: 0;
     float: left;
     clear: both;
 }
 
-#content #tasks table {
+#taskContent #tasks table {
     width: 100%;
     margin: 0;
     float: left;
@@ -80,15 +82,15 @@
     border-collapse: collapse;
 }
 
-#content #tasks table tr {
+#taskContent #tasks table tr {
 }
 
-#content #tasks table td {
+#taskContent #tasks table td {
     border-width: 0 1px 1px 1px;
     border-style: solid;
 }
 
-#content #title table {
+#taskContent #title table {
     width: 100%;
     margin: 0;
     float: left;
@@ -96,7 +98,7 @@
     border-collapse: collapse;
 }
 
-#content #current_task table {
+#taskContent #current_task table {
     width: 100%;
     margin: 0;
     float: left;
@@ -104,10 +106,10 @@
     border-collapse: collapse;
 }
 
-#content #title table tr {
+#taskContent #title table tr {
 }
 
-#content #title table td {
+#taskContent #title table td {
     border-width: 1px;
     border-style: solid;
 }
@@ -158,8 +160,9 @@
     width: 3%;
     cursor: move;
     padding: 0px;
-    background-image: url("http://timesheetmod.googlecode.com/svn/trunk/images/move.gif");
-    background-repeat:repeat-y;
+    background-image: url( "http://timesheetmod.googlecode.com/svn/trunk/images/move.gif" );
+    background-position: -1px;
+    background-repeat: no-repeat;
 }
 
 .task_name {
@@ -196,17 +199,16 @@
 }
 
 .control:hover {
-    cursor:pointer;
+    cursor: pointer;
     text-decoration: underline overline;
 }
-
 
 .control a {
     text-decoration: none;
 }
 
 .control a:hover {
-    cursor:pointer;
+    cursor: pointer;
     text-decoration: underline overline;
 }
 
@@ -284,21 +286,71 @@
     margin-top: 20px;
 }
 
-/*a.delbox {
-    background-image: url( "../ig/images/x_blue.gif" );
+#summaryContent #summary {
+    overflow-x: auto;
 }
 
-a.delbox:hover {
-    background-image: url( "../ig/images/x_blue_highlight.gif" );
+#summaryContent #summary table {
+    width: 33%;
+    margin: 0;
+    float: left;
+    clear: both;
+    border-collapse: collapse;
+    margin-top: 1px;
 }
 
-a.maxbox {
-    background-image: url( "../ig/images/max_blue.gif" );
+#summaryContent #summary table tr {
 }
 
-a.maxbox:hover {
-    background-image: url( "../ig/images/max_blue_highlight.gif" );
-}*/
+#summaryContent #summary table td {
+    border: solid 1px;
+}
+
+.day_title {
+    width: 11%;
+    border: solid 1px;
+}
+
+.task_title {
+    width: 23%;
+    border: solid 1px;
+}
+
+.task_title_data {
+    white-space: normal;
+}
+
+.summary_task_data {
+    font-weight: bold;
+    border: solid 1px;
+    text-align: center;
+    float: none;
+    vertical-align: middle;
+    cursor: default;
+    padding: 1px;
+    height: auto;
+    font-size: 70%;
+}
+
+.summary_total {
+    white-space: nowrap;
+}
+
+    /*a.delbox {
+        background-image: url( "../ig/images/x_blue.gif" );
+    }
+
+    a.delbox:hover {
+        background-image: url( "../ig/images/x_blue_highlight.gif" );
+    }
+
+    a.maxbox {
+        background-image: url( "../ig/images/max_blue.gif" );
+    }
+
+    a.maxbox:hover {
+        background-image: url( "../ig/images/max_blue_highlight.gif" );
+    }*/
 
 /*  To Be Removed */
 
@@ -314,8 +366,7 @@ a.maxbox:hover {
 <script src="http://timesheetmod.googlecode.com/svn/trunk/js/DateRecord.js" type="text/javascript"></script>
 <!--<script src="http://qiladan.shackspace.com/ig/timesheet.js" type="text/javascript"></script>-->
 
-
-<div id="content">
+<div id="taskContent" style="display:none">
     <div id="sync_div" style="float:right; height:23px;">
         <div class="control addTaskControl" style="float:right; height:23px;" id="synchronise_calendar_div">
             <a href="javascript:addTask();">SYNCHRONISE WITH GOOGLE CALENDAR</a></div>
@@ -365,7 +416,7 @@ a.maxbox:hover {
     <div id="errorMessages">
     </div>
 
-    <div id="something"><!--<br/>
+    <div id="dataDiv"><!--<br/>
         <span id="event_data_19_heading">event_data_19 - </span>
         <span id="event_data_19">190707103435!|0:0:103438:103440||0:0:103442:103444||0:0:103729:105119|!|0:001354|</span>
         <br/>
@@ -379,8 +430,97 @@ a.maxbox:hover {
         <span id="current_event">1:190707105120</span>-->
     </div>
 </div>
+<div id="summaryContent" style="display:none">
+    <div id="summary">
 
+        <br clear="both"/><br/>
+        <table id="summary_table" cellspacing="0" cellpadding="0" style="clear:both;">
+            <tr>
+                <td class="modtitle title_heading task_title">Task</td>
+                <td class="modtitle title_heading day_title">M</td>
+                <td class="modtitle title_heading day_title">T</td>
+                <td class="modtitle title_heading day_title">W</td>
+                <td class="modtitle title_heading day_title">T</td>
+                <td class="modtitle title_heading day_title">F</td>
+                <td class="modtitle title_heading day_title">S</td>
+                <td class="modtitle title_heading day_title">S</td>
+            </tr>
+        </table>
+    </div>
+</div>
 <script type="text/javascript">
+var monthsEvents = new Array();
+var todaysEventData;
+
+function getDateRecord(date)
+{
+    var today = new Date();
+    var currentDate = date.getDate();
+    var dateRecord = monthsEvents[currentDate];
+
+    var dateCorrectedMonth = date.getMonth() + 1;
+    if (!dateRecord || eval(dateRecord.getDate().getMonth()) != dateCorrectedMonth)
+    {
+        var prefs = new _IG_Prefs(__MODULE_ID__);
+        var existingDateRecordString = prefs.getString("event_data_" + currentDate);
+
+        var existingDateRecord;
+        if (existingDateRecordString && _trim(existingDateRecordString).length > 0)
+        {
+            existingDateRecord = new DateRecord();
+            existingDateRecord.setDataFromString(existingDateRecordString);
+        }
+
+        if (existingDateRecord && existingDateRecord.getDate().getMonth() == dateCorrectedMonth)
+        {
+            dateRecord = existingDateRecord;
+        }
+        else
+        {
+            dateRecord = new DateRecord();
+            var newDate = new BasicTime();
+            newDate.setDataFromDate(date);
+            dateRecord.setDate(newDate);
+            monthsEvents[currentDate] = dateRecord;
+            updateDateRecord(dateRecord);
+        }
+        var dateRecordDate = eval(dateRecord.getDate().getDate());
+        var dateRecordMonth = eval(dateRecord.getDate().getMonth());
+        if (dateRecordDate == today.getDate() && dateRecordMonth == (today.getMonth() + 1))
+        {
+            todaysEventData = dateRecord;
+        }
+    }
+
+    return dateRecord;
+}
+
+function updateDateRecord(dateRecord)
+{
+    var prefs = new _IG_Prefs(__MODULE_ID__);
+    prefs.set("event_data_" + eval(dateRecord.getDate().getDate()), dateRecord.toString());
+}
+
+function getTodaysEventData()
+{
+    return todaysEventData;
+}
+
+function getTaskName(taskId)
+{
+    var prefs = new _IG_Prefs(__MODULE_ID__);
+    var allTaskNames = prefs.getArray("task_names");
+
+    var name = null;
+
+    if (allTaskNames)
+    {
+        name = allTaskNames[taskId];
+    }
+
+    return name;
+}
+
 var currentEvent;
 var timer;
 
@@ -426,20 +566,21 @@ function startStopTimer(source)
 
         var oldTaskId = currentEvent.getTask().getId();
         var timersButton = _gel("status_div_" + oldTaskId);
-        timersButton.innerHTML = '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/start.png" alt="Start"/>';
+        timersButton.innerHTML =
+        '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/start.png" alt="Start"/>';
 
         prefs.set("current_event", "");
         addNewEvent(currentEvent);
         var timeSpan = _gel("total_time_span_" + oldTaskId);
         var currentTotalTimeSpan = _gel("current_task_total_time_span");
-        var total = todaysEventData.getTotalForTask(oldTaskId);
+        var total = getTodaysEventData().getTotalForTask(oldTaskId);
         var totalDuration = total.getDuration();
 
         timeSpan.innerHTML = getDurationDisplayString(totalDuration);
         timeSpan.className = "";
         currentTotalTimeSpan.className = "";
         currentTotalTimeSpan.innerHTML = "None";
-        prefs.set("event_data_" + todaysEventData.getDate().getDate(), todaysEventData.toString());
+        prefs.set("event_data_" + getTodaysEventData().getDate().getDate(), getTodaysEventData().toString());
     }
 
     if (!currentEvent || currentEvent.getTask().getId() != taskId)
@@ -496,7 +637,7 @@ function refreshCurrentTimer()
 
     var tempDuration = new BasicTime();
 
-    var total = todaysEventData.getTotalForTask(taskId);
+    var total = getTodaysEventData().getTotalForTask(taskId);
     if (total)
     {
         var totalDuration = total.getDuration();
@@ -557,40 +698,18 @@ function replaceWithTextBox(source)
     textElement.select();
 }
 
-var todaysEventData;
-var monthsEvents = new Array();
-
-function getDateRecord(date)
-{
-    var today = new Date();
-    var currentDate = date.getDate();
-    var dateRecord = monthsEvents[currentDate];
-
-    var dateCorrectedMonth = date.getMonth() + 1;
-    if (!dateRecord || eval(dateRecord.getDate().getMonth()) != dateCorrectedMonth)
-    {
-        dateRecord = new DateRecord();
-        var newDate = new BasicTime();
-        newDate.setDataFromDate(date);
-        dateRecord.setDate(newDate);
-        monthsEvents[currentDate] = dateRecord;
-        updateDateRecord(dateRecord);
-
-        var dateRecordDate = eval(dateRecord.getDate().getDate());
-        var dateRecordMonth = eval(dateRecord.getDate().getMonth());
-        if (dateRecordDate == today.getDate() && dateRecordMonth == (today.getMonth() + 1))
-        {
-            todaysEventData = dateRecord;
-        }
-    }
-
-    return dateRecord;
-}
-
 function updateDateRecord(dateRecord)
 {
     var prefs = new _IG_Prefs(__MODULE_ID__);
     prefs.set("event_data_" + eval(dateRecord.getDate().getDate()), dateRecord.toString());
+}
+
+function initialise()
+{
+    initialiseTaskList();
+    var tabs = new _IG_Tabs(__MODULE_ID__, "task_list");
+    tabs.addTab("Today", "taskContent");
+    tabs.addTab("Summary", "summaryContent", initialiseSummary);
 }
 
 function initialiseTaskList()
@@ -609,7 +728,7 @@ function initialiseTaskList()
     }
 
     var today = new Date();
-    todaysEventData = getDateRecord(today);
+    getDateRecord(today);
 
     var activeTaskIds = prefs.getArray("active_task_ids");
 
@@ -629,7 +748,8 @@ function initialiseTaskList()
 
             var taskId = currentEvent.getTask().getId();
             var statusControl = _gel("status_div_" + taskId);
-            statusControl.innerHTML = '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/stop.png" alt="Stop"/>';
+            statusControl.innerHTML =
+            '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/stop.png" alt="Stop"/>';
             refreshCurrentTimer();
         }
     }
@@ -741,7 +861,7 @@ function replaceWithContent(source)
                 };
 
                 var totalSpan = _gel("total_time_span_" + existingTaskId);
-                var total = todaysEventData.getTotalForTask(existingTaskId);
+                var total = getTodaysEventData().getTotalForTask(existingTaskId);
 
                 var durationString;
                 if (total)
@@ -947,21 +1067,6 @@ function getTaskId(taskName)
     return taskId;
 }
 
-function getTaskName(taskId)
-{
-    var prefs = new _IG_Prefs(__MODULE_ID__);
-    var allTaskNames = prefs.getArray("task_names");
-
-    var name = null;
-
-    if (allTaskNames)
-    {
-        name = allTaskNames[taskId];
-    }
-
-    return name;
-}
-
 function createNewTask(taskId, setActiveTaskData)
 {
     displayNoTaskMessage(false);
@@ -1017,7 +1122,7 @@ function createNewTask(taskId, setActiveTaskData)
 
     handleTd.innerHTML = "&nbsp;";
     nameDiv.innerHTML = taskName;
-    var total = todaysEventData.getTotalForTask(taskId);
+    var total = getTodaysEventData().getTotalForTask(taskId);
     if (total)
     {
         totalTimeSpan.innerHTML = getDurationDisplayString(total.getDuration());
@@ -1047,10 +1152,175 @@ function createNewTask(taskId, setActiveTaskData)
     Sortable.create('tasks', {handle:'handle',ghosting:true,constraint:false})
 }
 
+function initialiseSummary()
+{
+    drawPeriod(0);
+}
+
+function drawPeriod(week)
+{
+    var dateShift = 7 * week;
+    var startDate = new Date();
+
+    var startDateValue = startDate.getTime();
+
+    var dayOfWeekShift;
+
+    var dayOfWeekString = startDate.toGMTString().slice(0, 3);
+
+    switch (dayOfWeekString)
+            {
+        case "Mon" : {
+            dayOfWeekShift = 0;
+            break;
+        }
+        case "Tue" : {
+            dayOfWeekShift = 1;
+            break;
+        }
+        case "Wed" : {
+            dayOfWeekShift = 2;
+            break;
+        }
+        case "Thu" : {
+            dayOfWeekShift = 3;
+            break;
+        }
+        case "Fri" : {
+            dayOfWeekShift = 4;
+            break;
+        }
+        case "Sat" : {
+            dayOfWeekShift = 5;
+            break;
+        }
+        case "Sun" : {
+            dayOfWeekShift = 6;
+            break;
+        }
+    }
+
+    startDateValue -= (1000 * 60 * 60 * 24) * (dateShift + dayOfWeekShift);
+    startDate.setTime(startDateValue);
+
+    var eventDataArray = new Array();
+    var taskIds = new Array();
+
+    for (var i = 0; i < 7; i++)
+    {
+        var eventData = getDateRecord(startDate);
+        eventDataArray[i] = eventData;
+
+        var totals = eventData.getTotals();
+
+        for (var j = 0; j < totals.length; j++)
+        {
+            taskIds[totals[j].getTask().getId()] = true;
+        }
+        startDateValue += 1000 * 60 * 60 * 24;
+        startDate.setTime(startDateValue);
+    }
+
+    for (i = 0; i < taskIds.length; i++)
+    {
+        var taskIdPointer = taskIds[i];
+        if (taskIdPointer)
+        {
+            var taskId = i;
+            var dayCounter = 0;
+            var dayTotal;
+
+            var summaryTable = _gel("summary_table");
+            var lastRow = summaryTable.rows.length;
+            var newRow = summaryTable.insertRow(lastRow);
+
+            var taskNameTd = document.createElement("td");
+            taskNameTd.innerHTML = getTaskName(taskId);
+            taskNameTd.className = "selectedtab tabtitle summary_task_data task_title_data";
+
+            var mondayTd = document.createElement("td");
+            mondayTd.innerHTML = getTotalString(eventDataArray[dayCounter++].getTotalForTask(taskId));
+
+            var tuesdayTd = document.createElement("td");
+            tuesdayTd.innerHTML = getTotalString(eventDataArray[dayCounter++].getTotalForTask(taskId));
+
+            var wednesdayTd = document.createElement("td");
+            wednesdayTd.innerHTML = getTotalString(eventDataArray[dayCounter++].getTotalForTask(taskId));
+
+            var thursdayTd = document.createElement("td");
+            thursdayTd.innerHTML = getTotalString(eventDataArray[dayCounter++].getTotalForTask(taskId));
+
+            var fridayTd = document.createElement("td");
+            fridayTd.innerHTML = getTotalString(eventDataArray[dayCounter++].getTotalForTask(taskId));
+
+            var saturdayTd = document.createElement("td");
+            saturdayTd.innerHTML = getTotalString(eventDataArray[dayCounter++].getTotalForTask(taskId));
+
+            var sundayTd = document.createElement("td");
+            sundayTd.innerHTML = getTotalString(eventDataArray[dayCounter++].getTotalForTask(taskId));
+
+            newRow.appendChild(taskNameTd);
+            newRow.appendChild(mondayTd);
+            newRow.appendChild(tuesdayTd);
+            newRow.appendChild(wednesdayTd);
+            newRow.appendChild(thursdayTd);
+            newRow.appendChild(fridayTd);
+            newRow.appendChild(saturdayTd);
+            newRow.appendChild(sundayTd);
+
+            var tdChildren = newRow.childNodes;
+
+            for (j = 1; j < tdChildren.length; j++)
+            {
+                var currentTd = tdChildren[j];
+                currentTd.className = "selectedtab tabtitle summary_task_data summary_total";
+            }
+        }
+    }
+
+}
+
+function getTotalString(total)
+{
+    var duration;
+
+    if (total)
+    {
+        duration = total.getDuration();
+    }
+    else
+    {
+        duration = new BasicTime();
+    }
+    var hours = eval(duration.getHours());
+    var minutes = eval(duration.getMinutes());
+    var seconds = eval(duration.getSeconds());
+
+    minutes += seconds / 60;
+
+    var prefs = new _IG_Prefs();
+    var round = prefs.getInt("summary_round");
+
+    if (round > 0)
+    {
+        minutes = Math.round(minutes / round) * round;
+        if (minutes == 60)
+        {
+            hours += 1;
+        }
+    }
+
+    var totalString = '';
+    totalString += hours;
+    totalString += '.';
+    totalString += getFormattedNumber(Math.round((minutes / 60) * 100), false);
+
+    return totalString;
+}
 </script>
 
 <script type="text/javascript">
-    _IG_RegisterOnloadHandler(initialiseTaskList());
+    _IG_RegisterOnloadHandler(initialise());
 </script>
 
 ]]>
