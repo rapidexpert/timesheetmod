@@ -305,8 +305,8 @@
 }
 
 #summaryContent #summary table {
-    width: 100%;
-    margin: 0;
+    width: 99%;
+    margin: 1px;
     float: left;
     clear: both;
     border-collapse: collapse;
@@ -725,6 +725,7 @@ function initialise()
     var tabs = new _IG_Tabs(__MODULE_ID__, "Today");
     tabs.addTab("Today", "taskContent");
     tabs.addTab("Summary", "summaryContent", initialiseSummary);
+    tabs.alignTabs("left", 3);
 }
 
 function initialiseTaskList()
