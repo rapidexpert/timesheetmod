@@ -141,6 +141,11 @@ DateRecord.prototype.getTotalForTask = function(taskId)
     }
 }
 
+DateRecord.prototype.getTotals = function()
+{
+    return this._totals;
+}
+
 DateRecord.prototype.getDate = function()
 {
     return this._date;
