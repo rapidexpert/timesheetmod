@@ -158,6 +158,8 @@
     width: 3%;
     cursor: move;
     padding: 0px;
+    background-image: url("http://timesheetmod.googlecode.com/svn/trunk/images/move.gif");
+    background-repeat:repeat-y;
 }
 
 .task_name {
@@ -1050,8 +1052,6 @@ function createNewTask(taskId, setActiveTaskData)
 <script type="text/javascript">
     _IG_RegisterOnloadHandler(initialiseTaskList());
 </script>
-
-
 
 ]]>
     </Content>
