@@ -44,7 +44,7 @@
     <UserPref name="jsGadgetContentFile" datatype="hidden" default_value="timesheet.js"/>
     <UserPref name="htmlGadgetContentFile" datatype="hidden" default_value="timesheet.html"/>
     <Content type="html-inline">
-    <![CDATA[    {
+    <![CDATA[
 
 <style type="text/css">
 <!--
@@ -292,7 +292,7 @@
 }
 
 #summaryContent #summary table {
-    width: 33%;
+    width: 100%;
     margin: 0;
     float: left;
     clear: both;
@@ -1325,6 +1325,8 @@ function getTotalString(total)
     _IG_RegisterOnloadHandler(initialise());
 </script>
 
-]]>
+
+
+            ]]>
     </Content>
 </Module>
