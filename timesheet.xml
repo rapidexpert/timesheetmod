@@ -1227,10 +1227,13 @@ function drawPeriod(week)
 
     var tableRowsToRemove = summaryTable.childNodes;
 
-    for (i = 1; j < tableRowsToRemove.length; j++)
+    if (tableRowsToRemove.length > 1)
     {
-        var currentRow = tableRowsToRemove[j];
-        summaryTable.deleteRow(currentRow.rowIndex);
+        for (i = 1; i < tableRowsToRemove.length; i++)
+        {
+            var currentRow = tableRowsToRemove[i];
+            summaryTable.deleteRow(currentRow.rowIndex);
+        }
     }
 
     for (i = 0; i < taskIds.length; i++)
