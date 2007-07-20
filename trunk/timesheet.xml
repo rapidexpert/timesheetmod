@@ -44,7 +44,8 @@
     <UserPref name="jsGadgetContentFile" datatype="hidden" default_value="timesheet.js"/>
     <UserPref name="htmlGadgetContentFile" datatype="hidden" default_value="timesheet.html"/>
     <Content type="html-inline">
-    <![CDATA[
+    <![CDATA[    {
+
 <style type="text/css">
 <!--
 
@@ -1299,7 +1300,7 @@ function getTotalString(total)
 
     minutes += seconds / 60;
 
-    var prefs = new _IG_Prefs();
+    var prefs = new _IG_Prefs(__MODULE_ID__);
     var round = prefs.getInt("summary_round");
 
     if (round > 0)
