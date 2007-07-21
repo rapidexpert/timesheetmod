@@ -344,11 +344,11 @@
     cursor: default;
     padding: 1px;
     height: auto;
-    font-size: 70%;
 }
 
 .summary_total {
     white-space: nowrap;
+    font-size: 70%;
 }
 
     /*a.delbox {
