@@ -332,6 +332,7 @@
 
 .task_title_data {
     white-space: normal;
+    font-size: 75%;
 }
 
 .summary_task_data {
