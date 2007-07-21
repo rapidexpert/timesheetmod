@@ -724,7 +724,7 @@ function refreshCurrentTimer()
 
     currentTotalTimeSpan.innerHTML = getDurationDisplayString(eventDuration);
 
-    if (eval(tempDuration.getHours()) / 24 > 1)
+    if (currentEvent.getStart().getDate() != currentEvent.getEnd().getDate())
     {
         tempDuration.setHours(currentEvent.getEnd().getHours());
         tempDuration.setMinutes(currentEvent.getEnd().getMinutes());
