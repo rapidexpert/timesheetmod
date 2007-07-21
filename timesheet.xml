@@ -490,7 +490,6 @@ function monitorCurrentTime()
 				}
 
 				timeSpan.innerHTML = getDurationDisplayString(totalDuration);
-				timeSpan.className = "";
 			}
 		}
 	}
