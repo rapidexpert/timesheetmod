@@ -464,6 +464,40 @@
     </div>
 </div>
 <script type="text/javascript">
+
+function monitorCurrentTime()
+{
+    var currentData = getTodaysEventData();
+	var date = new Date();
+
+	if (date.getDate() != currentData.getDate().getDate())
+	{
+	    var currentDateRecord = getDateRecord(date);
+		var activeTaskIds = getArray("active_task_ids");
+
+		if (activeTaskIds)
+		{
+		    for (var i = 0; i < activeTaskIds.length; i++)
+			{
+			    var taskId = activeTaskIds[i];				
+				var timeSpan = _gel("total_time_span_" + taskId);
+				var total = getTodaysEventData().getTotalForTask(taskId);
+				var totalDuration = null;
+				
+				if (total)
+				{
+					totalDuration = total.getDuration();
+				}
+
+				timeSpan.innerHTML = getDurationDisplayString(totalDuration);
+				timeSpan.className = "";
+			}
+		}
+	}
+
+	setTimeout("monitorCurrentTime()", 1000);
+}
+
 var monthsEvents = new Array();
 var todaysEventData;
 
@@ -798,6 +832,7 @@ function initialiseTaskList()
     }
 
     monitorTaskOrder();
+	monitorCurrentTime();
 }
 
 function displayNoTaskMessage(display)
