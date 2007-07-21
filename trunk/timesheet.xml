@@ -38,23 +38,23 @@
     <UserPref name="event_data_30" display_name="Event Data 30" required="false" datatype="hidden"/>
     <UserPref name="event_data_31" display_name="Event Data 31" required="false" datatype="hidden"/>
     <UserPref name="current_event" display_name="Current Event" required="false" datatype="hidden"/>
-    <UserPref name="active_task_ids" display_name="Active Task Ids" required="false"/>
-    <UserPref name="task_names" display_name="Task Names" required="false"/>
+    <UserPref name="active_task_ids" display_name="Active Task Ids" required="false" datatype="hidden"/>
+    <UserPref name="task_names" display_name="Task Names" required="false" datatype="hidden"/>
     <UserPref name="cssGadgetContentFile" datatype="hidden" default_value="timesheet.css"/>
     <UserPref name="jsGadgetContentFile" datatype="hidden" default_value="timesheet.js"/>
     <UserPref name="htmlGadgetContentFile" datatype="hidden" default_value="timesheet.html"/>
     <UserPref name="summary_round"
-              display_name="Round Summary Data to Nearest Minutes"
+              display_name="Round Summary Total"
               datatype="enum"
               default_value="1">
         <EnumValue value="0" display_value="None"/>
-        <EnumValue value="1" display_value="1"/>
-        <EnumValue value="5" display_value="5"/>
-        <EnumValue value="10" display_value="10"/>
-        <EnumValue value="15" display_value="15"/>
-        <EnumValue value="30" display_value="30"/>
-        <EnumValue value="45" display_value="45"/>
-        <EnumValue value="60" display_value="60"/>
+        <EnumValue value="1" display_value="to nearest minute"/>
+        <EnumValue value="5" display_value="to nearest 5 minutes"/>
+        <EnumValue value="10" display_value="to nearest 10 minutes"/>
+        <EnumValue value="15" display_value="to nearest 15 minutes"/>
+        <EnumValue value="30" display_value="to nearest 30 minutes"/>
+        <EnumValue value="45" display_value="to nearest 45 minutes"/>
+        <EnumValue value="60" display_value="to nearest 60 minutes"/>
     </UserPref>
     <Content type="html-inline">
     <![CDATA[
