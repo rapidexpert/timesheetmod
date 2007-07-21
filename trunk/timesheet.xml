@@ -1416,7 +1416,7 @@ function getTotalString(total)
     }
 
 	var totalString = '';
-	if ((hours != 0 && minutes != 0) || zeroDurationFormat == 0)
+	if (hours != 0 || minutes != 0 || zeroDurationFormat == 0)
 	{
 		totalString += hours;
 
