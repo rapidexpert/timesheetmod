@@ -38,8 +38,8 @@
     <UserPref name="event_data_30" display_name="Event Data 30" required="false" datatype="hidden"/>
     <UserPref name="event_data_31" display_name="Event Data 31" required="false" datatype="hidden"/>
     <UserPref name="current_event" display_name="Current Event" required="false" datatype="hidden"/>
-    <UserPref name="active_task_ids" display_name="Active Task Ids" required="false" datatype="list"/>
-    <UserPref name="task_names" display_name="Task Names" required="false" datatype="list"/>
+    <UserPref name="active_task_ids" display_name="Active Task Ids" required="false"/>
+    <UserPref name="task_names" display_name="Task Names" required="false"/>
     <UserPref name="cssGadgetContentFile" datatype="hidden" default_value="timesheet.css"/>
     <UserPref name="jsGadgetContentFile" datatype="hidden" default_value="timesheet.js"/>
     <UserPref name="htmlGadgetContentFile" datatype="hidden" default_value="timesheet.html"/>
@@ -174,7 +174,7 @@
     width: 3%;
     cursor: move;
     padding: 0px;
-    background-image: url( "http://timesheetmod.googlecode.com/svn/trunk/images/move.gif" );
+    background-image: url( "http://timesheetmod.googlecode.com/svn/trunk/images/move.png" );
     background-position: -1px;
     background-repeat: no-repeat;
 }
@@ -521,10 +521,32 @@ function getTodaysEventData()
     return todaysEventData;
 }
 
+function getArray(prefName)
+{
+    var prefs = new _IG_Prefs(__MODULE_ID__);
+
+	var arrayData = prefs.getString(prefName);
+
+	if (arrayData && _trim(arrayData).length > 0)
+	{
+		return arrayData.split("|");
+	}
+	else
+	{
+	    return null;
+	}
+}
+
+function setArray(prefName, arrayData)
+{
+    var prefs = new _IG_Prefs(__MODULE_ID__);
+	prefs.set(prefName, arrayData.join("|"));
+}
+
 function getTaskName(taskId)
 {
     var prefs = new _IG_Prefs(__MODULE_ID__);
-    var allTaskNames = prefs.getArray("task_names");
+    var allTaskNames = getArray("task_names");
 
     var name = null;
 
@@ -545,7 +567,7 @@ function monitorTaskOrder()
 
     var tasks = taskList.childNodes;
     var prefs = new _IG_Prefs(__MODULE_ID__);
-    var activeTaskIds = prefs.getArray("active_task_ids");
+    var activeTaskIds = getArray("active_task_ids");
 
     if (activeTaskIds && activeTaskIds.length > 0 && tasks.length == activeTaskIds.length)
     {
@@ -556,7 +578,7 @@ function monitorTaskOrder()
             var taskId = idSplit[idSplit.length - 1];
             newOrder[i] = taskId;
         }
-        prefs.setArray("active_task_ids", newOrder);
+        setArray("active_task_ids", newOrder);
     }
 
     setTimeout("monitorTaskOrder()", 5000);
@@ -746,7 +768,7 @@ function initialiseTaskList()
     var today = new Date();
     getDateRecord(today);
 
-    var activeTaskIds = prefs.getArray("active_task_ids");
+    var activeTaskIds = getArray("active_task_ids");
 
     if (activeTaskIds && activeTaskIds.length > 0)
     {
@@ -892,7 +914,7 @@ function replaceWithContent(source)
                 totalSpan.innerHTML = durationString;
 
                 var prefs = new _IG_Prefs(__MODULE_ID__);
-                var activeTaskIds = prefs.getArray("active_task_ids");
+                var activeTaskIds = getArray("active_task_ids");
 
                 for (var i = 0; i < activeTaskIds.length; i++)
                 {
@@ -903,7 +925,7 @@ function replaceWithContent(source)
                     }
                 }
 
-                prefs.setArray("active_task_ids", activeTaskIds);
+                setArray("active_task_ids", activeTaskIds);
             }
         }
     }
@@ -913,14 +935,14 @@ function setTaskName(taskId, taskName)
 {
     var taskNamesPref = "task_names";
     var prefs = new _IG_Prefs(__MODULE_ID__);
-    var allTaskNames = prefs.getArray(taskNamesPref);
+    var allTaskNames = getArray(taskNamesPref);
 
     if (!allTaskNames)
     {
         allTaskNames = new Array();
     }
     allTaskNames[taskId] = taskName;
-    prefs.setArray(taskNamesPref, allTaskNames);
+    setArray(taskNamesPref, allTaskNames);
 }
 
 function addTask()
@@ -976,7 +998,7 @@ function disableTask(taskId, prompt)
 function removeTaskFromActiveList(taskId)
 {
     var prefs = new _IG_Prefs(__MODULE_ID__);
-    var activeTaskIds = prefs.getArray("active_task_ids");
+    var activeTaskIds = getArray("active_task_ids");
 
     var newActiveTaskIds = new Array();
 
@@ -994,7 +1016,7 @@ function removeTaskFromActiveList(taskId)
         displayNoTaskMessage(true);
     }
 
-    prefs.setArray("active_task_ids", newActiveTaskIds);
+    setArray("active_task_ids", newActiveTaskIds);
 }
 
 function submitNewTaskName()
@@ -1030,7 +1052,7 @@ function submitNewTaskName()
 function isActiveTask(taskId)
 {
     var prefs = new _IG_Prefs(__MODULE_ID__);
-    var activeTaskIds = prefs.getArray("active_task_ids");
+    var activeTaskIds = getArray("active_task_ids");
 
     var found = false;
 
@@ -1051,7 +1073,7 @@ function isActiveTask(taskId)
 function addActiveTask(taskId)
 {
     var prefs = new _IG_Prefs(__MODULE_ID__);
-    var activeTaskIds = prefs.getArray("active_task_ids");
+    var activeTaskIds = getArray("active_task_ids");
 
     if (!activeTaskIds)
     {
@@ -1059,13 +1081,13 @@ function addActiveTask(taskId)
     }
 
     activeTaskIds[activeTaskIds.length] = "" + taskId;
-    prefs.setArray("active_task_ids", activeTaskIds);
+    setArray("active_task_ids", activeTaskIds);
 }
 
 function getTaskId(taskName)
 {
     var prefs = new _IG_Prefs(__MODULE_ID__);
-    var allTaskNames = prefs.getArray("task_names");
+    var allTaskNames = getArray("task_names");
     var taskId = 0;
 
     if (allTaskNames)
