@@ -276,7 +276,6 @@
 }
 
 .day_title {
-    width: 11%;
     border: solid 1px;
 }
 
@@ -305,6 +304,11 @@
 .summary_total {
     white-space: nowrap;
     font-size: 70%;
+}
+
+.summary_total_larger {
+    white-space: nowrap;
+    font-size: 75%;
 }
 
     /*a.delbox {
@@ -1283,12 +1287,14 @@ function drawPeriod(week)
         taskNameTd.innerHTML = "Task";
         newRow.appendChild(taskNameTd);
 
+        var columnWidth = numberOfDatesToRetrieve == 5 ? "15%" : "11%";
         for (j = 0; j < numberOfDatesToRetrieve; j++)
         {
             var column = document.createElement("td");
             var eventData = eventDataArray[j];
             var date = eventData.getDate().toDate();
             column.className = "modtitle title_heading day_title";
+            column.style.width = columnWidth;
             column.innerHTML = date.toGMTString().slice(0, 1);
             newRow.appendChild(column);
         }
@@ -1325,7 +1331,14 @@ function drawPeriod(week)
             {
                 var currentTd = document.createElement("td");
                 currentTd.innerHTML = getTotalString(eventDataArray[dayCounter++].getTotalForTask(taskId))
-                currentTd.className = "selectedtab tabtitle summary_task_data summary_total";
+                if (numberOfDatesToRetrieve == 7)
+                {
+                    currentTd.className = "selectedtab tabtitle summary_task_data summary_total";
+                }
+                else
+                {
+                    currentTd.className = "selectedtab tabtitle summary_task_data summary_total_larger";
+                }
                 newRow.appendChild(currentTd);
             }
         }
