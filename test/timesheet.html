@@ -119,6 +119,7 @@
     width: 3%;
     cursor: auto;
     padding: 0px;
+    background-repeat: repeat-y;
 }
 
 .handle {
@@ -128,7 +129,7 @@
     padding: 0px;
     background-image: url( "http://timesheetmod.googlecode.com/svn/trunk/images/move.png" );
     background-position: -1px;
-    background-repeat: no-repeat;
+    background-repeat: repeat-y;
 }
 
 .task_name {
@@ -353,7 +354,7 @@
         <div id="title" class="title">
             <table id="timer_header_table" cellspacing="0" cellpadding="2">
                 <tr>
-                    <td id="no_handle" class="modtitle tabtitle task_data invisihandle">&nbsp;</td>
+                    <td id="no_handle" class="modtitle tabtitle invisihandle">&nbsp;</td>
                     <td id="task_name_title_div" class="modtitle title_heading task_name">TASK NAME</td>
                     <td id="total_time_title_div" class="modtitle title_heading total_time">TOTAL</td>
                     <td id="status_title_div" class="modtitle title_heading status">STATUS</td>
@@ -367,7 +368,7 @@
             <br/>
             <table id="current_task_timer_header_table" cellspacing="0" cellpadding="2">
                 <tr>
-                    <td id="current_task_no_handle" class="modtitle tabtitle task_data invisihandle" style="border: solid 1px;">&nbsp;</td>
+                    <td id="current_task_no_handle" class="modtitle tabtitle invisihandle" style="border: solid 1px;">&nbsp;</td>
                     <td id="current_task_title_td" class="modtitle title_heading task_name">CURRENT TASK DURATION</td>
                     <td id="current_task_total_time_td" class="selectedtab tabtitle task_data current_total_time">
                         <span id="current_task_total_time_span" style="width:100%">None</span>
@@ -1132,7 +1133,7 @@ function createNewTask(taskId, setActiveTaskData)
     taskTable.id = "table_" + taskId;
     taskRow.id = "row_" + taskId;
     handleTd.id = "handle_td_" + taskId;
-    handleTd.className = "modtitle tabtitle task_data handle";
+    handleTd.className = "modtitle tabtitle handle";
     nameTd.id = "name_td_" + taskId;
     nameTd.className = 'selectedtab tabtitle task_data task_name';
     nameDiv.id = "name_div_" + taskId;
@@ -1284,7 +1285,7 @@ function drawPeriod(week)
 
         for (j = 0; j < numberOfDatesToRetrieve; j++)
         {
-            var column= document.createElement("td");
+            var column = document.createElement("td");
             var eventData = eventDataArray[j];
             var date = eventData.getDate().toDate();
             column.className = "modtitle title_heading day_title";
