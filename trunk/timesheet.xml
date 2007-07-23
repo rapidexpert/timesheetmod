@@ -172,6 +172,7 @@
     vertical-align: middle;
     cursor: default;
     padding: 2px;
+    background-repeat: repeat-y;
 }
 
 .no_left_border {
@@ -189,6 +190,7 @@
     padding: 2px;
     height: auto;
     font-size: smaller;
+    background-image: none;
 }
 
 .invisihandle {
@@ -312,6 +314,7 @@
 .empty {
     border: none;
     background-color: transparent;
+    background-image: none;
     padding-right: 3px;
 }
 
@@ -374,6 +377,7 @@
     cursor: default;
     padding: 1px;
     height: auto;
+    background-image: none;
 }
 
 .summary_total {
