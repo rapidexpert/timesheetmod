@@ -1,92 +1,13 @@
-<?xml version="1.0" encoding="UTF-8" ?>
-<Module>
-    <ModulePrefs title="Timesheet" height="250">
-        <Require feature="setprefs"/>
-        <Require feature="tabs"/>
-    </ModulePrefs>
-    <UserPref name="selectedTab" datatype="hidden"/>
-    <UserPref name="calauth" display_name="Cal Auth" required="false"/>
-    <UserPref name="event_data_1" display_name="Event Data 1" required="false" datatype="hidden"/>
-    <UserPref name="event_data_2" display_name="Event Data 2" required="false" datatype="hidden"/>
-    <UserPref name="event_data_3" display_name="Event Data 3" required="false" datatype="hidden"/>
-    <UserPref name="event_data_4" display_name="Event Data 4" required="false" datatype="hidden"/>
-    <UserPref name="event_data_5" display_name="Event Data 5" required="false" datatype="hidden"/>
-    <UserPref name="event_data_6" display_name="Event Data 6" required="false" datatype="hidden"/>
-    <UserPref name="event_data_7" display_name="Event Data 7" required="false" datatype="hidden"/>
-    <UserPref name="event_data_8" display_name="Event Data 8" required="false" datatype="hidden"/>
-    <UserPref name="event_data_9" display_name="Event Data 9" required="false" datatype="hidden"/>
-    <UserPref name="event_data_10" display_name="Event Data 10" required="false" datatype="hidden"/>
-    <UserPref name="event_data_11" display_name="Event Data 11" required="false" datatype="hidden"/>
-    <UserPref name="event_data_12" display_name="Event Data 12" required="false" datatype="hidden"/>
-    <UserPref name="event_data_13" display_name="Event Data 13" required="false" datatype="hidden"/>
-    <UserPref name="event_data_14" display_name="Event Data 14" required="false" datatype="hidden"/>
-    <UserPref name="event_data_15" display_name="Event Data 15" required="false" datatype="hidden"/>
-    <UserPref name="event_data_16" display_name="Event Data 16" required="false" datatype="hidden"/>
-    <UserPref name="event_data_17" display_name="Event Data 17" required="false" datatype="hidden"/>
-    <UserPref name="event_data_18" display_name="Event Data 18" required="false" datatype="hidden"/>
-    <UserPref name="event_data_19" display_name="Event Data 19" required="false" datatype="hidden"/>
-    <UserPref name="event_data_20" display_name="Event Data 20" required="false" datatype="hidden"/>
-    <UserPref name="event_data_21" display_name="Event Data 21" required="false" datatype="hidden"/>
-    <UserPref name="event_data_22" display_name="Event Data 22" required="false" datatype="hidden"/>
-    <UserPref name="event_data_23" display_name="Event Data 23" required="false" datatype="hidden"/>
-    <UserPref name="event_data_24" display_name="Event Data 24" required="false" datatype="hidden"/>
-    <UserPref name="event_data_25" display_name="Event Data 25" required="false" datatype="hidden"/>
-    <UserPref name="event_data_26" display_name="Event Data 26" required="false" datatype="hidden"/>
-    <UserPref name="event_data_27" display_name="Event Data 27" required="false" datatype="hidden"/>
-    <UserPref name="event_data_28" display_name="Event Data 28" required="false" datatype="hidden"/>
-    <UserPref name="event_data_29" display_name="Event Data 29" required="false" datatype="hidden"/>
-    <UserPref name="event_data_30" display_name="Event Data 30" required="false" datatype="hidden"/>
-    <UserPref name="event_data_31" display_name="Event Data 31" required="false" datatype="hidden"/>
-    <UserPref name="current_event" display_name="Current Event" required="false" datatype="hidden"/>
-    <UserPref name="active_task_ids" display_name="Active Task Ids" required="false" datatype="hidden"/>
-    <UserPref name="task_names" display_name="Task Names" required="false" datatype="hidden"/>
-    <UserPref name="cssGadgetContentFile" datatype="hidden" default_value="timesheet.css"/>
-    <UserPref name="jsGadgetContentFile" datatype="hidden" default_value="timesheet.js"/>
-    <UserPref name="htmlGadgetContentFile" datatype="hidden" default_value="timesheet.html"/>
-    <UserPref name="start_day_of_week"
-              display_name="Summary Week Start Day"
-              datatype="enum"
-              default_value="M">
-        <EnumValue value="M" display_value="Monday"/>
-        <EnumValue value="S" display_value="Sunday"/>
-    </UserPref>
-    <UserPref name="hide_weekend"
-              display_name="Summary Weekend"
-              datatype="enum"
-              default_value="0">
-        <EnumValue value="0" display_value="Show"/>
-        <EnumValue value="1" display_value="Hide"/>
-    </UserPref>
-    <UserPref name="summary_format"
-			  display_name="Summary Total Format"
-			  datatype="enum"
-			  default_value="0">
-        <EnumValue value="0" display_value="Decimal (e.g. 1.50)"/>
-        <EnumValue value="1" display_value="Descriptive (e.g. 1h 30m)"/>
-    </UserPref>
-	<UserPref name="summary_zero_duration_format"
-			  display_name="Summary Zero Duration Format"
-			  datatype="enum"
-			  default_value="0">
-        <EnumValue value="0" display_value="Display Duration"/>
-        <EnumValue value="1" display_value="Display Hyphen"/>
-        <EnumValue value="2" display_value="Empty"/>
-    </UserPref>
-    <UserPref name="summary_round"
-              display_name="Round Summary Total"
-              datatype="enum"
-              default_value="1">
-        <EnumValue value="1" display_value="to nearest minute"/>
-        <EnumValue value="5" display_value="to nearest 5 minutes"/>
-        <EnumValue value="10" display_value="to nearest 10 minutes"/>
-        <EnumValue value="15" display_value="to nearest 15 minutes"/>
-        <EnumValue value="30" display_value="to nearest 30 minutes"/>
-        <EnumValue value="45" display_value="to nearest 45 minutes"/>
-        <EnumValue value="60" display_value="to nearest 60 minutes"/>
-    </UserPref>
-	
-    <Content type="html-inline">
-    <![CDATA[
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>Untitled Document</title>
+    <link rel="stylesheet" href="ig.css" type="text/css"/>
+    <script src="fakeig.js" type="text/javascript"></script>
+
+</head>
+<body id="body">
 
 <style type="text/css">
 <!--
@@ -1481,6 +1402,5 @@ function getTotalString(total)
     _IG_RegisterOnloadHandler(initialise);
 </script>
 
-]]>
-    </Content>
-</Module>
+</body>
+</html>
