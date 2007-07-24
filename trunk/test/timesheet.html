@@ -423,7 +423,7 @@
 <div id="summaryContent" style="display:none">
     <div id="summary">
 
-        <br clear="both"/><br/>
+        <br clear="all"/><br/>
         <table id="summary_table" cellspacing="0" cellpadding="0" style="clear:both;">
         </table>
     </div>
@@ -438,7 +438,6 @@ function monitorCurrentTime()
 
     if (date.getDate() != currentData.getDate().getDate())
     {
-        var currentDateRecord = getDateRecord(date, true);
         var activeTaskIds = getArray("active_task_ids");
 
         if (activeTaskIds)
@@ -513,12 +512,6 @@ function getDateRecord(date, persistIfOutOfDate)
     return dateRecord;
 }
 
-function updateDateRecord(dateRecord)
-{
-    var prefs = new _IG_Prefs(__MODULE_ID__);
-    prefs.set("event_data_" + eval(dateRecord.getDate().getDate()), dateRecord.toString());
-}
-
 function getTodaysEventData()
 {
     return todaysEventData;
@@ -548,7 +541,6 @@ function setArray(prefName, arrayData)
 
 function getTaskName(taskId)
 {
-    var prefs = new _IG_Prefs(__MODULE_ID__);
     var allTaskNames = getArray("task_names");
 
     var name = null;
@@ -569,7 +561,6 @@ function monitorTaskOrder()
     var taskList = _gel("tasks");
 
     var tasks = taskList.childNodes;
-    var prefs = new _IG_Prefs(__MODULE_ID__);
     var activeTaskIds = getArray("active_task_ids");
 
     if (activeTaskIds && activeTaskIds.length > 0 && tasks.length == activeTaskIds.length)
@@ -578,10 +569,16 @@ function monitorTaskOrder()
         for (var i = 0; i < tasks.length; i++)
         {
             var idSplit = tasks[i].id.split("_");
-            var taskId = idSplit[idSplit.length - 1];
-            newOrder[i] = taskId;
+            newOrder[i] = idSplit[idSplit.length - 1];
         }
-        setArray("active_task_ids", newOrder);
+
+        var currentData = activeTaskIds.join("|");
+        var newData = newOrder.join("|");
+
+        if (newData != currentData)
+        {
+            setArray("active_task_ids", newOrder);
+        }
     }
 
     setTimeout("monitorTaskOrder()", 5000);
@@ -917,7 +914,6 @@ function replaceWithContent(source)
 
                 totalSpan.innerHTML = durationString;
 
-                var prefs = new _IG_Prefs(__MODULE_ID__);
                 var activeTaskIds = getArray("active_task_ids");
 
                 for (var i = 0; i < activeTaskIds.length; i++)
@@ -938,7 +934,6 @@ function replaceWithContent(source)
 function setTaskName(taskId, taskName)
 {
     var taskNamesPref = "task_names";
-    var prefs = new _IG_Prefs(__MODULE_ID__);
     var allTaskNames = getArray(taskNamesPref);
 
     if (!allTaskNames)
@@ -1001,7 +996,6 @@ function disableTask(taskId, prompt)
 
 function removeTaskFromActiveList(taskId)
 {
-    var prefs = new _IG_Prefs(__MODULE_ID__);
     var activeTaskIds = getArray("active_task_ids");
 
     var newActiveTaskIds = new Array();
@@ -1055,7 +1049,6 @@ function submitNewTaskName()
 
 function isActiveTask(taskId)
 {
-    var prefs = new _IG_Prefs(__MODULE_ID__);
     var activeTaskIds = getArray("active_task_ids");
 
     var found = false;
@@ -1076,7 +1069,6 @@ function isActiveTask(taskId)
 
 function addActiveTask(taskId)
 {
-    var prefs = new _IG_Prefs(__MODULE_ID__);
     var activeTaskIds = getArray("active_task_ids");
 
     if (!activeTaskIds)
@@ -1090,7 +1082,6 @@ function addActiveTask(taskId)
 
 function getTaskId(taskName)
 {
-    var prefs = new _IG_Prefs(__MODULE_ID__);
     var allTaskNames = getArray("task_names");
     var taskId = 0;
 
