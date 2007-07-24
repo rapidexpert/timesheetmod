@@ -470,7 +470,7 @@
     <div id="errorMessages">
     </div>
 
-    <div id="dataDiv"><!--<br/>
+    <div id="dataDiv"><br/>
         <span id="event_data_23_heading">event_data_32 - </span>
         <span id="event_data_23">230707103435!|0:0:103438:103440||0:0:103442:103444||0:0:103729:105119|!|0:001354|</span>
         <br/>
@@ -496,13 +496,26 @@
         <span id="start_day_of_week">M</span>
         <br/>
         <span id="hide_weekend_heading">hide_weekend - </span>
-        <span id="hide_weekend">1</span>-->
+        <span id="hide_weekend">1</span>
+        <br/>
+        <span id="summary_date_format_heading">summary_date_format - </span>
+        <span id="summary_date_format">1</span>
     </div>
 </div>
 <div id="summaryContent" style="display:none">
     <div id="summary">
-
-        <br clear="all"/><br/>
+        <div id="summary_controls">
+            <div id="summary_previous" style="float:left;width:10%;text-align:center;">
+                <span id="previous_control" class="control addTaskControl"><a href="javascript:drawPeriod(1);">PREVIOUS WEEK</a></span>
+            </div>
+            <div id="summary_display" style="float:left;width:79%;text-align:center;">
+                <span id="summary_date_range" class="selectedtab tabtitle" style="border: none;cursor:auto;"></span>
+            </div>
+            <div id="summary_next" style="float:left;width:10%;text-align:center;">
+                <span id="next_control" class="control addTaskControl" style="visibility:hidden;"><a href="javascript:drawPeriod(0);">NEXT WEEK</a></span>
+            </div>
+        </div>
+        <br clear="all"/>
         <table id="summary_table" cellspacing="0" cellpadding="0" style="clear:both;">
         </table>
     </div>
@@ -1269,10 +1282,64 @@ function initialiseSummary()
     drawPeriod(0);
 }
 
+function getFormattedDateString(date)
+{
+    var prefs = new _IG_Prefs(__MODULE_ID__);
+    var dateFormat = prefs.getInt("summary_date_format");
+
+    var dateString;
+    if (dateFormat == 1)
+    {
+        dateString = getFormattedNumber(date.getDate()) + "/" + getFormattedNumber(date.getMonth() + 1) + "/" + getFormattedNumber(date.getYear());
+    }
+    else
+    {
+        dateString = getFormattedNumber(date.getMonth() + 1) + "/" + getFormattedNumber(date.getDate()) + "/" + getFormattedNumber(date.getYear());
+    }
+
+    return dateString;
+}
+
 function drawPeriod(week)
 {
     var dateShift = 7 * week;
     var startDate = new Date();
+
+    // <a href="javascript:drawPeriod(1);">PREVIOUS WEEK</a>
+
+    var previousControl = _gel("previous_control");
+    var nextControl = _gel("next_control");
+
+    switch (week)
+            {
+        case 0:
+        {
+            nextControl.style.visibility = "hidden";
+            previousControl.style.visibility = "visible";
+            break;
+        }
+        case 1:
+        {
+            nextControl.style.visibility = "visible";
+            previousControl.style.visibility = "visible";
+            break;
+        }
+        case 2:
+        {
+            nextControl.style.visibility = "visible";
+            previousControl.style.visibility = "visible";
+            break;
+        }
+        case 3:
+        {
+            nextControl.style.visibility = "visible";
+            previousControl.style.visibility = "hidden";
+            break;
+        }
+    }
+
+    previousControl.innerHTML = '<a href="javascript:drawPeriod(' + (week + 1) + ');">PREVIOUS WEEK</a>'
+    nextControl.innerHTML = '<a href="javascript:drawPeriod(' + (week - 1) + ');">NEXT WEEK</a>'
 
     var startDateValue = startDate.getTime();
 
@@ -1324,6 +1391,8 @@ function drawPeriod(week)
     startDateValue -= (1000 * 60 * 60 * 24) * (dateShift + dayOfWeekShift);
     startDate.setTime(startDateValue);
 
+    var firstDay = getFormattedDateString(startDate);
+
     var eventDataArray = new Array();
     var taskIds = new Array();
     var numberOfDatesToRetrieve = hideWeekend == 0 ? 7 : 5;
@@ -1342,6 +1411,11 @@ function drawPeriod(week)
         startDateValue += 1000 * 60 * 60 * 24;
         startDate.setTime(startDateValue);
     }
+
+    var lastDay = getFormattedDateString(startDate);
+
+    var dateRangeDisplay = _gel("summary_date_range");
+    dateRangeDisplay.innerHTML = firstDay + " - " + lastDay;
 
     var summaryTable = _gel("summary_table");
     var tableRowsToRemove = summaryTable.rows;
@@ -1379,39 +1453,52 @@ function drawPeriod(week)
         }
     }
 
-    for (i = 0; i < taskIds.length; i++)
+    if (taskIds.length > 0)
     {
-        var taskIdPointer = taskIds[i];
-        if (taskIdPointer)
+        for (i = 0; i < taskIds.length; i++)
         {
-            var taskId = i;
-            var dayCounter = 0;
-            var dayTotal;
-
-            var lastRow = summaryTable.rows.length;
-            var newRow = summaryTable.insertRow(lastRow);
-            newRow.id = "summary_row_" + taskId;
-
-            var taskNameTd = document.createElement("td");
-            taskNameTd.innerHTML = getTaskName(taskId);
-            taskNameTd.className = "selectedtab tabtitle summary_task_data task_title_data";
-            newRow.appendChild(taskNameTd);
-
-            for (j = 0; j < numberOfDatesToRetrieve; j++)
+            var taskIdPointer = taskIds[i];
+            if (taskIdPointer)
             {
-                var currentTd = document.createElement("td");
-                currentTd.innerHTML = getTotalString(eventDataArray[dayCounter++].getTotalForTask(taskId))
-                if (numberOfDatesToRetrieve == 7)
+                var taskId = i;
+                var dayCounter = 0;
+                var dayTotal;
+
+                var lastRow = summaryTable.rows.length;
+                var newRow = summaryTable.insertRow(lastRow);
+                newRow.id = "summary_row_" + taskId;
+
+                var taskNameTd = document.createElement("td");
+                taskNameTd.innerHTML = getTaskName(taskId);
+                taskNameTd.className = "selectedtab tabtitle summary_task_data task_title_data";
+                newRow.appendChild(taskNameTd);
+
+                for (j = 0; j < numberOfDatesToRetrieve; j++)
                 {
-                    currentTd.className = "selectedtab tabtitle summary_task_data summary_total";
+                    var currentTd = document.createElement("td");
+                    currentTd.innerHTML = getTotalString(eventDataArray[dayCounter++].getTotalForTask(taskId))
+                    if (numberOfDatesToRetrieve == 7)
+                    {
+                        currentTd.className = "selectedtab tabtitle summary_task_data summary_total";
+                    }
+                    else
+                    {
+                        currentTd.className = "selectedtab tabtitle summary_task_data summary_total_larger";
+                    }
+                    newRow.appendChild(currentTd);
                 }
-                else
-                {
-                    currentTd.className = "selectedtab tabtitle summary_task_data summary_total_larger";
-                }
-                newRow.appendChild(currentTd);
             }
         }
+    }
+    else
+    {
+        var lastRow = summaryTable.rows.length;
+        var newRow = summaryTable.insertRow(lastRow);
+        var noTaskTd = document.createElement("td");
+        noTaskTd.colSpan = numberOfDatesToRetrieve + 1;
+        noTaskTd.innerHTML = "No timesheet data recorded";
+        noTaskTd.className = "selectedtab tabtitle summary_task_data task_title_data";
+        newRow.appendChild(noTaskTd);
     }
 
 }
