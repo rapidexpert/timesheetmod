@@ -400,7 +400,7 @@
     <div id="errorMessages">
     </div>
 
-    <div id="dataDiv"><!--<br/>
+    <div id="dataDiv"><br/>
         <span id="event_data_23_heading">event_data_23 - </span>
         <span id="event_data_23">230707103435!|0:0:103438:103440||0:0:103442:103444||0:0:103729:105119|!|0:001354|</span>
         <br/>
@@ -435,7 +435,7 @@
         <span id="next_event_id">1</span>
         <br/>
         <span id="summary_date_format_heading">summary_date_format - </span>
-        <span id="summary_date_format">1</span>-->
+        <span id="summary_date_format">1</span>
     </div>
 </div>
 <div id="summaryContent" style="display:none">
@@ -852,10 +852,14 @@ function initialiseTaskList()
             currentEvent.setDataFromString(currentEventData);
 
             var taskId = currentEvent.getTask().getId();
-            var statusControl = _gel("status_div_" + taskId);
-            statusControl.innerHTML =
-            '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/stop.png" alt="Stop"/>';
-            refreshCurrentTimer();
+
+            if (taskId)
+            {
+                var statusControl = _gel("status_div_" + taskId);
+                statusControl.innerHTML =
+                '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/stop.png" alt="Stop"/>';
+                refreshCurrentTimer();
+            }
         }
     }
     else
