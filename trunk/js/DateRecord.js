@@ -46,6 +46,42 @@ DateRecord.prototype.setDataFromString = function(dataString, version)
             }
         }
     }
+    else if (version == 2)
+    {
+        var eventTotalSplit = dataString.split('!');
+
+        var dateData = eventTotalSplit[0];
+        var eventData = eventTotalSplit[1];
+        var totalsData = eventTotalSplit[2];
+
+        this._date = new BasicTime();
+        this._date.setDataFromString(dateData, version);
+
+        var eventSplit = eventData.split('|');
+        var totalSplit = totalsData.split('|');
+
+        var i = 0;
+        for (i = 0; i < eventSplit.length; i++)
+        {
+            var eventString = eventSplit[i];
+            if (eventString.length > 0)
+            {
+                var event = new TimerEvent();
+                event.setDataFromString(eventString, version);
+                this.addEvent(event);
+            }
+        }
+        for (i = 0; i < totalSplit.length; i++)
+        {
+            var totalString = totalSplit[i];
+            if (totalString.length > 1)
+            {
+                var total = new Total();
+                total.setDataFromString(totalString, version);
+                this.addTotal(total);
+            }
+        }
+    }
 }
 
 DateRecord.prototype.toString = function()
