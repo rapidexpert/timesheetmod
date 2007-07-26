@@ -215,8 +215,9 @@
     width: 10px;
     cursor: move;
     padding: 0px;
-    text-align:center;
+    text-align: center;
 }
+
 .handle_image {
     background-image: url( "http://timesheetmod.googlecode.com/svn/trunk/images/move.png" );
     background-position: 1px;
@@ -268,6 +269,11 @@
 .control a:hover {
     cursor: pointer;
     text-decoration: underline overline;
+}
+
+.controlNoHover:hover {
+    cursor: auto;
+    text-decoration: none;
 }
 
 .name_data {
@@ -528,7 +534,7 @@
                 <span id="previous_control" class="control addTaskControl"><a href="javascript:drawPeriod(1);">PREVIOUS WEEK</a></span>
             </div>
             <div id="summary_display" style="float:left;width:49%;text-align:center;">
-                <span id="summary_date_range" class="tablib_selected tablib" style="border: none;cursor:auto;"></span>
+                <span id="summary_date_range" class="control controlNoHover" style="border: none;cursor:auto;"></span>
             </div>
             <div id="summary_next" style="float:left;width:25%;text-align:right;">
                 <span id="next_control" class="control addTaskControl" style="visibility:hidden;"><a href="javascript:drawPeriod(0);">NEXT WEEK</a></span>
@@ -1273,7 +1279,7 @@ function createNewTask(taskId, setActiveTaskData)
     taskRow.id = "row_" + taskId;
     handleTd.id = "handle_td_" + taskId;
     handleTd.className = "modtitle tabtitle handle";
-    handleDiv.id= "handle_div_" + taskId;
+    handleDiv.id = "handle_div_" + taskId;
     handleDiv.className = "handle_image";
     nameTd.id = "name_td_" + taskId;
     nameTd.className = 'selectedtab tabtitle task_data task_name';
