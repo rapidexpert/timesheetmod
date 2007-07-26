@@ -1,5 +1,9 @@
 var globalModuleId = null;
 
+function _IG_Analytics(id, url)
+{
+}
+
 function _IG_Tabs(moduleId, defaultTab)
 {
     var tabDiv = document.createElement("div");
@@ -11,7 +15,7 @@ function _IG_Tabs(moduleId, defaultTab)
     tabContent.id = "tabContent";
 
     var bodyContent = _gel("body");
-    
+
     bodyContent.appendChild(tabDiv);
     tabDiv.appendChild(tabs);
     tabDiv.appendChild(tabContent);
@@ -20,15 +24,15 @@ function _IG_Tabs(moduleId, defaultTab)
 _IG_Tabs.prototype.addTab = function(name, divId, functionToCall)
 {
     var contentDiv = _gel(divId);
-    contentDiv.style.display="block";
-    contentDiv.style.clear="both";
+    contentDiv.style.display = "block";
+    contentDiv.style.clear = "both";
     var tabHeader = _gel("tabHeader");
     var newTab = document.createElement("div");
     var newTabContent = document.createElement("span");
     newTab.className = "tab unselectedtab";
     newTabContent.innerHTML = name;
     newTabContent.onclick = function()
-{
+    {
         showTab(divId, functionToCall);
     }
     newTab.appendChild(newTabContent);
