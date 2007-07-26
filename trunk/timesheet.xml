@@ -3,6 +3,7 @@
     <ModulePrefs title="Timesheet" height="250">
         <Require feature="setprefs"/>
         <Require feature="tabs"/>
+        <Require feature="analytics"/>
     </ModulePrefs>
     <UserPref name="selectedTab" datatype="hidden"/>
     <UserPref name="calauth" display_name="Cal Auth" required="false"/>
@@ -712,6 +713,11 @@ function monitorTaskOrder()
     setTimeout("monitorTaskOrder()", 5000);
 }
 
+function displayTaskTimers()
+{
+    _IG_Analytics("UA-2305736-1", "/timesheetmod/display_task_timers");
+}
+
 function startStopTimer(source)
 {
     var nameSplit = source.id.split("_");
@@ -732,7 +738,7 @@ function startStopTimer(source)
         var oldTaskId = currentEvent.getTask().getId();
         var timersButton = _gel("status_div_" + oldTaskId);
         timersButton.innerHTML =
-        '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/start.png" alt="Start"/>';
+        '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/start.png" alt="Start" onclick="startStopTimer(this);"/>';
 
         prefs.set("current_event", "");
         addNewEvent(currentEvent);
@@ -746,6 +752,8 @@ function startStopTimer(source)
         currentTotalTimeSpan.className = "";
         currentTotalTimeSpan.innerHTML = "None";
         prefs.set("event_data_" + getTodaysEventData().getDate().getDate(), getTodaysEventData().toString());
+
+        _IG_Analytics("UA-2305736-1", "/timesheetmod/new_event");
     }
 
     if (!currentEvent || currentEvent.getTask().getId() != taskId)
@@ -759,7 +767,8 @@ function startStopTimer(source)
         currentEvent.setTask(task);
         currentEvent.setStart(startTime);
 
-        source.innerHTML = '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/stop.png" alt="Stop"/>';
+        source.innerHTML =
+        '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/stop.png" alt="Stop" onclick="startStopTimer(this);"/>';
         prefs.set("current_event", currentEvent.toString());
         refreshCurrentTimer();
     }
@@ -875,7 +884,7 @@ function initialise()
 {
     initialiseTaskList();
     var tabs = new _IG_Tabs(__MODULE_ID__, "Today");
-    tabs.addTab("Today", "taskContent");
+    tabs.addTab("Today", "taskContent", displayTaskTimers);
     tabs.addTab("Summary", "summaryContent", initialiseSummary);
     tabs.alignTabs("left", 3);
 }
@@ -1021,6 +1030,8 @@ function replaceWithContent(source)
 
             if (choice)
             {
+                _IG_Analytics("UA-2305736-1", "/timesheetmod/task_replaced_with_existing");
+
                 containingDiv.innerHTML = taskName;
                 containingDiv.onclick = function()
                 {
@@ -1255,6 +1266,7 @@ function createNewTask(taskId, setActiveTaskData)
     if (setActiveTaskData)
     {
         addActiveTask(taskId);
+        _IG_Analytics("UA-2305736-1", "/timesheetmod/new_task_added");
     }
     var taskList = _gel("tasks");
     var listRow = document.createElement("li")
@@ -1296,10 +1308,6 @@ function createNewTask(taskId, setActiveTaskData)
     statusTd.id = "status_td_" + taskId;
     statusTd.className = 'selectedtab tabtitle task_data status control';
     statusDiv.id = "status_div_" + taskId;
-    statusDiv.onclick = function()
-    {
-        startStopTimer(this);
-    };
     disableTd.id = "disable_td_" + taskId;
     disableTd.className = 'selectedtab tabtitle task_data change';
 
@@ -1316,7 +1324,8 @@ function createNewTask(taskId, setActiveTaskData)
     {
         totalTimeSpan.innerHTML = getDurationDisplayString();
     }
-    statusDiv.innerHTML = '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/start.png" alt="Start"/>';
+    statusDiv.innerHTML =
+    '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/start.png" alt="Start" onclick="startStopTimer(this);"/>';
     disableTd.innerHTML = '<a href="javascript:disableTask(' + taskId + ', true);" class="delbox stealImage"></a>';
 
     handleTd.appendChild(handleDiv);
@@ -1340,6 +1349,7 @@ function createNewTask(taskId, setActiveTaskData)
 
 function initialiseSummary()
 {
+    _IG_Analytics("UA-2305736-1", "/timesheetmod/display_summary");
     drawPeriod(0);
 }
 
@@ -1639,7 +1649,15 @@ function getTotalString(total)
 <script type="text/javascript">
     _IG_RegisterOnloadHandler(initialise);
 </script>
-
+<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
+</script>
+<script type="text/javascript">
+    _uacct = "UA-2305736-1";
+    urchinTracker();
+</script>
+<script>
+    _IG_Analytics("UA-2305736-1", "/timesheetmod");
+</script>
 ]]>
     </Content>
 </Module>
