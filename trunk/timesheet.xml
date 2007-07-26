@@ -942,12 +942,17 @@ function initialiseTaskList()
 
             var taskId = currentEvent.getTask().getId();
 
-            if (taskId)
+            if (taskId && taskId != "undefined")
             {
                 var statusControl = _gel("status_div_" + taskId);
                 statusControl.innerHTML =
                 '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/stop.png" alt="Stop"/>';
                 refreshCurrentTimer();
+            }
+            else
+            {
+                currentEvent = null;
+                prefs.set("current_event", "");
             }
         }
     }
