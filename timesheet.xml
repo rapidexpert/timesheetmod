@@ -204,7 +204,7 @@
 
 .invisihandle {
     border: thin hidden;
-    width: 3%;
+    width: 10px;
     cursor: auto;
     padding: 0px;
     background-repeat: repeat-y;
@@ -212,12 +212,15 @@
 
 .handle {
     border: thin hidden;
-    width: 3%;
+    width: 10px;
     cursor: move;
     padding: 0px;
-    /*background-image: url( "http://timesheetmod.googlecode.com/svn/trunk/images/move.png" );
-    background-position: -1px;
-    background-repeat: repeat-y;*/
+    text-align:center;
+}
+.handle_image {
+    background-image: url( "http://timesheetmod.googlecode.com/svn/trunk/images/move.png" );
+    background-position: 1px;
+    background-repeat: repeat-y;
 }
 
 .task_name {
@@ -479,7 +482,7 @@
     <div id="errorMessages">
     </div>
 
-    <div id="dataDiv"><br/><!--
+    <div id="dataDiv"><br/>
         <span id="event_data_23_heading">event_data_23 - </span>
         <span id="event_data_23">230707103435!|0:0:103438:103440||0:0:103442:103444||0:0:103729:105119|!|0:001354|</span>
         <br/>
@@ -514,7 +517,7 @@
         <span id="next_event_id">1</span>
         <br/>
         <span id="summary_date_format_heading">summary_date_format - </span>
-        <span id="summary_date_format">1</span>-->
+        <span id="summary_date_format">1</span>
     </div>
 </div>
 <div id="summaryContent" style="display:none">
@@ -1254,6 +1257,7 @@ function createNewTask(taskId, setActiveTaskData)
     var taskRow = taskTable.insertRow(lastRow);
 
     var handleTd = document.createElement("td");
+    var handleDiv = document.createElement("div");
     var handleImage = document.createElement("img");
     var nameTd = document.createElement("td");
     var nameDiv = document.createElement("div");
@@ -1269,7 +1273,8 @@ function createNewTask(taskId, setActiveTaskData)
     taskRow.id = "row_" + taskId;
     handleTd.id = "handle_td_" + taskId;
     handleTd.className = "modtitle tabtitle handle";
-    handleImage.src = "http://timesheetmod.googlecode.com/svn/trunk/images/move.png";
+    handleDiv.id= "handle_div_" + taskId;
+    handleDiv.className = "handle_image";
     nameTd.id = "name_td_" + taskId;
     nameTd.className = 'selectedtab tabtitle task_data task_name';
     nameDiv.id = "name_div_" + taskId;
@@ -1294,7 +1299,7 @@ function createNewTask(taskId, setActiveTaskData)
 
     var taskName = getTaskName(taskId);
 
-    handleTd.innerHTML = "&nbsp;";
+    handleDiv.innerHTML = "&nbsp;";
     nameDiv.innerHTML = taskName;
     var total = getTodaysEventData().getTotalForTask(taskId);
     if (total)
@@ -1308,7 +1313,7 @@ function createNewTask(taskId, setActiveTaskData)
     statusDiv.innerHTML = '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/start.png" alt="Start"/>';
     disableTd.innerHTML = '<a href="javascript:disableTask(' + taskId + ', true);" class="delbox stealImage"></a>';
 
-    handleTd.appendChild(handleImage);
+    handleTd.appendChild(handleDiv);
     taskRow.appendChild(handleTd);
     nameTd.appendChild(nameDiv);
     taskRow.appendChild(nameTd);
