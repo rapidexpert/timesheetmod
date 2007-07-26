@@ -220,7 +220,7 @@
 
 .handle_image {
     background-image: url( "http://timesheetmod.googlecode.com/svn/trunk/images/move.png" );
-    background-position: 1px;
+    background-position: 0px;
     background-repeat: repeat-y;
 }
 
