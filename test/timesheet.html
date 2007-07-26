@@ -127,9 +127,9 @@
     width: 3%;
     cursor: move;
     padding: 0px;
-    background-image: url( "http://timesheetmod.googlecode.com/svn/trunk/images/move.png" );
+    /*background-image: url( "http://timesheetmod.googlecode.com/svn/trunk/images/move.png" );
     background-position: -1px;
-    background-repeat: repeat-y;
+    background-repeat: repeat-y;*/
 }
 
 .task_name {
@@ -391,8 +391,8 @@
     <div id="errorMessages">
     </div>
 
-    <div id="dataDiv"><br/>
-        <span id="event_data_23_heading">event_data_32 - </span>
+    <div id="dataDiv"><br/><!--
+        <span id="event_data_23_heading">event_data_23 - </span>
         <span id="event_data_23">230707103435!|0:0:103438:103440||0:0:103442:103444||0:0:103729:105119|!|0:001354|</span>
         <br/>
         <span id="task_names_heading">task_names - </span>
@@ -402,7 +402,7 @@
         <span id="active_task_ids">0|1</span>
         <br/>
         <span id="current_event_heading">current_event - </span>
-        <span id="current_event">1:230707105120</span>
+        <span id="current_event">1:230707105420</span>
         <br/>
         <span id="summary_round_heading">summary_round - </span>
         <span id="summary_round">15</span>
@@ -419,8 +419,14 @@
         <span id="hide_weekend_heading">hide_weekend - </span>
         <span id="hide_weekend">1</span>
         <br/>
+        <span id="current_version_heading">current_version - </span>
+        <span id="current_version">1</span>
+        <br/>
+        <span id="next_event_id_heading">next_event_id - </span>
+        <span id="next_event_id">1</span>
+        <br/>
         <span id="summary_date_format_heading">summary_date_format - </span>
-        <span id="summary_date_format">1</span>
+        <span id="summary_date_format">1</span>-->
     </div>
 </div>
 <div id="summaryContent" style="display:none">
@@ -477,7 +483,18 @@ function monitorCurrentTime()
 }
 
 var monthsEvents = new Array();
-var todaysEventData;
+var todaysEventData = null;
+var nextEventId = null;
+
+function getNextEventId()
+{
+    var eventId = ++nextEventId
+
+    var prefs = new _IG_Prefs(__MODULE_ID__);
+    prefs.set("next_event_id", eventId);
+
+    return eventId;
+}
 
 function getDateRecord(date, persistIfOutOfDate)
 {
@@ -755,6 +772,8 @@ function updateDateRecord(dateRecord)
     prefs.set("event_data_" + eval(dateRecord.getDate().getDate()), dateRecord.toString());
 }
 
+var currentVersion__MODULE_ID__ = 2;
+
 function initialise()
 {
     initialiseTaskList();
@@ -767,8 +786,16 @@ function initialise()
 function initialiseTaskList()
 {
     var prefs = new _IG_Prefs(__MODULE_ID__);
+    var currentVersion = prefs.getInt("current_version");
+    nextEventId = prefs.getInt("next_event_id");
 
-    for (var i = 0; i < 32; i++)
+    if (nextEventId)
+    {
+        nextEventId = 1;
+        prefs.set("next_event_id", nextEventId);
+    }
+
+    for (var i = 1; i < 32; i++)
     {
         var eventDataString = prefs.getString("event_data_" + i);
         var eventData = new DateRecord();
@@ -776,7 +803,17 @@ function initialiseTaskList()
         {
             eventData.setDataFromString(eventDataString);
             monthsEvents[i] = eventData;
+
+            if (!currentVersion || currentVersion__MODULE_ID__ != currentVersion)
+            {
+                prefs.set("event_data_" + i, eventData.toString());
+            }
         }
+    }
+
+    if (!currentVersion || currentVersion__MODULE_ID__ != currentVersion)
+    {
+        prefs.set("current_version", currentVersion__MODULE_ID__);
     }
 
     var today = new Date();
@@ -1129,6 +1166,7 @@ function createNewTask(taskId, setActiveTaskData)
     var taskRow = taskTable.insertRow(lastRow);
 
     var handleTd = document.createElement("td");
+    var handleImage = document.createElement("img");
     var nameTd = document.createElement("td");
     var nameDiv = document.createElement("div");
     var totalTimeTd = document.createElement("td");
@@ -1143,6 +1181,7 @@ function createNewTask(taskId, setActiveTaskData)
     taskRow.id = "row_" + taskId;
     handleTd.id = "handle_td_" + taskId;
     handleTd.className = "modtitle tabtitle handle";
+    handleImage.src = "http://timesheetmod.googlecode.com/svn/trunk/images/move.png";
     nameTd.id = "name_td_" + taskId;
     nameTd.className = 'selectedtab tabtitle task_data task_name';
     nameDiv.id = "name_div_" + taskId;
@@ -1181,6 +1220,7 @@ function createNewTask(taskId, setActiveTaskData)
     statusDiv.innerHTML = '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/start.png" alt="Start"/>';
     disableTd.innerHTML = '<a href="javascript:disableTask(' + taskId + ', true);" class="delbox stealImage"></a>';
 
+    handleTd.appendChild(handleImage);
     taskRow.appendChild(handleTd);
     nameTd.appendChild(nameDiv);
     taskRow.appendChild(nameTd);

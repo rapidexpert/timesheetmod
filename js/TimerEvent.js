@@ -3,9 +3,12 @@ function TimerEvent()
 }
 
 TimerEvent.prototype._task = null;
-TimerEvent.prototype._synced = null;
 TimerEvent.prototype._start = null;
 TimerEvent.prototype._end = null;
+TimerEvent.prototype._synced = null;
+TimerEvent.prototype._multiEvent = null;
+TimerEvent.prototype._eventId = null;
+TimerEvent.prototype._nextEventId = null;
 
 TimerEvent.prototype.getDuration = function()
 {
@@ -52,6 +55,26 @@ TimerEvent.prototype.setDataFromString = function(eventString, version)
             this.setEnd(end);
         }
     }
+    else if (version == 2)
+    {
+        var index = 0;
+        var splitData = eventString.split(":");
+
+        this.setTask(getTaskById(splitData[index++]));
+        var start = new BasicTime();
+        start.setDataFromString(splitData[index++]);
+        this.setStart(start);
+
+        if (splitData.length == 6)
+        {
+            var end = new BasicTime();
+            end.setDataFromString(splitData[index++]);
+            this.setEnd(end);
+            this.setSynced(splitData[index++] == 1);
+            this.setMultiEvent(splitData[index++] == 1);
+            this.setEventId(splitData[index++]);
+        }
+    }
 }
 
 TimerEvent.prototype.toString = function()
@@ -60,17 +83,21 @@ TimerEvent.prototype.toString = function()
     eventString += this.getTask().getId();
     eventString += ":";
     var end = this.getEnd();
-    if (end)
+    if (!end)
     {
-        eventString += (this.isSynced() ? "1" : "0");
-        eventString += ":";
-        eventString += this.getStart().toTimeString();
-        eventString += ":";
-        eventString += end.toTimeString();
+        eventString += this.getStart().toFullString();
     }
     else
     {
-        eventString += this.getStart().toFullString();
+        eventString += this.getStart().toTimeString();
+        eventString += ":";
+        eventString += end.toTimeString();
+        eventString += ":";
+        eventString += (this.isSynced() ? "1" : "0");
+        eventString += ":";
+        eventString += (this.isMultiEvent() ? "1" : "0");
+        eventString += ":";
+        eventString += this.getEventId();
     }
 
     return eventString;
@@ -82,25 +109,30 @@ TimerEvent.prototype.splitDates = function()
     var index = 0;
     var duration = this.getDuration();
 
+    var startDate = this.getStart().toDate();
+    var endDate = this.getEnd().toDate();
+
+    var numberOfEvents = 1;
+    while (startDate.getDate() != endDate.getDate())
+    {
+        numberOfEvents++;
+        var time = startDate.getTime();
+        time += 1000 * 60 * 60 * 24;
+        startDate.setTime(time);        
+    }
+
     if (this.getStart().getDate() != this.getEnd().getDate() || this.getStart().getMonth() != this.getEnd().getMonth())
     {
-        var durationHoursInt = eval(duration.getHours());
-        var durationMinutesInt = eval(duration.getMinutes());
-        var hours = durationHoursInt + (durationMinutesInt / 60);
-        var numberOfEvents = Math.ceil(hours / 24);
-
-        if (this.getStart().getHours() > this.getEnd().getHours())
-        {
-            numberOfEvents++;
-        }
-
         var lastDate = null;
+        var eventId = getNextEventId();
 
         for (; index < numberOfEvents; index++)
         {
             var newEvent = new TimerEvent();
             newEvent.setTask(this.getTask());
             newEvent.setSynced(this.isSynced());
+            newEvent.setMultiEvent(true);
+            newEvent.setEventId(eventId);
 
             var start;
             var end;
@@ -111,7 +143,7 @@ TimerEvent.prototype.splitDates = function()
                 lastDateValue += 1000 * 60 * 60 * 24;
                 lastDate = new Date();
                 lastDate.setTime(lastDateValue);
-                
+
                 start = new BasicTime();
                 end = new BasicTime();
                 start.setDataFromDate(lastDate);
@@ -133,7 +165,7 @@ TimerEvent.prototype.splitDates = function()
                 lastDateValue += 1000 * 60 * 60 * 24;
                 lastDate = new Date();
                 lastDate.setTime(lastDateValue);
-                
+
                 start = new BasicTime();
                 start.setDataFromDate(lastDate);
 
@@ -177,14 +209,6 @@ TimerEvent.prototype.setTask = function(task)
 {
     this._task = task;
 }
-TimerEvent.prototype.isSynced = function()
-{
-    return this._synced;
-}
-TimerEvent.prototype.setSynced = function(synced)
-{
-    this._synced = synced;
-}
 TimerEvent.prototype.getStart = function()
 {
     return this._start;
@@ -200,4 +224,32 @@ TimerEvent.prototype.getEnd = function()
 TimerEvent.prototype.setEnd = function(end)
 {
     this._end = end;
+}
+TimerEvent.prototype.isSynced = function()
+{
+    return this._synced;
+}
+TimerEvent.prototype.setSynced = function(synced)
+{
+    this._synced = synced;
+}
+TimerEvent.prototype.isMultiEvent = function()
+{
+    return this._multiEvent;
+}
+TimerEvent.prototype.setMultiEvent = function(multiEvent)
+{
+    this._multiEvent = multiEvent;
+}
+TimerEvent.prototype.getEventId = function()
+{
+    if (!this._eventId)
+    {
+        this._eventId = getNextEventId();
+    }
+    return this._eventId;
+}
+TimerEvent.prototype.setEventId = function(eventId)
+{
+    this._eventId = eventId;
 }
