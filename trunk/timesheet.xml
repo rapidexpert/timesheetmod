@@ -40,7 +40,7 @@
     <UserPref name="current_event" display_name="Current Event" required="false" datatype="hidden"/>
     <UserPref name="active_task_ids" display_name="Active Task Ids" required="false" datatype="hidden"/>
     <UserPref name="task_names" display_name="Task Names" required="false" datatype="hidden"/>
-    <UserPref name="current_version" display_name="Current Event" required="false" datatype="hidden"/>
+    <UserPref name="current_version" display_name="Current Version" required="false" datatype="hidden"/>
     <UserPref name="next_event_id" display_name="Next Event Id" required="false" datatype="hidden"/>
     <UserPref name="cssGadgetContentFile" datatype="hidden" default_value="timesheet.css"/>
     <UserPref name="jsGadgetContentFile" datatype="hidden" default_value="timesheet.js"/>
