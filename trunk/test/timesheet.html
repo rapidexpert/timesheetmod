@@ -649,7 +649,7 @@ function startStopTimer(source)
         var oldTaskId = currentEvent.getTask().getId();
         var timersButton = _gel("status_div_" + oldTaskId);
         timersButton.innerHTML =
-        '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/start.png" alt="Start" onclick="startStopTimer(this);"/>';
+        '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/start.png" alt="Start"/>';
 
         prefs.set("current_event", "");
         addNewEvent(currentEvent);
@@ -678,8 +678,7 @@ function startStopTimer(source)
         currentEvent.setTask(task);
         currentEvent.setStart(startTime);
 
-        source.innerHTML =
-        '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/stop.png" alt="Stop" onclick="startStopTimer(this);"/>';
+        source.innerHTML = '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/stop.png" alt="Stop"/>';
         prefs.set("current_event", currentEvent.toString());
         refreshCurrentTimer();
     }
@@ -1219,6 +1218,10 @@ function createNewTask(taskId, setActiveTaskData)
     statusTd.id = "status_td_" + taskId;
     statusTd.className = 'selectedtab tabtitle task_data status control';
     statusDiv.id = "status_div_" + taskId;
+    statusDiv.onclick = function()
+    {
+        startStopTimer(this);
+    };
     disableTd.id = "disable_td_" + taskId;
     disableTd.className = 'selectedtab tabtitle task_data change';
 
@@ -1235,8 +1238,7 @@ function createNewTask(taskId, setActiveTaskData)
     {
         totalTimeSpan.innerHTML = getDurationDisplayString();
     }
-    statusDiv.innerHTML =
-    '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/start.png" alt="Start" onclick="startStopTimer(this);"/>';
+    statusDiv.innerHTML = '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/start.png" alt="Start"/>';
     disableTd.innerHTML = '<a href="javascript:disableTask(' + taskId + ', true);" class="delbox stealImage"></a>';
 
     handleTd.appendChild(handleDiv);
