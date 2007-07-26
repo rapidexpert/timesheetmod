@@ -443,13 +443,13 @@
         <div id="summary_controls"><br/>
 
             <div id="summary_previous" style="float:left;width:25%;text-align:left;">
-                <span id="previous_control" class="control addTaskControl"><a href="javascript:drawPeriod(1);">PREVIOUS WEEK</a></span>
+                <span id="previous_control" class="control addTaskControl"><a href="javascript:drawPeriod(1);">PREVIOUS</a></span>
             </div>
             <div id="summary_display" style="float:left;width:49%;text-align:center;">
                 <span id="summary_date_range" class="control controlNoHover" style="border: none;cursor:auto;"></span>
             </div>
             <div id="summary_next" style="float:left;width:25%;text-align:right;">
-                <span id="next_control" class="control addTaskControl" style="visibility:hidden;"><a href="javascript:drawPeriod(0);">NEXT WEEK</a></span>
+                <span id="next_control" class="control addTaskControl" style="visibility:hidden;"><a href="javascript:drawPeriod(0);">NEXT</a></span>
             </div>
         </div>
         <br clear="all"/>
@@ -1313,8 +1313,8 @@ function drawPeriod(week)
         }
     }
 
-    previousControl.innerHTML = '<a href="javascript:drawPeriod(' + (week + 1) + ');">PREVIOUS WEEK</a>'
-    nextControl.innerHTML = '<a href="javascript:drawPeriod(' + (week - 1) + ');">NEXT WEEK</a>'
+    previousControl.innerHTML = '<a href="javascript:drawPeriod(' + (week + 1) + ');">PREVIOUS</a>'
+    nextControl.innerHTML = '<a href="javascript:drawPeriod(' + (week - 1) + ');">NEXT</a>'
 
     var startDateValue = startDate.getTime();
 
