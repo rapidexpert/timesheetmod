@@ -810,11 +810,6 @@ function checkSessionStatus()
         }
     }
 
-    var compareId = localSessionId;
-
-    var miniMessage = new _IG_MiniMessage(__MODULE_ID__, _gel("errorMessages"));
-    miniMessage.createTimerMessage("Prefs session Id [" + sessionId + "] and local session ID[" + compareId + "]", 10);
-
     if (sessionId != localSessionId)
     {
         disableGadget();
@@ -837,7 +832,7 @@ function disableGadget()
     disabledGadgetDiv.style.visibility = "visible";
     //noinspection StringLiteralBreaksHTMLJS
     disabledGadgetDiv.innerHTML =
-    "The timesheet gadget has been disabled to protect your timesheet data, as another instance is currently running in another tab/window.<br/><br/>To enable the gadget again, please click <a class='modboxin' style='border:0px none;margin:0px;padding:0px;' href='javascript:initialise();'>here</a>.";
+    "The timesheet gadget has been disabled to protect your timesheet data, as another instance is currently running in another tab/window.<br/><br/>To enable the gadget again, please click <a class='modboxin' style='border:0px none;margin:0px;padding:0px;' href='javaScript:location.reload(true);'>here</a>.";
     mainDiv.appendChild(disabledGadgetDiv);
 
     var activeTasks = getArray("active_task_ids");
