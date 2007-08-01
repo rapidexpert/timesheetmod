@@ -490,7 +490,7 @@
     <div id="errorMessages">
     </div>
 
-    <div id="dataDiv"><br/>
+    <div id="dataDiv"><!--<br/>
         <span id="event_data_23_heading">event_data_23 - </span>
         <span id="event_data_23">230707103435!|0:0:103438:103440||0:0:103442:103444||0:0:103729:105119|!|0:001354|</span>
         <br/>
@@ -525,7 +525,7 @@
         <span id="next_event_id">1</span>
         <br/>
         <span id="summary_date_format_heading">summary_date_format - </span>
-        <span id="summary_date_format">1</span>
+        <span id="summary_date_format">1</span>-->
     </div>
 </div>
 <div id="summaryContent" style="display:none">
@@ -911,7 +911,7 @@ function checkSessionStatus()
     }
     else
     {
-        setTimeout("checkSessionStatus()", 10000);
+        setTimeout("checkSessionStatus()", 5000);
     }
 }
 
@@ -926,7 +926,8 @@ function disableGadget()
     disabledGadgetDiv.style.display = "block";
     disabledGadgetDiv.style.visibility = "visible";
     //noinspection StringLiteralBreaksHTMLJS
-    disabledGadgetDiv.innerHTML = "The timesheet gadget has been disabled to protect your timesheet data, as another instance is currently running in another tab/window.<br/><br/>To enable the gadget again, please click <a class='modboxin' style='border:0px none;margin:0px;padding:0px;' href='javascript:initialise();'>here</a>.";
+    disabledGadgetDiv.innerHTML =
+    "The timesheet gadget has been disabled to protect your timesheet data, as another instance is currently running in another tab/window.<br/><br/>To enable the gadget again, please click <a class='modboxin' style='border:0px none;margin:0px;padding:0px;' href='javascript:initialise();'>here</a>.";
     mainDiv.appendChild(disabledGadgetDiv);
 
     var activeTasks = getArray("active_task_ids");
@@ -981,7 +982,7 @@ function initialise()
         var mainDiv = _gel("m_" + __MODULE_ID__ + "_b");
         mainDiv.removeChild(disabledGadgetDiv);
     }
-//    disabledGadgetDiv.style.display = "none";
+    //    disabledGadgetDiv.style.display = "none";
     setSessionId();
     initialiseTaskList();
     createTabs();
