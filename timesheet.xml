@@ -46,6 +46,7 @@
     <UserPref name="cssGadgetContentFile" datatype="hidden" default_value="timesheet.css"/>
     <UserPref name="jsGadgetContentFile" datatype="hidden" default_value="timesheet.js"/>
     <UserPref name="htmlGadgetContentFile" datatype="hidden" default_value="timesheet.html"/>
+    <UserPref name="session_id" datatype="hidden"/>
     <UserPref name="start_day_of_week"
               display_name="Summary Week Start Day"
               datatype="enum"
@@ -489,7 +490,7 @@
     <div id="errorMessages">
     </div>
 
-    <div id="dataDiv"><!--<br/>
+    <div id="dataDiv"><br/>
         <span id="event_data_23_heading">event_data_23 - </span>
         <span id="event_data_23">230707103435!|0:0:103438:103440||0:0:103442:103444||0:0:103729:105119|!|0:001354|</span>
         <br/>
@@ -524,7 +525,7 @@
         <span id="next_event_id">1</span>
         <br/>
         <span id="summary_date_format_heading">summary_date_format - </span>
-        <span id="summary_date_format">1</span>-->
+        <span id="summary_date_format">1</span>
     </div>
 </div>
 <div id="summaryContent" style="display:none">
@@ -548,6 +549,8 @@
 </div>
 
 <script type="text/javascript">
+
+var currentTimeTimer = null;
 
 function monitorCurrentTime()
 {
@@ -577,7 +580,7 @@ function monitorCurrentTime()
         }
     }
 
-    setTimeout("monitorCurrentTime()", 1000);
+    currentTimeTimer = setTimeout("monitorCurrentTime()", 1000);
 }
 
 var monthsEvents = new Array();
@@ -586,7 +589,7 @@ var nextEventId = null;
 
 function getNextEventId()
 {
-    var eventId = ++nextEventId
+    var eventId = ++nextEventId;
 
     var prefs = new _IG_Prefs(__MODULE_ID__);
     prefs.set("next_event_id", eventId);
@@ -684,6 +687,7 @@ function getTaskName(taskId)
 
 var currentEvent;
 var timer;
+var taskOrderTimer = null;
 
 function monitorTaskOrder()
 {
@@ -710,7 +714,7 @@ function monitorTaskOrder()
         }
     }
 
-    setTimeout("monitorTaskOrder()", 5000);
+    taskOrderTimer = setTimeout("monitorTaskOrder()", 5000);
 }
 
 function displayTaskTimers()
@@ -879,13 +883,109 @@ function updateDateRecord(dateRecord)
 
 var currentVersion__MODULE_ID__ = 2;
 
+var localSessionId = (new Date()).getTime();
+
+function checkSessionStatus()
+{
+    var cookiePrefs = document.cookie.split(";");
+    var sessionId = null;
+    var cookieName = "session_id=";
+
+    for (var i = 0; i < cookiePrefs.length; i++)
+    {
+        var current = _trim(cookiePrefs[i]);
+        if (current.indexOf(cookieName) == 0)
+        {
+            sessionId = current.substring(cookieName.length, current.length);
+        }
+    }
+
+    var compareId = localSessionId;
+
+    var miniMessage = new _IG_MiniMessage(__MODULE_ID__, _gel("errorMessages"));
+    miniMessage.createTimerMessage("Prefs session Id [" + sessionId + "] and local session ID[" + compareId + "]", 10);
+
+    if (sessionId != localSessionId)
+    {
+        disableGadget();
+    }
+    else
+    {
+        setTimeout("checkSessionStatus()", 10000);
+    }
+}
+
+function disableGadget()
+{
+    tabs.displayTabs(false);
+
+    var mainDiv = _gel("m_" + __MODULE_ID__ + "_b");
+
+    var disabledGadgetDiv = document.createElement("div");
+    disabledGadgetDiv.id = "disabled_gadget_div";
+    disabledGadgetDiv.style.display = "block";
+    disabledGadgetDiv.style.visibility = "visible";
+    //noinspection StringLiteralBreaksHTMLJS
+    disabledGadgetDiv.innerHTML = "The timesheet gadget has been disabled to protect your timesheet data, as another instance is currently running in another tab/window.<br/><br/>To enable the gadget again, please click <a class='modboxin' style='border:0px none;margin:0px;padding:0px;' href='javascript:initialise();'>here</a>.";
+    mainDiv.appendChild(disabledGadgetDiv);
+
+    var activeTasks = getArray("active_task_ids");
+    var taskList = _gel("tasks");
+
+    for (var i = 0; i < activeTasks.length; i++)
+    {
+        var taskId = activeTasks[i];
+        var rowToRemove = _gel("li_row_" + taskId);
+        taskList.removeChild(rowToRemove);
+    }
+
+    if (currentTimeTimer)
+    {
+        clearTimeout(currentTimeTimer);
+        currentTimeTimer = null;
+    }
+    if (taskOrderTimer)
+    {
+        clearTimeout(taskOrderTimer);
+        taskOrderTimer = null;
+    }
+}
+
+function setSessionId()
+{
+    document.cookie = "session_id=" + localSessionId;
+}
+
+var tabs = null;
+
+function createTabs()
+{
+    if (!tabs)
+    {
+        tabs = new _IG_Tabs(__MODULE_ID__, "Today");
+        tabs.addTab("Today", "taskContent", displayTaskTimers);
+        tabs.addTab("Summary", "summaryContent", initialiseSummary);
+        tabs.alignTabs("left", 3);
+    }
+    else
+    {
+        tabs.displayTabs(true);
+    }
+}
+
 function initialise()
 {
+    var disabledGadgetDiv = _gel("disabled_gadget_div");
+    if (disabledGadgetDiv)
+    {
+        var mainDiv = _gel("m_" + __MODULE_ID__ + "_b");
+        mainDiv.removeChild(disabledGadgetDiv);
+    }
+//    disabledGadgetDiv.style.display = "none";
+    setSessionId();
     initialiseTaskList();
-    var tabs = new _IG_Tabs(__MODULE_ID__, "Today");
-    tabs.addTab("Today", "taskContent", displayTaskTimers);
-    tabs.addTab("Summary", "summaryContent", initialiseSummary);
-    tabs.alignTabs("left", 3);
+    createTabs();
+    setTimeout("checkSessionStatus()", 10000);
 }
 
 function initialiseTaskList()
@@ -894,7 +994,7 @@ function initialiseTaskList()
     var currentVersion = prefs.getInt("current_version");
     nextEventId = prefs.getInt("next_event_id");
 
-    if (nextEventId)
+    if (!nextEventId)
     {
         nextEventId = 1;
         prefs.set("next_event_id", nextEventId);

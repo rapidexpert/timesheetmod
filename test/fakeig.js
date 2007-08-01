@@ -20,6 +20,10 @@ function _IG_Tabs(moduleId, defaultTab)
     tabDiv.appendChild(tabs);
     tabDiv.appendChild(tabContent);
 }
+_IG_Tabs.prototype.displayTabs = function(display)
+{
+    alert("Tabs have been disabled");
+}
 
 _IG_Tabs.prototype.addTab = function(name, divId, functionToCall)
 {
