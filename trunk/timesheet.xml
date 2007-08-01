@@ -472,11 +472,11 @@
                 <tr>
                     <td id="current_task_no_handle" class="modtitle tabtitle invisihandle" style="border: solid 1px;">&nbsp;</td>
                     <td id="current_task_title_td" class="modtitle title_heading task_name">CURRENT TASK DURATION</td>
-                    <td id="current_task_total_time_td" class="selectedtab tabtitle task_data current_total_time">
+                    <td id="current_task_total_time_td" class="task_data current_total_time">
                         <span id="current_task_total_time_span" style="width:100%">None</span>
                     </td>
-                    <td id="current_task_status_title_div" class="selectedtab title_heading status empty">&nbsp;</td>
-                    <td id="current_task_change_title_div" class="selectedtab title_heading change empty">&nbsp;</td>
+                    <td id="current_task_status_title_div" class="title_heading status empty">&nbsp;</td>
+                    <td id="current_task_change_title_div" class="title_heading change empty">&nbsp;</td>
                 </tr>
             </table>
         </div>
@@ -1302,7 +1302,7 @@ function createNewTask(taskId, setActiveTaskData)
     handleDiv.id = "handle_div_" + taskId;
     handleDiv.className = "handle_image";
     nameTd.id = "name_td_" + taskId;
-    nameTd.className = 'selectedtab tabtitle task_data task_name';
+    nameTd.className = 'task_data task_name';
     nameDiv.id = "name_div_" + taskId;
     nameDiv.style.width = "100%";
     nameDiv.onclick = function()
@@ -1310,18 +1310,18 @@ function createNewTask(taskId, setActiveTaskData)
         replaceWithTextBox(this);
     };
     totalTimeTd.id = "total_time_td_" + taskId;
-    totalTimeTd.className = 'selectedtab tabtitle task_data total_time';
+    totalTimeTd.className = 'task_data total_time';
     totalTimeSpan.id = "total_time_span_" + taskId;
     totalTimeSpan.style.width = "100%"
     statusTd.id = "status_td_" + taskId;
-    statusTd.className = 'selectedtab tabtitle task_data status control';
+    statusTd.className = 'task_data status control';
     statusDiv.id = "status_div_" + taskId;
     statusDiv.onclick = function()
     {
         startStopTimer(this);
     };
     disableTd.id = "disable_td_" + taskId;
-    disableTd.className = 'selectedtab tabtitle task_data change';
+    disableTd.className = 'task_data change';
 
     var taskName = getTaskName(taskId);
 
@@ -1554,7 +1554,7 @@ function drawPeriod(week)
 
                 var taskNameTd = document.createElement("td");
                 taskNameTd.innerHTML = getTaskName(taskId);
-                taskNameTd.className = "selectedtab tabtitle summary_task_data task_title_data";
+                taskNameTd.className = "summary_task_data task_title_data";
                 newRow.appendChild(taskNameTd);
 
                 for (j = 0; j < numberOfDatesToRetrieve; j++)
@@ -1563,11 +1563,11 @@ function drawPeriod(week)
                     currentTd.innerHTML = getTotalString(eventDataArray[dayCounter++].getTotalForTask(taskId))
                     if (numberOfDatesToRetrieve == 7)
                     {
-                        currentTd.className = "selectedtab tabtitle summary_task_data summary_total";
+                        currentTd.className = "summary_task_data summary_total";
                     }
                     else
                     {
-                        currentTd.className = "selectedtab tabtitle summary_task_data summary_total_larger";
+                        currentTd.className = "summary_task_data summary_total_larger";
                     }
                     newRow.appendChild(currentTd);
                 }
