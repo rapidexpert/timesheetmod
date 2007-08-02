@@ -500,6 +500,8 @@ function synchroniseWithGcal()
         finished = startDay.getDate() == today.getDate();
     }
 
+    var dateRecordsToUpdate = new Array();
+
     for (var i = 0; i < eventsToSync.length; i++)
     {
         var newEvent = new Array();
@@ -531,6 +533,36 @@ function synchroniseWithGcal()
         var taskName = getTaskName(firstEvent.getTask().getId());
         var startTime = firstEvent.getStart().toDate();
         var endTime = newEvent[newEvent.length - 1].getEnd().toDate();
+
+        var createEvent = (endTime.getTime() - startTime.getTime()) > 60000;
+
+        var created = false;
+        if (createEvent)
+        {
+            created = createEvent__MODULE_ID__(taskName, firstEvent.getEventId(), startTime, endTime);
+        }
+        //        alert("Created [" + created + "]");
+
+        if (created || !createEvent)
+        {
+            for (var k = 0; k < newEvent.length; k++)
+            {
+                var event = newEvent[k];
+                event.setSynced(true);
+                var dateRecordId = eval(event.getDateRecord().getDate().getDate());
+                dateRecordsToUpdate[dateRecordId] = event.getDateRecord();
+            }
+        }
+    }
+
+    for (var l = 0; l < dateRecordsToUpdate.length; l++)
+    {
+        var dateRecordToUpdate = dateRecordsToUpdate[l];
+
+        if (dateRecordToUpdate)
+        {
+            updateDateRecord(dateRecordToUpdate);
+        }
     }
 }
 
@@ -779,6 +811,104 @@ function addNewEvent(event)
     }
 }
 
+/**
+ * Creates a new event in Google calendar.
+ * @param eventTask The event task to sync.
+ */
+function createEvent__MODULE_ID__(taskName, eventId, start, end)
+{
+    var eventXML = "";
+
+    eventXML += "<?xml version='1.0' encoding='UTF-8'?>\n";
+    eventXML +=
+    "<entry xmlns='http://www.w3.org/2005/Atom' xmlns:gCal='http://schemas.google.com/gCal/2005' xmlns:gd='http://schemas.google.com/g/2005'>\n";
+    eventXML +=
+    "<category scheme='http://schemas.google.com/g/2005' term='http://schemas.google.com/g/2005#event'></category>\n";
+    eventXML +=
+    "<category scheme='http://schemas.google.com/g/2005#kind' term='http://schemas.google.com/g/2005#event'></category>\n";
+    eventXML += "<title type='text'>" + taskName + "</title>\n";
+    eventXML += "<content type='text'>Timesheet Event + " + eventId + "</content>\n";
+    eventXML += "<gd:eventStatus value='http://schemas.google.com/g/2005#event.confirmed'></gd:eventStatus>\n";
+    eventXML += "<gd:visibility value='http://schemas.google.com/g/2005#event.default'></gd:visibility>\n";
+    eventXML += "<gd:transparency value='http://schemas.google.com/g/2005#event.opaque'></gd:transparency>\n";
+    eventXML += "<gCal:sendEventNotifications value='false'></gCal:sendEventNotifications>\n";
+
+    var startTime = start.getFullYear() + "-" + getFormattedNumber(start.getMonth() + 1) + "-"
+            + getFormattedNumber(start.getDate());
+    startTime += "T" + getFormattedNumber(start.getHours()) + ":" + getFormattedNumber(start.getMinutes()) + ":"
+            + getFormattedNumber(start.getSeconds());
+    startTime += ".000+01:00";
+    var endTime = end.getFullYear() + "-" + getFormattedNumber(end.getMonth() + 1) + "-"
+            + getFormattedNumber(end.getDate());
+    endTime += "T" + getFormattedNumber(end.getHours()) + ":" + getFormattedNumber(end.getMinutes()) + ":"
+            + getFormattedNumber(end.getSeconds());
+    endTime += ".000+01:00";
+
+    eventXML += "<gd:when startTime='" + startTime + "' endTime='" + endTime + "'></gd:when>\n";
+    eventXML += "<gd:where></gd:where>\n";
+    eventXML += "</entry>\n";
+
+    var prefs = new _IG_Prefs(__MODULE_ID__);
+
+    var httpReq = getBrowserRequestObject__MODULE_ID__();
+    httpReq.open('POST', httpType + "://" + domain + "/calendar/feeds/default/private/full", false);
+    httpReq.setRequestHeader('Authorization', 'GoogleLogin auth=' + prefs.getString("calauth"));
+    httpReq.setRequestHeader('Content-type', 'application/atom+xml');
+    httpReq.send(eventXML);
+
+    var status = httpReq.status;
+
+    if (status == 403)
+    {
+        obtainAuthId__MODULE_ID__(httpReq);
+
+        httpReq = getBrowserRequestObject__MODULE_ID__();
+        httpReq.open('POST', httpType + "://" + domain + "/calendar/feeds/default/private/full", false);
+        httpReq.setRequestHeader('Authorization', 'GoogleLogin auth=' + prefs.getString("calauth"));
+        httpReq.setRequestHeader('Content-type', 'application/atom+xml');
+        httpReq.send(eventXML);
+        status = httpReq.status;
+    }
+
+    return status != 403;
+}
+
+/**
+ * Obtains the authentication ID for Google calendar out of the current request object.
+ *
+ * A big thank you to Chris McKeever (http://www.r2unit.com), from whose code I originally worked out how to obtain this
+ * data.
+ *
+ * @param httpReq The current request object.
+ */
+function obtainAuthId__MODULE_ID__(httpReq)
+{
+    var auth = new Array;
+    var cookieHeader = httpReq.getResponseHeader('Set-Cookie');
+    if (cookieHeader)
+    {
+        auth = cookieHeader.split(";");
+    }
+
+    var prefs = new _IG_Prefs(__MODULE_ID__);
+
+    if (auth && auth.length)
+    {
+        var regularExpression = /[^=]*$/;
+        prefs.set("calauth", regularExpression.exec(auth[0]));
+    }
+}
+
+/**
+ * Obtains a browser-specific XML HTTP request object.
+ *
+ * @return browserObject The XML HTTP request object.
+ */
+function getBrowserRequestObject__MODULE_ID__()
+{
+    return (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+}
+
 function refreshCurrentTimer()
 {
     var taskId = currentEvent.getTask().getId();
@@ -952,8 +1082,13 @@ function createTabs()
     }
 }
 
+var domain = null;
+var httpType = null;
+
 function initialise()
 {
+    domain = document.domain;
+    httpType = document.location.toString().match(/[^:]*/);
     var disabledGadgetDiv = _gel("disabled_gadget_div");
     if (disabledGadgetDiv)
     {
@@ -985,12 +1120,19 @@ function initialiseTaskList()
         var eventData = new DateRecord();
         if (eventDataString)
         {
-            eventData.setDataFromString(eventDataString);
+            var errorDetectedAndFixed = eventData.setDataFromString(eventDataString, currentVersion);
             monthsEvents[i] = eventData;
 
-            if (!currentVersion || currentVersion__MODULE_ID__ != currentVersion)
+            if (!currentVersion || currentVersion__MODULE_ID__ != currentVersion || errorDetectedAndFixed)
             {
-                updateDateRecord(eventData);
+                if (!errorDetectedAndFixed)
+                {
+                    updateDateRecord(eventData);
+                }
+                else
+                {
+                    alert("Error with input string [" + eventDataString + "]");
+                }
             }
         }
     }
