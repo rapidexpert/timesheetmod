@@ -45,7 +45,7 @@ BasicTime.prototype.setDataFromDate = function(date)
 
 BasicTime.prototype.setDataFromString = function(dateString, version)
 {
-    if (!version || version == 1)
+    if (!version || version == 1 || version == 2)
     {
         var offset = 0;
 
