@@ -484,8 +484,10 @@ function obtainUserCalendars()
     httpReq.open('get', calUrl, false);
     httpReq.setRequestHeader('Authorization', 'GoogleLogin auth=' + prefs.getString("calauth"));
     httpReq.setRequestHeader('Content-type', 'application/atom+xml');
-    httpReq.onreadystatechange = parseUserCalendars(httpReq);
+    httpReq.overrideMimeType("text/xml");
+    //    httpReq.onreadystatechange = parseUserCalendars(httpReq);
     httpReq.send(null);
+    parseUserCalendars(httpReq)
 }
 
 var calendarNames = null;
@@ -502,7 +504,8 @@ function getNodeAttribute(obj, elementName, attributeName)
 
 function parseUserCalendars(httpReq)
 {
-    var entries = httpReq.responseXML.getElementsByTagName("entry");
+    var responseXml = httpReq.responseXML;
+    var entries = responseXml.getElementsByTagName("entry");
 
     calendarNames = new Array();
     calendarUrls = new Array();
@@ -514,7 +517,7 @@ function parseUserCalendars(httpReq)
 
         var feeds = entries[i].getElementsByTagName("link");
 
-        for (var j = 0; j < feeds.length; i++)
+        for (var j = 0; j < feeds.length; j++)
         {
             var feedName = feeds[j].getAttribute("rel");
 
