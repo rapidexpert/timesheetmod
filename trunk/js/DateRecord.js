@@ -10,6 +10,7 @@ DateRecord.prototype._totals = null;
 
 DateRecord.prototype.setDataFromString = function(dataString, version)
 {
+    var errorDetected = false;
     if (!version || version == 1)
     {
         var eventTotalSplit = dataString.split('!');
@@ -43,12 +44,15 @@ DateRecord.prototype.setDataFromString = function(dataString, version)
                     currentEnd.setDate(this.getDate().getDate());
                     currentEnd.setMonth(this.getDate().getMonth());
                     currentEnd.setYear(this.getDate().getYear());
+                    this.addNewEvent(event);
                 }
-
-                this.addEvent(event);
+                else
+                {
+                    errorDetected = true;
+                }
             }
         }
-        for (i = 0; i < totalSplit.length; i++)
+        /*for (i = 0; i < totalSplit.length; i++)
         {
             var totalString = totalSplit[i];
             if (totalString.length > 1)
@@ -57,7 +61,7 @@ DateRecord.prototype.setDataFromString = function(dataString, version)
                 total.setDataFromString(totalString);
                 this.addTotal(total);
             }
-        }
+        }*/
     }
     else if (version == 2)
     {
@@ -92,12 +96,15 @@ DateRecord.prototype.setDataFromString = function(dataString, version)
                     currentEnd.setDate(this.getDate().getDate());
                     currentEnd.setMonth(this.getDate().getMonth());
                     currentEnd.setYear(this.getDate().getYear());
+                    this.addNewEvent(event);
                 }
-
-                this.addEvent(event);
+                else
+                {
+                    errorDetected = true;
+                }
             }
         }
-        for (i = 0; i < totalSplit.length; i++)
+        /*for (i = 0; i < totalSplit.length; i++)
         {
             var totalString = totalSplit[i];
             if (totalString.length > 1)
@@ -106,7 +113,7 @@ DateRecord.prototype.setDataFromString = function(dataString, version)
                 total.setDataFromString(totalString, version);
                 this.addTotal(total);
             }
-        }
+        }*/
     }
 }
 
