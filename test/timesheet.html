@@ -468,7 +468,7 @@ function backgroundSynchroniseWithGcal()
     if (!syncing)
     {
         var message = new _IG_MiniMessage(__MODULE_ID__, "errorMessages");
-        message.createTimerMessage("Synchronising timesheet data with Google Calendar", 3);
+        message.createTimerMessage("Synchronising timesheet data with Google Calendar", 5);
 
         setTimeout("synchroniseWithGcal()", 500);
     }
@@ -586,7 +586,7 @@ function synchroniseWithGcal()
     syncing = false;
 
     var message = new _IG_MiniMessage(__MODULE_ID__, "errorMessages");
-    message.createTimerMessage("Timesheet data synchronised", 3);
+    message.createTimerMessage("Timesheet data synchronised", 5);
 }
 
 var currentTimeTimer = null;
@@ -859,7 +859,7 @@ function createEvent__MODULE_ID__(taskName, eventId, start, end)
     var startTime = start.getFullYear() + "-" + getFormattedNumber(start.getMonth() + 1) + "-"
             + getFormattedNumber(start.getDate());
     startTime += "T" + getFormattedNumber(start.getHours()) + ":" + getFormattedNumber(start.getMinutes());
-    startTime += ":00s.000+01:00";
+    startTime += ":00.000+01:00";
     var endTime = end.getFullYear() + "-" + getFormattedNumber(end.getMonth() + 1) + "-"
             + getFormattedNumber(end.getDate());
     endTime += "T" + getFormattedNumber(end.getHours()) + ":" + getFormattedNumber(end.getMinutes())
