@@ -444,7 +444,7 @@
 <div id="taskContent" style="display:none">
     <div id="sync_div" style="float:right; height:23px;">
         <div class="control addTaskControl" style="float:right; height:23px;" id="synchronise_calendar_div">
-            <a href="javascript:synchroniseWithGcal();">SYNCHRONISE WITH GOOGLE CALENDAR</a></div>
+            <a href="javascript:backgroundSynchroniseWithGcal();">SYNCHRONISE WITH GOOGLE CALENDAR</a></div>
     </div>
     <div id="controls" style="float:right;">
         <div class="control addTaskControl" id="add_task_control">
@@ -550,6 +550,19 @@
 </div>
 
 <script type="text/javascript">
+
+var syncing = false;
+
+function backgroundSynchroniseWithGcal()
+{
+    if (!syncing)
+    {
+        var message = new _IG_MiniMessage(__MODULE_ID__, "errorMessages");
+        message.createTimerMessage("Synchronising timesheet data with Google Calendar", 3);
+
+        setTimeout("synchroniseWithGcal()", 500);
+    }
+}
 
 function synchroniseWithGcal()
 {
@@ -659,6 +672,11 @@ function synchroniseWithGcal()
             updateDateRecord(dateRecordToUpdate);
         }
     }
+
+    syncing = false;
+
+    var message = new _IG_MiniMessage(__MODULE_ID__, "errorMessages");
+    message.createTimerMessage("Timesheet data synchronised", 3);
 }
 
 var currentTimeTimer = null;
@@ -930,14 +948,12 @@ function createEvent__MODULE_ID__(taskName, eventId, start, end)
 
     var startTime = start.getFullYear() + "-" + getFormattedNumber(start.getMonth() + 1) + "-"
             + getFormattedNumber(start.getDate());
-    startTime += "T" + getFormattedNumber(start.getHours()) + ":" + getFormattedNumber(start.getMinutes()) + ":"
-            + getFormattedNumber(start.getSeconds());
-    startTime += ".000+01:00";
+    startTime += "T" + getFormattedNumber(start.getHours()) + ":" + getFormattedNumber(start.getMinutes());
+    startTime += ":00s.000+01:00";
     var endTime = end.getFullYear() + "-" + getFormattedNumber(end.getMonth() + 1) + "-"
             + getFormattedNumber(end.getDate());
-    endTime += "T" + getFormattedNumber(end.getHours()) + ":" + getFormattedNumber(end.getMinutes()) + ":"
-            + getFormattedNumber(end.getSeconds());
-    endTime += ".000+01:00";
+    endTime += "T" + getFormattedNumber(end.getHours()) + ":" + getFormattedNumber(end.getMinutes())
+    endTime += ":00.000+01:00";
 
     eventXML += "<gd:when startTime='" + startTime + "' endTime='" + endTime + "'></gd:when>\n";
     eventXML += "<gd:where></gd:where>\n";
@@ -1981,6 +1997,6 @@ function getTotalString(total)
 <script>
     _IG_Analytics("UA-2305736-1", "/timesheetmod");
 </script>
-s]]>
+]]>
     </Content>
 </Module>
