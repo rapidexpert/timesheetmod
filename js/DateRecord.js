@@ -44,6 +44,7 @@ DateRecord.prototype.setDataFromString = function(dataString, version)
                     currentEnd.setDate(this.getDate().getDate());
                     currentEnd.setMonth(this.getDate().getMonth());
                     currentEnd.setYear(this.getDate().getYear());
+                    event.setDateRecord(this);
                     this.addNewEvent(event);
                 }
                 else

@@ -9,6 +9,7 @@ TimerEvent.prototype._synced = null;
 TimerEvent.prototype._multiEvent = null;
 TimerEvent.prototype._eventId = null;
 TimerEvent.prototype._nextEventId = null;
+TimerEvent.prototype._dateRecord = null;
 
 TimerEvent.prototype.getDuration = function()
 {
@@ -118,7 +119,7 @@ TimerEvent.prototype.splitDates = function()
         numberOfEvents++;
         var time = startDate.getTime();
         time += 1000 * 60 * 60 * 24;
-        startDate.setTime(time);        
+        startDate.setTime(time);
     }
 
     if (this.getStart().getDate() != this.getEnd().getDate() || this.getStart().getMonth() != this.getEnd().getMonth())
@@ -252,4 +253,12 @@ TimerEvent.prototype.getEventId = function()
 TimerEvent.prototype.setEventId = function(eventId)
 {
     this._eventId = eventId;
+}
+TimerEvent.prototype.getDateRecord = function()
+{
+    return this._dateRecord;
+}
+TimerEvent.prototype.setDateRecord = function(dateRecord)
+{
+    this._dateRecord = dateRecord;
 }
