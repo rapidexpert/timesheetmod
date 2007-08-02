@@ -150,6 +150,7 @@ DateRecord.prototype.toString = function()
 
 DateRecord.prototype.addEvent = function(event)
 {
+    event.setDateRecord(this);
     var events = this._events;
     events[events.length] = event;
 }
