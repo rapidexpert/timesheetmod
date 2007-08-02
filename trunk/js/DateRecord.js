@@ -44,15 +44,15 @@ DateRecord.prototype.setDataFromString = function(dataString, version)
                     currentEnd.setDate(this.getDate().getDate());
                     currentEnd.setMonth(this.getDate().getMonth());
                     currentEnd.setYear(this.getDate().getYear());
-                    this.addNewEvent(event);
                 }
                 else
                 {
                     errorDetected = true;
                 }
+                this.addEvent(event);
             }
         }
-        /*for (i = 0; i < totalSplit.length; i++)
+        for (i = 0; i < totalSplit.length; i++)
         {
             var totalString = totalSplit[i];
             if (totalString.length > 1)
@@ -61,7 +61,7 @@ DateRecord.prototype.setDataFromString = function(dataString, version)
                 total.setDataFromString(totalString);
                 this.addTotal(total);
             }
-        }*/
+        }
     }
     else if (version == 2)
     {
@@ -96,15 +96,15 @@ DateRecord.prototype.setDataFromString = function(dataString, version)
                     currentEnd.setDate(this.getDate().getDate());
                     currentEnd.setMonth(this.getDate().getMonth());
                     currentEnd.setYear(this.getDate().getYear());
-                    this.addNewEvent(event);
                 }
                 else
                 {
                     errorDetected = true;
                 }
+                this.addEvent(event);
             }
         }
-        /*for (i = 0; i < totalSplit.length; i++)
+        for (i = 0; i < totalSplit.length; i++)
         {
             var totalString = totalSplit[i];
             if (totalString.length > 1)
@@ -113,7 +113,7 @@ DateRecord.prototype.setDataFromString = function(dataString, version)
                 total.setDataFromString(totalString, version);
                 this.addTotal(total);
             }
-        }*/
+        }
     }
 }
 
