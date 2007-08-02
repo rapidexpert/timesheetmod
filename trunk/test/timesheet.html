@@ -508,27 +508,27 @@ function synchroniseWithGcal()
         var firstEvent = eventsToSync[i];
         newEvent.push(firstEvent);
 
-        var j = 0;
-        var findMore = false;
-        do
-        {
-            var nextEvent = eventsToSync[i + ++j];
-            if (nextEvent && firstEvent.getEventId() == nextEvent.getEventId())
-            {
-                newEvent.push(nextEvent);
-                findMore = true;
-            }
-            else
-            {
-                findMore = false;
-            }
-        }
-        while (findMore)
-
-        if (newEvent.length > 1)
-        {
-            i += (j - 1);
-        }
+        //        var j = 0;
+        //        var findMore = false;
+        //        do
+        //        {
+        //            var nextEvent = eventsToSync[i + ++j];
+        //            if (nextEvent && firstEvent.getEventId() == nextEvent.getEventId())
+        //            {
+        //                newEvent.push(nextEvent);
+        //                findMore = true;
+        //            }
+        //            else
+        //            {
+        //                findMore = false;
+        //            }
+        //        }
+        //        while (findMore)
+        //
+        //        if (newEvent.length > 1)
+        //        {
+        //            i += (j - 1);
+        //        }
 
         var taskName = getTaskName(firstEvent.getTask().getId());
         var startTime = firstEvent.getStart().toDate();
