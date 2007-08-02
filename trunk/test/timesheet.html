@@ -219,6 +219,7 @@
     width: 200px;
     padding: 5px;
     margin: 5px;
+    background-repeat: repeat;
 }
 
 .addTaskEntryTextbox {
@@ -738,7 +739,6 @@ function startStopTimer(source)
         timeSpan.className = "";
         currentTotalTimeSpan.className = "";
         currentTotalTimeSpan.innerHTML = "None";
-        prefs.set("event_data_" + getTodaysEventData().getDate().getDate(), getTodaysEventData().toString());
 
         _IG_Analytics("UA-2305736-1", "/timesheetmod/new_event");
     }
@@ -990,7 +990,7 @@ function initialiseTaskList()
 
             if (!currentVersion || currentVersion__MODULE_ID__ != currentVersion)
             {
-                prefs.set("event_data_" + i, eventData.toString());
+                updateDateRecord(eventData);
             }
         }
     }
