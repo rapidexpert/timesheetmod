@@ -872,7 +872,16 @@ function createEvent__MODULE_ID__(taskName, eventId, start, end)
     var prefs = new _IG_Prefs(__MODULE_ID__);
 
     var httpReq = getBrowserRequestObject__MODULE_ID__();
-    httpReq.open('POST', httpType + "://" + domain + "/calendar/feeds/default/private/full", false);
+    var calUrl;
+    if (timesheetCalFeed)
+    {
+        calUrl = timesheetCalFeed;
+    }
+    else
+    {
+        calUrl = httpType + "://" + domain + "/calendar/feeds/default/private/full";
+    }
+    httpReq.open('POST', calUrl, false);
     httpReq.setRequestHeader('Authorization', 'GoogleLogin auth=' + prefs.getString("calauth"));
     httpReq.setRequestHeader('Content-type', 'application/atom+xml');
     httpReq.send(eventXML);
@@ -884,7 +893,7 @@ function createEvent__MODULE_ID__(taskName, eventId, start, end)
         obtainAuthId__MODULE_ID__(httpReq);
 
         httpReq = getBrowserRequestObject__MODULE_ID__();
-        httpReq.open('POST', httpType + "://" + domain + "/calendar/feeds/default/private/full", false);
+        httpReq.open('POST', calUrl, false);
         httpReq.setRequestHeader('Authorization', 'GoogleLogin auth=' + prefs.getString("calauth"));
         httpReq.setRequestHeader('Content-type', 'application/atom+xml');
         httpReq.send(eventXML);
@@ -1105,11 +1114,22 @@ function createTabs()
 
 var domain = null;
 var httpType = null;
+var timesheetCalFeed = null;
 
 function initialise()
 {
     domain = document.domain;
     httpType = document.location.toString().match(/[^:]*/);
+
+    var prefs = new _IG_Prefs(__MODULE_ID__);
+    var timesheetCalFeed = prefs.getString("timesheet_calendar_feed");
+
+    if (timesheetCalFeed)
+    {
+        var calIndex = timesheetCalFeed.indexOf("/calendar");
+        timesheetCalFeed = httpType + "://" + domain + timesheetCalFeed.slice(calIndex, timesheetCalFeed.length);
+    }
+
     var disabledGadgetDiv = _gel("disabled_gadget_div");
     if (disabledGadgetDiv)
     {
