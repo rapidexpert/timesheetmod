@@ -571,25 +571,63 @@ function obtainUserCalendars()
     var prefs = new _IG_Prefs(__MODULE_ID__);
 
     var httpReq = getBrowserRequestObject__MODULE_ID__();
-    var calUrl;
-    if (timesheetCalFeed)
-    {
-        calUrl = timesheetCalFeed;
-    }
-    else
-    {
-        calUrl = httpType + "://" + domain + "/calendar/feeds/default/owncalendars/full";
-    }
-    httpReq.open('POST', calUrl, false);
+    var calUrl = httpType + "://" + domain + "/calendar/feeds/default/owncalendars/full";
+    httpReq.open('get', calUrl, false);
     httpReq.setRequestHeader('Authorization', 'GoogleLogin auth=' + prefs.getString("calauth"));
     httpReq.setRequestHeader('Content-type', 'application/atom+xml');
+    httpReq.onreadystatechange = parseUserCalendars(httpReq);
     httpReq.send(null);
+}
 
-    var JSONRE = /\[\[.*\]\]/;
-    var JSON = JSONRE.exec(httpReq.responseText);
+var calendarNames = null;
+var calendarUrls = null;
+
+function getNodeValue(obj, elementName)
+{
+    return obj.getElementsByTagName(elementName)[0].firstChild.nodeValue;
+}
+function getNodeAttribute(obj, elementName, attributeName)
+{
+    return obj.getElementsByTagName(elementName)[0].getAttribute(attributeName);
+}
+
+function parseUserCalendars(httpReq)
+{
+    var entries = httpReq.responseXML.getElementsByTagName("entry");
+
+    calendarNames = new Array();
+    calendarUrls = new Array();
+
+    for (var i = 0; i < entries.length; i++)
+    {
+        var name = getNodeValue(entries[i], "title");
+        var url = null;
+
+        var feeds = entries[i].getElementsByTagName("link");
+
+        for (var j = 0; j < feeds.length; i++)
+        {
+            var feedName = feeds[j].getAttribute("rel");
+
+            if (feedName == "edit")
+            {
+                var localUrl = feeds[j].getAttribute("href");
+                var calIndex = localUrl.indexOf("/calendar");
+                url = httpType + "://" + domain + localUrl.slice(calIndex, localUrl.length);
+            }
+        }
+
+        if (url)
+        {
+            calendarNames.push(name);
+            calendarUrls.push(url);
+        }
+    }
+
+    var localNames = calendarNames;
+    var localUrls = calendarUrls;
 
     var la = "";
-
 }
 
 function synchroniseWithGcal()
