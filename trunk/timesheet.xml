@@ -1213,12 +1213,12 @@ function initialise()
     httpType = document.location.toString().match(/[^:]*/);
 
     var prefs = new _IG_Prefs(__MODULE_ID__);
-    var timesheetCalFeed = prefs.getString("timesheet_calendar_feed");
+    var timesheetCal = prefs.getString("timesheet_calendar_feed");
 
-    if (timesheetCalFeed)
+    if (timesheetCal)
     {
-        var calIndex = timesheetCalFeed.indexOf("/calendar");
-        timesheetCalFeed = httpType + "://" + domain + timesheetCalFeed.slice(calIndex, timesheetCalFeed.length);
+        var calIndex = timesheetCal.indexOf("/calendar");
+        timesheetCalFeed = httpType + "://" + domain + timesheetCal.slice(calIndex, timesheetCal.length);
     }
 
     var disabledGadgetDiv = _gel("disabled_gadget_div");
