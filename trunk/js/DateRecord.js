@@ -44,7 +44,6 @@ DateRecord.prototype.setDataFromString = function(dataString, version)
                     currentEnd.setDate(this.getDate().getDate());
                     currentEnd.setMonth(this.getDate().getMonth());
                     currentEnd.setYear(this.getDate().getYear());
-                    event.setDateRecord(this);
                     this.addNewEvent(event);
                 }
                 else
@@ -97,7 +96,6 @@ DateRecord.prototype.setDataFromString = function(dataString, version)
                     currentEnd.setDate(this.getDate().getDate());
                     currentEnd.setMonth(this.getDate().getMonth());
                     currentEnd.setYear(this.getDate().getYear());
-                    event.setDateRecord(this);
                     this.addNewEvent(event);
                 }
                 else
@@ -158,6 +156,7 @@ DateRecord.prototype.addEvent = function(event)
 
 DateRecord.prototype.addNewEvent = function(event)
 {
+    event.setDateRecord(this);
     var events = this._events;
     var totals = this._totals;
 
