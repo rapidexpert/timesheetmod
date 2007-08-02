@@ -7,7 +7,7 @@ Total.prototype._duration = null;
 
 Total.prototype.setDataFromString = function(totalString, version)
 {
-    if (!version || version == 1)
+    if (!version || version == 1 || version == 2)
     {
         var splitData = totalString.split(":");
 
