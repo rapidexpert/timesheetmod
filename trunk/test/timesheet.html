@@ -532,9 +532,14 @@ function synchroniseWithGcal()
 
         var taskName = getTaskName(firstEvent.getTask().getId());
         var startTime = firstEvent.getStart().toDate();
-        var endTime = newEvent[newEvent.length - 1].getEnd().toDate();
+        var end = newEvent[newEvent.length - 1].getEnd();
+        var endTime;
+        if (end)
+        {
+            endTime = end.toDate();
+        }
 
-        var createEvent = (endTime.getTime() - startTime.getTime()) > 60000;
+        var createEvent = end && (endTime.getTime() - startTime.getTime()) > 60000;
 
         var created = false;
         if (createEvent)

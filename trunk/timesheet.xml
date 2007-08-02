@@ -598,33 +598,38 @@ function synchroniseWithGcal()
         var firstEvent = eventsToSync[i];
         newEvent.push(firstEvent);
 
-//        var j = 0;
-//        var findMore = false;
-//        do
-//        {
-//            var nextEvent = eventsToSync[i + ++j];
-//            if (nextEvent && firstEvent.getEventId() == nextEvent.getEventId())
-//            {
-//                newEvent.push(nextEvent);
-//                findMore = true;
-//            }
-//            else
-//            {
-//                findMore = false;
-//            }
-//        }
-//        while (findMore)
-//
-//        if (newEvent.length > 1)
-//        {
-//            i += (j - 1);
-//        }
+        //        var j = 0;
+        //        var findMore = false;
+        //        do
+        //        {
+        //            var nextEvent = eventsToSync[i + ++j];
+        //            if (nextEvent && firstEvent.getEventId() == nextEvent.getEventId())
+        //            {
+        //                newEvent.push(nextEvent);
+        //                findMore = true;
+        //            }
+        //            else
+        //            {
+        //                findMore = false;
+        //            }
+        //        }
+        //        while (findMore)
+        //
+        //        if (newEvent.length > 1)
+        //        {
+        //            i += (j - 1);
+        //        }
 
         var taskName = getTaskName(firstEvent.getTask().getId());
         var startTime = firstEvent.getStart().toDate();
-        var endTime = newEvent[newEvent.length - 1].getEnd().toDate();
+        var end = newEvent[newEvent.length - 1].getEnd();
+        var endTime;
+        if (end)
+        {
+            endTime = end.toDate();
+        }
 
-        var createEvent = (endTime.getTime() - startTime.getTime()) > 60000;
+        var createEvent = end && (endTime.getTime() - startTime.getTime()) > 60000;
 
         var created = false;
         if (createEvent)
@@ -1976,6 +1981,6 @@ function getTotalString(total)
 <script>
     _IG_Analytics("UA-2305736-1", "/timesheetmod");
 </script>
-]]>
+s]]>
     </Content>
 </Module>
