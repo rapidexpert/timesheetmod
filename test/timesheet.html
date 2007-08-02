@@ -354,7 +354,7 @@
 <div id="taskContent" style="display:none">
     <div id="sync_div" style="float:right; height:23px;">
         <div class="control addTaskControl" style="float:right; height:23px;" id="synchronise_calendar_div">
-            <a href="javascript:backgroundSynchroniseWithGcal();">SYNCHRONISE WITH GOOGLE CALENDAR</a></div>
+            <a href="javascript:obtainUserCalendars();">SYNCHRONISE WITH GOOGLE CALENDAR</a></div>
     </div>
     <div id="controls" style="float:right;">
         <div class="control addTaskControl" id="add_task_control">
@@ -472,6 +472,33 @@ function backgroundSynchroniseWithGcal()
 
         setTimeout("synchroniseWithGcal()", 500);
     }
+}
+
+function obtainUserCalendars()
+{
+    // http://www.google.com/calendar/feeds/default/owncalendars/full
+    var prefs = new _IG_Prefs(__MODULE_ID__);
+
+    var httpReq = getBrowserRequestObject__MODULE_ID__();
+    var calUrl;
+    if (timesheetCalFeed)
+    {
+        calUrl = timesheetCalFeed;
+    }
+    else
+    {
+        calUrl = httpType + "://" + domain + "/calendar/feeds/default/owncalendars/full";
+    }
+    httpReq.open('POST', calUrl, false);
+    httpReq.setRequestHeader('Authorization', 'GoogleLogin auth=' + prefs.getString("calauth"));
+    httpReq.setRequestHeader('Content-type', 'application/atom+xml');
+    httpReq.send(null);
+
+    var JSONRE = /\[\[.*\]\]/;
+    var JSON = JSONRE.exec(httpReq.responseText);
+
+    var la = "";
+
 }
 
 function synchroniseWithGcal()
