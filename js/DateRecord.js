@@ -83,9 +83,13 @@ DateRecord.prototype.setDataFromString = function(dataString, version)
                 currentStart.setDate(this.getDate().getDate());
                 currentStart.setMonth(this.getDate().getMonth());
                 currentStart.setYear(this.getDate().getYear());
-                currentEnd.setDate(this.getDate().getDate());
-                currentEnd.setMonth(this.getDate().getMonth());
-                currentEnd.setYear(this.getDate().getYear());
+                if (currentEnd)
+                {
+                    currentEnd.setDate(this.getDate().getDate());
+                    currentEnd.setMonth(this.getDate().getMonth());
+                    currentEnd.setYear(this.getDate().getYear());
+                }
+
                 this.addEvent(event);
             }
         }
