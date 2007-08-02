@@ -32,6 +32,15 @@ DateRecord.prototype.setDataFromString = function(dataString, version)
             {
                 var event = new TimerEvent();
                 event.setDataFromString(eventString);
+                var currentStart = event.getStart();
+                var currentEnd = event.getEnd();
+
+                currentStart.setDate(this.getDate().getDate());
+                currentStart.setMonth(this.getDate().getMonth());
+                currentStart.setYear(this.getDate().getYear());
+                currentEnd.setDate(this.getDate().getDate());
+                currentEnd.setMonth(this.getDate().getMonth());
+                currentEnd.setYear(this.getDate().getYear());
                 this.addEvent(event);
             }
         }
@@ -68,6 +77,15 @@ DateRecord.prototype.setDataFromString = function(dataString, version)
             {
                 var event = new TimerEvent();
                 event.setDataFromString(eventString, version);
+                var currentStart = event.getStart();
+                var currentEnd = event.getEnd();
+
+                currentStart.setDate(this.getDate().getDate());
+                currentStart.setMonth(this.getDate().getMonth());
+                currentStart.setYear(this.getDate().getYear());
+                currentEnd.setDate(this.getDate().getDate());
+                currentEnd.setMonth(this.getDate().getMonth());
+                currentEnd.setYear(this.getDate().getYear());
                 this.addEvent(event);
             }
         }
@@ -189,4 +207,8 @@ DateRecord.prototype.getDate = function()
 DateRecord.prototype.setDate = function(date)
 {
     this._date = date;
+}
+DateRecord.prototype.getEvents = function()
+{
+    return this._events;
 }

@@ -139,13 +139,25 @@ BasicTime.prototype.getYear = function()
 {
     return this._year;
 }
+BasicTime.prototype.setYear = function(year)
+{
+    this._year = year;
+}
 BasicTime.prototype.getMonth = function()
 {
     return this._month;
 }
+BasicTime.prototype.setMonth = function(month)
+{
+    this._month = month;
+}
 BasicTime.prototype.getDate = function()
 {
     return this._date;
+}
+BasicTime.prototype.setDate = function(date)
+{
+    this._date = date;
 }
 BasicTime.prototype.getHours = function()
 {

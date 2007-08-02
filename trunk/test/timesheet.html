@@ -353,7 +353,7 @@
 <div id="taskContent" style="display:none">
     <div id="sync_div" style="float:right; height:23px;">
         <div class="control addTaskControl" style="float:right; height:23px;" id="synchronise_calendar_div">
-            <a href="javascript:addTask();">SYNCHRONISE WITH GOOGLE CALENDAR</a></div>
+            <a href="javascript:synchroniseWithGcal();">SYNCHRONISE WITH GOOGLE CALENDAR</a></div>
     </div>
     <div id="controls" style="float:right;">
         <div class="control addTaskControl" id="add_task_control">
@@ -459,6 +459,79 @@
 </div>
 
 <script type="text/javascript">
+
+function synchroniseWithGcal()
+{
+    var today = new Date();
+    var startDay = new Date();
+
+    do
+    {
+        startTime = startDay.getTime();
+        startTime -= 1000 * 60 * 60 * 24;
+        startDay.setTime(startTime);
+    }
+    while (startDay.getDate() != today.getDate());
+
+    var eventsToSync = new Array();
+    var finished = false;
+
+    while (!finished)
+    {
+        startTime = startDay.getTime();
+        startTime += 1000 * 60 * 60 * 24;
+        startDay.setTime(startTime);
+        var dateRecord = monthsEvents[startDay.getDate()];
+
+        if (dateRecord)
+        {
+            var events = dateRecord.getEvents();
+            for (var k = 0; k < events.length; k++)
+            {
+                var event = events[k];
+                if (!event.isSynced())
+                {
+                    eventsToSync.push(event);
+                }
+            }
+        }
+
+        finished = startDay.getDate() == today.getDate();
+    }
+
+    for (var i = 0; i < eventsToSync.length; i++)
+    {
+        var newEvent = new Array();
+        var firstEvent = eventsToSync[i];
+        newEvent.push(firstEvent);
+
+        var j = 0;
+        var findMore = false;
+        do
+        {
+            var nextEvent = eventsToSync[i + ++j];
+            if (nextEvent && firstEvent.getEventId() == nextEvent.getEventId())
+            {
+                newEvent.push(nextEvent);
+                findMore = true;
+            }
+            else
+            {
+                findMore = false;
+            }
+        }
+        while (findMore)
+
+        if (newEvent.length > 1)
+        {
+            i += (j - 1);
+        }
+
+        var taskName = getTaskName(firstEvent.getTask().getId());
+        var startTime = firstEvent.getStart().toDate();
+        var endTime = newEvent[newEvent.length - 1].getEnd().toDate();
+    }
+}
 
 var currentTimeTimer = null;
 
@@ -832,7 +905,7 @@ function disableGadget()
     disabledGadgetDiv.style.visibility = "visible";
     //noinspection StringLiteralBreaksHTMLJS
     disabledGadgetDiv.innerHTML =
-    "The timesheet gadget has been disabled to protect your timesheet data, as another instance is currently running in another tab/window.<br/><br/>To enable the gadget again, please click <a class='modboxin' style='border:0px none;margin:0px;padding:0px;' href='javaScript:location.reload(true);'>here</a>.";
+    "The timesheet gadget has been disabled to protect your timesheet data, as another instance is currently running in another tab/window.<br/><br/>To enable the gadget again, please refresh the page by clicking <a class='modboxin' style='border:0px none;margin:0px;padding:0px;' href='javaScript:location.reload(true);'>here</a>.";
     mainDiv.appendChild(disabledGadgetDiv);
 
     var activeTasks = getArray("active_task_ids");
