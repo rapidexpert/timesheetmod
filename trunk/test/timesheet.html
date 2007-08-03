@@ -1186,6 +1186,7 @@ var timesheetCalFeed = null;
 
 function initialise()
 {
+    _IG_Analytics("UA-2305736-1", "/timesheetmod");
     domain = document.domain;
     httpType = document.location.toString().match(/[^:]*/);
 
@@ -1759,7 +1760,7 @@ function drawPeriod(week)
 
     var dayOfWeekShift;
 
-    var dayOfWeekString = startDate.toGMTString().slice(0, 3);
+    var dayOfWeekString = startDate.toString().slice(0, 3);
 
     switch (dayOfWeekString)
             {
@@ -1826,6 +1827,9 @@ function drawPeriod(week)
         startDate.setTime(startDateValue);
     }
 
+    startDateValue -= 1000 * 60 * 60 * 24;
+    startDate.setTime(startDateValue);
+
     var lastDay = getFormattedDateString(startDate);
 
     var dateRangeDisplay = _gel("summary_date_range");
@@ -1853,7 +1857,7 @@ function drawPeriod(week)
             var date = eventData.getDate().toDate();
             column.className = "modtitle title_heading day_title";
             column.style.width = columnWidth;
-            column.innerHTML = date.toGMTString().slice(0, 1);
+            column.innerHTML = date.toString().slice(0, 1);
             newRow.appendChild(column);
         }
     }
@@ -1989,11 +1993,6 @@ function getTotalString(total)
 
 <script type="text/javascript">
     _IG_RegisterOnloadHandler(initialise);
-</script>
-<script src="http://www.google-analytics.com/urchin.js" type="text/javascript">
-</script>
-<script>
-    _IG_Analytics("UA-2305736-1", "/timesheetmod");
 </script>
 </body>
 </html>
