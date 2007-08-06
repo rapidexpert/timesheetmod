@@ -952,7 +952,7 @@ function synchroniseWithGcal()
             }
         }
 
-        if (!created)
+        if (!created && createEvent)
         {
             error = true;
             break;
@@ -971,9 +971,9 @@ function synchroniseWithGcal()
 
     syncing = false;
 
+    calMessage.dismissMessage(currentMessage);
     if (!error)
     {
-        calMessage.dismissMessage(currentMessage);
         calMessage.createTimerMessage("Timesheet data synchronised", 5, hideCalMessage);
     }
     else
