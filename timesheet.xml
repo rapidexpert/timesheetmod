@@ -4,6 +4,7 @@
         <Require feature="setprefs"/>
         <Require feature="tabs"/>
         <Require feature="analytics"/>
+        <Require feature="minimessage"/>
     </ModulePrefs>
     <UserPref name="selectedTab" datatype="hidden"/>
     <UserPref name="calauth" display_name="Cal Auth" required="false" datatype="hidden"/>
@@ -47,7 +48,7 @@
     <UserPref name="jsGadgetContentFile" datatype="hidden" default_value="timesheet.js"/>
     <UserPref name="htmlGadgetContentFile" datatype="hidden" default_value="timesheet.html"/>
     <UserPref name="session_id" datatype="hidden"/>
-    <UserPref name="timesheet_calendar_feed" display_name="Timesheet Calendar Feed"/>
+    <UserPref name="last_calendar" display_name="Last Calendar Selected" datatype="hidden"/>
     <UserPref name="start_day_of_week"
               display_name="Summary Week Start Day"
               datatype="enum"
@@ -322,6 +323,26 @@
     cursor: text;
 }
 
+.editTaskName {
+    height: 12px;
+    float: left;
+    border: solid 1px;
+    font-size: 100%;
+    font-weight: normal;
+    cursor: text;
+    width: 99%; /*padding: 5px;*/
+}
+
+.editTaskNameSmaller {
+    height: 12px;
+    float: left;
+    border: solid 1px;
+    font-size: smaller;
+    font-weight: normal;
+    cursor: text;
+    width: 99%; /*padding: 5px;*/
+}
+
 #errorMessages {
     clear: both;
     float: left;
@@ -443,17 +464,26 @@
 <!--<script src="http://qiladan.shackspace.com/ig/timesheet.js" type="text/javascript"></script>-->
 
 <div id="taskContent" style="display:none">
-    <div id="sync_div" style="float:right; height:23px;">
+
+    <div id="sync_div" style="clear:both;float:right; height:35px;">
         <div class="control addTaskControl" style="float:right; height:23px;" id="synchronise_calendar_div">
-            <a href="javascript:obtainUserCalendars();">SYNCHRONISE WITH GOOGLE CALENDAR</a></div>
+            <a href="javascript:backgroundObtainUserCalendars();">SYNCHRONISE WITH GOOGLE CALENDAR</a></div>
+        <div id="sync_div_choice" class="modtitle tabtitle addTaskEntry">
+            <select class="selectedtab tabtitle addTaskEntryTextbox" style="font-size: smaller;" id="calendar_choice">
+            </select>
+            <a href="javascript:closeSyncCal();" class="stealImage delbox"></a>
+            <img onclick="backgroundSynchroniseWithGcal();" src="http://timesheetmod.googlecode.com/svn/trunk/images/calendar_sync.png" style="cursor:pointer;float:right;"/>
+        </div>
     </div>
-    <div id="controls" style="float:right;">
+    <div id="controls" style="float:right;clear:both;width:100%;">
         <div class="control addTaskControl" id="add_task_control">
             <a href="javascript:addTask();">ADD TASK</a></div>
         <div id="add_task_entry" class="modtitle tabtitle addTaskEntry">
             <input class="selectedtab tabtitle addTaskEntryTextbox" type="text" id="new_task_name"/>
             <a href="javascript:closeAddTask();" class="stealImage delbox"></a>
             <a href="javascript:submitNewTaskName();" class="stealImage maxbox"></a></div>
+    </div>
+    <div id="calMessage" style="clear:both;float:right;margin-bottom:5px;width:100%;height:auto;display:none;">
     </div>
     <div id="task_list">
         <div id="title" class="title">
@@ -486,13 +516,13 @@
     </div>
 
     <script type="text/javascript" language="javascript">
-        Sortable.create('tasks', {handle:'handle',ghosting:true,constraint:false})
+        Sortable.create('tasks', {handle:'handle',constraint:'vertical'})
     </script>
 
     <div id="errorMessages">
     </div>
 
-    <div id="dataDiv"><!--<br/>
+    <div id="dataDiv" style="display:none;"><br/>
         <span id="event_data_23_heading">event_data_23 - </span>
         <span id="event_data_23">230707103435!|0:0:103438:103440||0:0:103442:103444||0:0:103729:105119|!|0:001354|</span>
         <br/>
@@ -527,7 +557,7 @@
         <span id="next_event_id">1</span>
         <br/>
         <span id="summary_date_format_heading">summary_date_format - </span>
-        <span id="summary_date_format">1</span>-->
+        <span id="summary_date_format">1</span>
     </div>
 </div>
 <div id="summaryContent" style="display:none">
@@ -552,16 +582,108 @@
 
 <script type="text/javascript">
 
+function captureKeys(ev)
+{
+    var kCode;
+
+    if (!ev)
+    {
+        ev = window.event;
+    }
+    kCode = ev.keyCode || ev.which;
+
+	   // gets the keycode in ie or ns
+    /* in ie, when pressing the ctrl + shift + key, it gives the key code for the capitalized key (probably because
+    shift is pressed) in ns pressing ctrl, shift and another key doesn't change the keycode thus, the || and two different numbers */
+
+    if (kCode == 13)
+    { // ctrl+alt+s
+
+        var target = ev.target || ev.srcElement;
+        if (target.id == 'new_task_name')
+        {
+            submitNewTaskName(); // another function that does something
+        }
+        else if (target.id.indexOf("rename_text_") != -1)
+        {
+            target.blur();
+//            replaceWithContent(ev.target);
+        }
+        return true;  // make it so the browser ignores key combo
+    }
+}
+
 var syncing = false;
+var obtainingUserCals = false;
+var calMessage = new _IG_MiniMessage(__MODULE_ID__, _gel("calMessage"));
+var currentMessage = null;
+
+Calendar.prototype._name = null;
+Calendar.prototype._url = null;
+
+Calendar.prototype.getName = function()
+{
+    return this._name;
+}
+Calendar.prototype.getUrl = function()
+{
+    return this._url;
+}
+
+function Calendar(name, url)
+{
+    this._name = name;
+    this._url = url;
+}
 
 function backgroundSynchroniseWithGcal()
 {
     if (!syncing)
     {
-        var message = new _IG_MiniMessage(__MODULE_ID__, "errorMessages");
-        message.createTimerMessage("Synchronising timesheet data with Google Calendar", 5);
+        syncing = true;
+        currentMessage = calMessage.createStaticMessage("Synchronising timesheet data with Google Calendar");
+        showCalMessage();
+        setTimeout("synchroniseWithGcal()", 10);
+    }
+}
 
-        setTimeout("synchroniseWithGcal()", 500);
+function hideCalMessage()
+{
+    var calMessage = _gel("calMessage");
+    calMessage.style.display = 'none';
+}
+
+function showCalMessage()
+{
+    var calMessage = _gel("calMessage");
+    calMessage.style.display = 'block';
+}
+
+function backgroundObtainUserCalendars()
+{
+    if (!obtainingUserCals)
+    {
+        var currentTime = new Date();
+
+        if (!lastCalendarUpdate || currentTime.getTime() - lastCalendarUpdate.getTime() > 600000)
+
+        {
+            obtainingUserCals = true;
+            lastCalendarUpdate = currentTime;
+
+            currentMessage = calMessage.createStaticMessage("Obtaining your Google calendars");
+            showCalMessage();
+            setTimeout("obtainUserCalendars()", 10);
+        }
+        else
+        {
+            var syncCalDiv = _gel("sync_div_choice");
+            var syncCalControlDiv = _gel("synchronise_calendar_div");
+            syncCalDiv.style.visibility = 'visible';
+            syncCalControlDiv.style.display = 'none';
+            syncCalDiv.style.display = 'block';
+//            obtainingUserCals = false;
+        }
     }
 }
 
@@ -570,19 +692,43 @@ function obtainUserCalendars()
     // http://www.google.com/calendar/feeds/default/owncalendars/full
     var prefs = new _IG_Prefs(__MODULE_ID__);
 
-    var httpReq = getBrowserRequestObject__MODULE_ID__();
+    var httpReq = getBrowserRequestObject__MODULE_ID__("text/xml");
     var calUrl = httpType + "://" + domain + "/calendar/feeds/default/owncalendars/full";
     httpReq.open('get', calUrl, false);
     httpReq.setRequestHeader('Authorization', 'GoogleLogin auth=' + prefs.getString("calauth"));
     httpReq.setRequestHeader('Content-type', 'application/atom+xml');
-    httpReq.overrideMimeType("text/xml");
     //    httpReq.onreadystatechange = parseUserCalendars(httpReq);
     httpReq.send(null);
-    parseUserCalendars(httpReq)
+
+    var status = httpReq.status;
+
+    if (status != 200)
+    {
+        obtainAuthId__MODULE_ID__(httpReq);
+
+        httpReq = getBrowserRequestObject__MODULE_ID__();
+        httpReq.open('get', calUrl, false);
+        httpReq.setRequestHeader('Authorization', 'GoogleLogin auth=' + prefs.getString("calauth"));
+        httpReq.setRequestHeader('Content-type', 'application/atom+xml');
+        httpReq.send(null);
+        status = httpReq.status;
+    }
+
+    if (status == 200)
+    {
+        parseUserCalendars(httpReq);
+    }
+    else
+    {
+        var link = httpType + "://" + domain + "/calendar";
+        var googleCalendarLink = "<a href='" + link + "' target='blank'>" + link + "</a>";
+        calMessage.createDismissibleMessage("Error obtaining calendars - please ensure you have logged into Google calendar at "
+                + googleCalendarLink, hideCalMessage);
+    }
 }
 
-var calendarNames = null;
-var calendarUrls = null;
+var calendars = null;
+var lastCalendarUpdate = null;
 
 function getNodeValue(obj, elementName)
 {
@@ -592,14 +738,31 @@ function getNodeAttribute(obj, elementName, attributeName)
 {
     return obj.getElementsByTagName(elementName)[0].getAttribute(attributeName);
 }
+function createXMLFromString(xmlText)
+{
+    try
+    {
+        var xmlDocument = new ActiveXObject("MSXML.DomDocument");
+        xmlDocument.loadXML(xmlText);
+        return xmlDocument;
+    }
+    catch (e)
+    {
+        return null;
+    }
+}
 
 function parseUserCalendars(httpReq)
 {
     var responseXml = httpReq.responseXML;
+
+    if (!responseXml || responseXml.getElementsByTagName("entry").length == 0)
+    {
+        responseXml = createXMLFromString(httpReq.responseText);
+    }
     var entries = responseXml.getElementsByTagName("entry");
 
-    calendarNames = new Array();
-    calendarUrls = new Array();
+    calendars = new Array();
 
     for (var i = 0; i < entries.length; i++)
     {
@@ -612,7 +775,7 @@ function parseUserCalendars(httpReq)
         {
             var feedName = feeds[j].getAttribute("rel");
 
-            if (feedName == "edit")
+            if (feedName == "alternate")
             {
                 var localUrl = feeds[j].getAttribute("href");
                 var calIndex = localUrl.indexOf("/calendar");
@@ -622,19 +785,76 @@ function parseUserCalendars(httpReq)
 
         if (url)
         {
-            calendarNames.push(name);
-            calendarUrls.push(url);
+            var currentCal = new Calendar(name, url);
+            calendars.push(currentCal);
         }
     }
 
-    var localNames = calendarNames;
-    var localUrls = calendarUrls;
+    var localCalendars = calendars;
+    localCalendars.sort(sortCalendars);
 
-    var la = "";
+    var chooseCalendar = _gel("calendar_choice");
+    var options = chooseCalendar.childNodes;
+
+    var optionsLength = options.length;
+    for (var i = 0; i < optionsLength; i++)
+    {
+        chooseCalendar.removeChild(options[0]);
+    }
+
+    var prefs = new _IG_Prefs(__MODULE_ID__);
+    var lastCalendar = prefs.getString("last_calendar");
+
+    for (var i = 0; i < localCalendars.length; i++)
+    {
+        var newOption = new Option(localCalendars[i].getName(), i);
+        chooseCalendar.options[i] = newOption;
+
+        if (localCalendars[i].getName() == lastCalendar)
+        {
+            chooseCalendar.selectedIndex = i;
+        }
+    }
+
+    var syncCalDiv = _gel("sync_div_choice");
+    var syncCalControlDiv = _gel("synchronise_calendar_div");
+    syncCalDiv.style.visibility = 'visible';
+    syncCalControlDiv.style.display = 'none';
+    syncCalDiv.style.display = 'block';
+    obtainingUserCals = false;
+
+    calMessage.dismissMessage(currentMessage);
+    hideCalMessage();
+}
+
+function sortCalendars(optionOne, optionTwo)
+{
+    var a = optionOne.getName();
+    var b = optionTwo.getName();
+    return a > b ? 1 : a < b ? -1 : 0;
+}
+
+function closeSyncCal()
+{
+    var syncCalDiv = _gel("sync_div_choice");
+    var syncCalControlDiv = _gel("synchronise_calendar_div");
+    syncCalDiv.style.visibility = 'hidden';
+    syncCalControlDiv.style.display = 'block';
+    syncCalDiv.style.display = 'none';
 }
 
 function synchroniseWithGcal()
 {
+    closeSyncCal();
+    var calDropdown = _gel("calendar_choice");
+    var selectedOption = calDropdown.options[calDropdown.selectedIndex];
+    var selectedOptionValue = selectedOption.value;
+    timesheetCalFeed = calendars[selectedOptionValue].getUrl();
+
+    var prefs = new _IG_Prefs(__MODULE_ID__);
+    var calendarName = selectedOption.text;
+    prefs.set("last_calendar", calendarName);
+
     var today = new Date();
     var startDay = new Date();
 
@@ -673,6 +893,7 @@ function synchroniseWithGcal()
     }
 
     var dateRecordsToUpdate = new Array();
+    var error = false;
 
     for (var i = 0; i < eventsToSync.length; i++)
     {
@@ -730,6 +951,12 @@ function synchroniseWithGcal()
                 dateRecordsToUpdate[dateRecordId] = event.getDateRecord();
             }
         }
+
+        if (!created)
+        {
+            error = true;
+            break;
+        }
     }
 
     for (var l = 0; l < dateRecordsToUpdate.length; l++)
@@ -744,8 +971,18 @@ function synchroniseWithGcal()
 
     syncing = false;
 
-    var message = new _IG_MiniMessage(__MODULE_ID__, "errorMessages");
-    message.createTimerMessage("Timesheet data synchronised", 5);
+    if (!error)
+    {
+        calMessage.dismissMessage(currentMessage);
+        calMessage.createTimerMessage("Timesheet data synchronised", 5, hideCalMessage);
+    }
+    else
+    {
+        var link = httpType + "://" + domain + "/calendar";
+        var googleCalendarLink = "<a href='" + link + "' target='blank'>" + link + "</a>";
+        calMessage.createDismissibleMessage("Error synchronising timesheet data - please ensure you have logged into Google calendar at"
+                + googleCalendarLink, hideCalMessage);
+    }
 }
 
 var currentTimeTimer = null;
@@ -1047,7 +1284,7 @@ function createEvent__MODULE_ID__(taskName, eventId, start, end)
 
     var status = httpReq.status;
 
-    if (status == 403)
+    if (status != 201)
     {
         obtainAuthId__MODULE_ID__(httpReq);
 
@@ -1059,7 +1296,7 @@ function createEvent__MODULE_ID__(taskName, eventId, start, end)
         status = httpReq.status;
     }
 
-    return status != 403;
+    return status == 201;
 }
 
 /**
@@ -1093,9 +1330,22 @@ function obtainAuthId__MODULE_ID__(httpReq)
  *
  * @return browserObject The XML HTTP request object.
  */
-function getBrowserRequestObject__MODULE_ID__()
+function getBrowserRequestObject__MODULE_ID__(mimetype)
 {
-    return (window.XMLHttpRequest) ? new XMLHttpRequest() : new ActiveXObject("Microsoft.XMLHTTP");
+    var requestObject;
+    if (window.XMLHttpRequest)
+    {
+        requestObject = new XMLHttpRequest();
+        if (mimetype && requestObject.overrideMimeType)
+        {
+            requestObject.overrideMimeType(mimetype);
+        }
+    }
+    else
+    {
+        requestObject = new ActiveXObject("Microsoft.XMLHTTP");
+    }
+    return requestObject;
 }
 
 function refreshCurrentTimer()
@@ -1166,9 +1416,13 @@ function replaceWithTextBox(source)
     var taskId = eval(nameSplit[nameSplit.length - 1]);
 
     var textElementId = "rename_text_" + taskId;
-    source.innerHTML = "<input type=\'text\' id=\'" + textElementId + "\' onBlur=\'replaceWithContent(this);\'/>";
+    source.innerHTML = "<input class='editTaskName' type=\'text\' id=\'" + textElementId + "\' onBlur=\'replaceWithContent(this);\'/>";
 
     var textElement = _gel(textElementId);
+    if (window.XMLHttpRequest && !document.all)
+    {
+        textElement.className = "editTaskNameSmaller";
+    }
 
     if (currentContent != '&nbsp;')
     {
@@ -1277,18 +1531,10 @@ var timesheetCalFeed = null;
 
 function initialise()
 {
+    document.onkeypress = captureKeys;
     _IG_Analytics("UA-2305736-1", "/timesheetmod");
     domain = document.domain;
     httpType = document.location.toString().match(/[^:]*/);
-
-    var prefs = new _IG_Prefs(__MODULE_ID__);
-    var timesheetCal = prefs.getString("timesheet_calendar_feed");
-
-    if (timesheetCal)
-    {
-        var calIndex = timesheetCal.indexOf("/calendar");
-        timesheetCalFeed = httpType + "://" + domain + timesheetCal.slice(calIndex, timesheetCal.length);
-    }
 
     var disabledGadgetDiv = _gel("disabled_gadget_div");
     if (disabledGadgetDiv)
@@ -1462,6 +1708,11 @@ function replaceWithContent(source)
             {
                 _IG_Analytics("UA-2305736-1", "/timesheetmod/task_replaced_with_existing");
 
+                if (currentEvent)
+                {
+                    startStopTimer(_gel("status_div_" + currentEvent.getTask().getId()));
+                }
+
                 containingDiv.innerHTML = taskName;
                 containingDiv.onclick = function()
                 {
@@ -1515,6 +1766,8 @@ function replaceWithContent(source)
                 }
 
                 setArray("active_task_ids", activeTaskIds);
+
+                Sortable.create('tasks', {handle:'handle',constraint:'vertical'});
             }
         }
     }
@@ -1777,7 +2030,7 @@ function createNewTask(taskId, setActiveTaskData)
     taskList.appendChild(listRow);
 
     Effect.BlindDown(listRow.id);
-    Sortable.create('tasks', {handle:'handle',ghosting:true,constraint:false})
+    Sortable.create('tasks', {handle:'handle',constraint:'vertical'})
 }
 
 function initialiseSummary()
