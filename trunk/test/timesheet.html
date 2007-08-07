@@ -607,34 +607,11 @@ function obtainUserCalendars__MODULE_ID__()
     httpReq.open('get', calUrl, false);
     httpReq.setRequestHeader('Authorization', 'GoogleLogin auth=' + prefs.getString("calauth"));
     httpReq.setRequestHeader('Content-type', 'application/atom+xml');
-    //    httpReq.onreadystatechange = parseUserCalendars(httpReq);
+    httpReq.onreadystatechange = function()
+    {
+        parseUserCalendars__MODULE_ID__(httpReq, true);
+    }
     httpReq.send(null);
-
-    var status = httpReq.status;
-
-    if (status != 200)
-    {
-        obtainAuthId__MODULE_ID__(httpReq);
-
-        httpReq = getBrowserRequestObject__MODULE_ID__();
-        httpReq.open('get', calUrl, false);
-        httpReq.setRequestHeader('Authorization', 'GoogleLogin auth=' + prefs.getString("calauth"));
-        httpReq.setRequestHeader('Content-type', 'application/atom+xml');
-        httpReq.send(null);
-        status = httpReq.status;
-    }
-
-    if (status == 200)
-    {
-        parseUserCalendars__MODULE_ID__(httpReq);
-    }
-    else
-    {
-        var link = httpType__MODULE_ID__ + "://" + domain__MODULE_ID__ + "/calendar";
-        var googleCalendarLink = "<a href='" + link + "' target='blank'>" + link + "</a>";
-        calMessage__MODULE_ID__.createDismissibleMessage("Error obtaining calendars - please ensure you have logged into Google calendar at "
-                + googleCalendarLink, hideMessages__MODULE_ID__);
-    }
 }
 
 var calendars__MODULE_ID__ = null;
@@ -662,79 +639,103 @@ function createXMLFromString__MODULE_ID__(xmlText)
     }
 }
 
-function parseUserCalendars__MODULE_ID__(httpReq)
+function parseUserCalendars__MODULE_ID__(httpReq, retry)
 {
-    var responseXml = httpReq.responseXML;
-
-    if (!responseXml || responseXml.getElementsByTagName("entry").length == 0)
+    if (httpReq.readyState == 4)
     {
-        responseXml = createXMLFromString__MODULE_ID__(httpReq.responseText);
-    }
-    var entries = responseXml.getElementsByTagName("entry");
+        var status = httpReq.status;
 
-    calendars__MODULE_ID__ = new Array();
-
-    for (var i = 0; i < entries.length; i++)
-    {
-        var name = getNodeValue__MODULE_ID__(entries[i], "title");
-        var url = null;
-
-        var feeds = entries[i].getElementsByTagName("link");
-
-        for (var j = 0; j < feeds.length; j++)
+        if (status != 200)
         {
-            var feedName = feeds[j].getAttribute("rel");
-
-            if (feedName == "alternate")
+            if (retry)
             {
-                var localUrl = feeds[j].getAttribute("href");
-                var calIndex = localUrl.indexOf("/calendar");
-                url = httpType__MODULE_ID__ + "://" + domain__MODULE_ID__ + localUrl.slice(calIndex, localUrl.length);
+                obtainAuthId__MODULE_ID__(httpReq);
+                httpReq = getBrowserRequestObject__MODULE_ID__();
+                var calUrl = httpType__MODULE_ID__ + "://" + domain__MODULE_ID__ + "/calendar/feeds/default/owncalendars/full";
+                httpReq.open('get', calUrl, false);
+                httpReq.setRequestHeader('Authorization', 'GoogleLogin auth=' + prefs.getString("calauth"));
+                httpReq.setRequestHeader('Content-type', 'application/atom+xml');
+                httpReq.onreadystatechange = function()
+                {
+                    parseUserCalendars__MODULE_ID__(httpReq, false);
+                }
+                httpReq.send(null);
+            }
+            else
+            {
+                var link = httpType__MODULE_ID__ + "://" + domain__MODULE_ID__ + "/calendar";
+                var googleCalendarLink = "<a href='" + link + "' target='blank'>" + link + "</a>";
+                calMessage__MODULE_ID__.createDismissibleMessage("Error obtaining calendars - please ensure you have logged into Google calendar at "
+                        + googleCalendarLink, hideMessages__MODULE_ID__);
             }
         }
-
-        if (url)
+        else
         {
-            var currentCal = new Calendar__MODULE_ID__(name, url);
-            calendars__MODULE_ID__.push(currentCal);
+            var responseXml = httpReq.responseXML;
+            if (!responseXml || responseXml.getElementsByTagName("entry").length == 0)
+            {
+                responseXml = createXMLFromString__MODULE_ID__(httpReq.responseText);
+            }
+            var entries = responseXml.getElementsByTagName("entry");
+            calendars__MODULE_ID__ = new Array();
+            for (var i = 0; i < entries.length; i++)
+            {
+                var name = getNodeValue__MODULE_ID__(entries[i], "title");
+                var url = null;
+
+                var feeds = entries[i].getElementsByTagName("link");
+
+                for (var j = 0; j < feeds.length; j++)
+                {
+                    var feedName = feeds[j].getAttribute("rel");
+
+                    if (feedName == "alternate")
+                    {
+                        var localUrl = feeds[j].getAttribute("href");
+                        var calIndex = localUrl.indexOf("/calendar");
+                        url =
+                        httpType__MODULE_ID__ + "://" + domain__MODULE_ID__ + localUrl.slice(calIndex, localUrl.length);
+                    }
+                }
+
+                if (url)
+                {
+                    var currentCal = new Calendar__MODULE_ID__(name, url);
+                    calendars__MODULE_ID__.push(currentCal);
+                }
+            }
+            var localCalendars = calendars__MODULE_ID__;
+            localCalendars.sort(sortCalendars__MODULE_ID__);
+            var chooseCalendar = _gel("calendar_choice");
+            var options = chooseCalendar.childNodes;
+            var optionsLength = options.length;
+            for (var i = 0; i < optionsLength; i++)
+            {
+                chooseCalendar.removeChild(options[0]);
+            }
+            var prefs = new _IG_Prefs(__MODULE_ID__);
+            var lastCalendar = prefs.getString("last_calendar");
+            for (var i = 0; i < localCalendars.length; i++)
+            {
+                var newOption = new Option(localCalendars[i].getName(), i);
+                chooseCalendar.options[i] = newOption;
+
+                if (localCalendars[i].getName() == lastCalendar)
+                {
+                    chooseCalendar.selectedIndex = i;
+                }
+            }
+            var syncCalDiv = _gel("sync_div_choice");
+            var syncCalControlDiv = _gel("synchronise_calendar_div");
+            syncCalDiv.style.visibility = 'visible';
+            syncCalControlDiv.style.display = 'none';
+            syncCalDiv.style.display = 'block';
+            obtainingUserCals__MODULE_ID__ = false;
+            calMessage__MODULE_ID__.dismissMessage(currentMessage__MODULE_ID__);
+            hideMessages__MODULE_ID__();
         }
     }
 
-    var localCalendars = calendars__MODULE_ID__;
-    localCalendars.sort(sortCalendars__MODULE_ID__);
-
-    var chooseCalendar = _gel("calendar_choice");
-    var options = chooseCalendar.childNodes;
-
-    var optionsLength = options.length;
-    for (var i = 0; i < optionsLength; i++)
-    {
-        chooseCalendar.removeChild(options[0]);
-    }
-
-    var prefs = new _IG_Prefs(__MODULE_ID__);
-    var lastCalendar = prefs.getString("last_calendar");
-
-    for (var i = 0; i < localCalendars.length; i++)
-    {
-        var newOption = new Option(localCalendars[i].getName(), i);
-        chooseCalendar.options[i] = newOption;
-
-        if (localCalendars[i].getName() == lastCalendar)
-        {
-            chooseCalendar.selectedIndex = i;
-        }
-    }
-
-    var syncCalDiv = _gel("sync_div_choice");
-    var syncCalControlDiv = _gel("synchronise_calendar_div");
-    syncCalDiv.style.visibility = 'visible';
-    syncCalControlDiv.style.display = 'none';
-    syncCalDiv.style.display = 'block';
-    obtainingUserCals__MODULE_ID__ = false;
-
-    calMessage__MODULE_ID__.dismissMessage(currentMessage__MODULE_ID__);
-    hideMessages__MODULE_ID__();
 }
 
 function sortCalendars__MODULE_ID__(optionOne, optionTwo)
@@ -753,6 +754,8 @@ function closeSyncCal__MODULE_ID__()
     syncCalDiv.style.display = 'none';
 }
 
+var eventsToSync__MODULE_ID__ = null;
+
 function synchroniseWithGcal__MODULE_ID__()
 {
     closeSyncCal__MODULE_ID__();
@@ -767,6 +770,7 @@ function synchroniseWithGcal__MODULE_ID__()
 
     var today = new Date();
     var startDay = new Date();
+    var startTime = null
 
     do
     {
@@ -776,7 +780,7 @@ function synchroniseWithGcal__MODULE_ID__()
     }
     while (startDay.getDate() != today.getDate());
 
-    var eventsToSync = new Array();
+    eventsToSync__MODULE_ID__ = new Array();
     var finished = false;
 
     while (!finished)
@@ -794,7 +798,7 @@ function synchroniseWithGcal__MODULE_ID__()
                 var event = events[k];
                 if (!event.isSynced())
                 {
-                    eventsToSync.push(event);
+                    eventsToSync__MODULE_ID__.push(event);
                 }
             }
         }
@@ -802,14 +806,37 @@ function synchroniseWithGcal__MODULE_ID__()
         finished = startDay.getDate() == today.getDate();
     }
 
-    var dateRecordsToUpdate = new Array();
-    var error = false;
+    dateRecordsToUpdate__MODULE_ID__ = new Array();
+    synchroniseNextEvent(0);
+}
 
-    for (var i = 0; i < eventsToSync.length; i++)
+function finishCalendarSync__MODULE_ID__()
+{
+    for (var l = 0; l < dateRecordsToUpdate__MODULE_ID__.length; l++)
     {
-        var newEvent = new Array();
-        var firstEvent = eventsToSync[i];
-        newEvent.push(firstEvent);
+        var dateRecordToUpdate = dateRecordsToUpdate__MODULE_ID__[l];
+
+        if (dateRecordToUpdate)
+        {
+            updateDateRecord__MODULE_ID__(dateRecordToUpdate);
+        }
+    }
+
+    syncing__MODULE_ID__ = false;
+    calMessage__MODULE_ID__.dismissMessage(currentMessage__MODULE_ID__);
+    _IG_Analytics("UA-2305736-1", "/timesheetmod/gcal_synchronisation");
+    calMessage__MODULE_ID__.createTimerMessage("Timesheet data synchronised", 5, hideMessages__MODULE_ID__);
+}
+
+var dateRecordsToUpdate__MODULE_ID__ = null;
+
+function synchroniseNextEvent(i)
+{
+    var firstEvent = eventsToSync__MODULE_ID__[i];
+    if (firstEvent)
+    {
+        var events = new Array();
+        events.push(firstEvent);
 
         //        var j = 0;
         //        var findMore = false;
@@ -835,7 +862,7 @@ function synchroniseWithGcal__MODULE_ID__()
 
         var taskName = getTaskName__MODULE_ID__(firstEvent.getTask().getId());
         var startTime = firstEvent.getStart().toDate();
-        var end = newEvent[newEvent.length - 1].getEnd();
+        var end = events[events.length - 1].getEnd();
         var endTime;
         if (end)
         {
@@ -844,56 +871,69 @@ function synchroniseWithGcal__MODULE_ID__()
 
         var createEvent = end && (endTime.getTime() - startTime.getTime()) > 60000;
 
-        var created = false;
         if (createEvent)
         {
-            created = createEvent__MODULE_ID__(taskName, firstEvent.getEventId(), startTime, endTime);
+            var eventXml = getEventXml__MODULE_ID__(taskName, firstEvent.getEventId(), startTime, endTime);
+
+            sendEventXml__MODULE_ID__(i, events, eventXml, true);
         }
-        //        alert("Created [" + created + "]");
-
-        if (created || !createEvent)
-        {
-            for (var k = 0; k < newEvent.length; k++)
-            {
-                var event = newEvent[k];
-                event.setSynced(true);
-                var dateRecordId = eval(event.getDateRecord().getDate().getDate());
-                dateRecordsToUpdate[dateRecordId] = event.getDateRecord();
-            }
-        }
-
-        if (!created && createEvent)
-        {
-            error = true;
-            break;
-        }
-    }
-
-    for (var l = 0; l < dateRecordsToUpdate.length; l++)
-    {
-        var dateRecordToUpdate = dateRecordsToUpdate[l];
-
-        if (dateRecordToUpdate)
-        {
-            updateDateRecord__MODULE_ID__(dateRecordToUpdate);
-        }
-    }
-
-    syncing__MODULE_ID__ = false;
-
-    calMessage__MODULE_ID__.dismissMessage(currentMessage__MODULE_ID__);
-    if (!error)
-    {
-        _IG_Analytics("UA-2305736-1", "/timesheetmod/gcal_synchronisation");
-        calMessage__MODULE_ID__.createTimerMessage("Timesheet data synchronised", 5, hideMessages__MODULE_ID__);
     }
     else
     {
-        var link = httpType__MODULE_ID__ + "://" + domain__MODULE_ID__ + "/calendar";
-        var googleCalendarLink = "<a href='" + link + "' target='blank'>" + link + "</a>";
-        calMessage__MODULE_ID__.createDismissibleMessage("Error synchronising timesheet data - please ensure you have logged into Google calendar at "
-                + googleCalendarLink, hideMessages__MODULE_ID__);
+        finishCalendarSync__MODULE_ID__();
     }
+}
+
+function sendEventXml__MODULE_ID__(i, events, eventXml, retry)
+{
+    var prefs = new _IG_Prefs(__MODULE_ID__);
+    var httpReq = getBrowserRequestObject__MODULE_ID__();
+
+    var calUrl;
+    if (timesheetCalFeed__MODULE_ID__)
+    {
+        calUrl = timesheetCalFeed__MODULE_ID__;
+    }
+    else
+    {
+        calUrl = httpType__MODULE_ID__ + "://" + domain__MODULE_ID__ + "/calendar/feeds/default/private/full";
+    }
+    httpReq.open('POST', calUrl, false);
+    httpReq.setRequestHeader('Authorization', 'GoogleLogin auth=' + prefs.getString("calauth"));
+    httpReq.setRequestHeader('Content-type', 'application/atom+xml');
+    httpReq.onreadystatechange = function()
+    {
+        if (httpReq.readyState == 4)
+        {
+            if (httpReq.status != 201)
+            {
+                if (retry)
+                {
+                    obtainAuthId__MODULE_ID__(httpReq);
+                    sendEventXml__MODULE_ID__(i, events, eventXml, false);
+                }
+                else
+                {
+                    var link = httpType__MODULE_ID__ + "://" + domain__MODULE_ID__ + "/calendar";
+                    var googleCalendarLink = "<a href='" + link + "' target='blank'>" + link + "</a>";
+                    calMessage__MODULE_ID__.createDismissibleMessage("Error synchronising timesheet data - please ensure you have logged into Google calendar at "
+                            + googleCalendarLink, hideMessages__MODULE_ID__);
+                }
+            }
+            else
+            {
+                for (var k = 0; k < events.length; k++)
+                {
+                    var event = events[k];
+                    event.setSynced(true);
+                    var dateRecordId = eval(event.getDateRecord().getDate().getDate());
+                    dateRecordsToUpdate__MODULE_ID__[dateRecordId] = event.getDateRecord();
+                }
+                synchroniseNextEvent(++i);
+            }
+        }
+    }
+    httpReq.send(eventXml);
 }
 
 var currentTimeTimer__MODULE_ID__ = null;
@@ -1252,7 +1292,7 @@ function addNewEvent__MODULE_ID__(event)
  * Creates a new event in Google calendar.
  * @param eventTask The event task to sync.
  */
-function createEvent__MODULE_ID__(taskName, eventId, start, end)
+function getEventXml__MODULE_ID__(taskName, eventId, start, end)
 {
     var eventXML = "";
 
@@ -1283,38 +1323,7 @@ function createEvent__MODULE_ID__(taskName, eventId, start, end)
     eventXML += "<gd:where></gd:where>\n";
     eventXML += "</entry>\n";
 
-    var prefs = new _IG_Prefs(__MODULE_ID__);
-
-    var httpReq = getBrowserRequestObject__MODULE_ID__();
-    var calUrl;
-    if (timesheetCalFeed__MODULE_ID__)
-    {
-        calUrl = timesheetCalFeed__MODULE_ID__;
-    }
-    else
-    {
-        calUrl = httpType__MODULE_ID__ + "://" + domain__MODULE_ID__ + "/calendar/feeds/default/private/full";
-    }
-    httpReq.open('POST', calUrl, false);
-    httpReq.setRequestHeader('Authorization', 'GoogleLogin auth=' + prefs.getString("calauth"));
-    httpReq.setRequestHeader('Content-type', 'application/atom+xml');
-    httpReq.send(eventXML);
-
-    var status = httpReq.status;
-
-    if (status != 201)
-    {
-        obtainAuthId__MODULE_ID__(httpReq);
-
-        httpReq = getBrowserRequestObject__MODULE_ID__();
-        httpReq.open('POST', calUrl, false);
-        httpReq.setRequestHeader('Authorization', 'GoogleLogin auth=' + prefs.getString("calauth"));
-        httpReq.setRequestHeader('Content-type', 'application/atom+xml');
-        httpReq.send(eventXML);
-        status = httpReq.status;
-    }
-
-    return status == 201;
+    return eventXML;
 }
 
 /**
