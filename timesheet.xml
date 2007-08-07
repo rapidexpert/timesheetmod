@@ -971,7 +971,7 @@ function synchroniseNextEvent(i)
         }
         else
         {
-            synchroniseNextEvent(++i);
+            updateDateRecordsAfterSync__MODULE_ID__(events, i);
         }
     }
     else
@@ -1018,18 +1018,23 @@ function sendEventXml__MODULE_ID__(i, events, eventXml, retry)
             }
             else
             {
-                for (var k = 0; k < events.length; k++)
-                {
-                    var event = events[k];
-                    event.setSynced(true);
-                    var dateRecordId = eval(event.getDateRecord().getDate().getDate());
-                    dateRecordsToUpdate__MODULE_ID__[dateRecordId] = event.getDateRecord();
-                }
-                synchroniseNextEvent(++i);
+                updateDateRecordsAfterSync__MODULE_ID__(events, i);
             }
         }
     }
     httpReq.send(eventXml);
+}
+
+function updateDateRecordsAfterSync__MODULE_ID__(events, i)
+{
+    for (var k = 0; k < events.length; k++)
+    {
+        var event = events[k];
+        event.setSynced(true);
+        var dateRecordId = eval(event.getDateRecord().getDate().getDate());
+        dateRecordsToUpdate__MODULE_ID__[dateRecordId] = event.getDateRecord();
+    }
+    synchroniseNextEvent(++i);
 }
 
 var currentTimeTimer__MODULE_ID__ = null;
