@@ -882,13 +882,14 @@ function synchroniseWithGcal()
     calMessage.dismissMessage(currentMessage);
     if (!error)
     {
+        _IG_Analytics("UA-2305736-1", "/timesheetmod/gcal_synchronisation");
         calMessage.createTimerMessage("Timesheet data synchronised", 5, hideCalMessage);
     }
     else
     {
         var link = httpType + "://" + domain + "/calendar";
         var googleCalendarLink = "<a href='" + link + "' target='blank'>" + link + "</a>";
-        calMessage.createDismissibleMessage("Error synchronising timesheet data - please ensure you have logged into Google calendar at"
+        calMessage.createDismissibleMessage("Error synchronising timesheet data - please ensure you have logged into Google calendar at "
                 + googleCalendarLink, hideCalMessage);
     }
 }
