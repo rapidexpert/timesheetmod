@@ -251,11 +251,13 @@
     width: 99%; /*padding: 5px;*/
 }
 
-#errorMessages {
+#messages {
     clear: both;
-    float: left;
-    margin-top: 20px;
-    margin-left: 5px;
+    float: right;
+    margin-bottom: 5px;
+    width: 100%;
+    height: auto;
+    display: none;
     color: #ff3300;
 }
 
@@ -375,23 +377,24 @@
 
     <div id="sync_div" style="clear:both;float:right; height:35px;">
         <div class="control addTaskControl" style="float:right; height:23px;" id="synchronise_calendar_div">
-            <a href="javascript:backgroundObtainUserCalendars();">SYNCHRONISE WITH GOOGLE CALENDAR</a></div>
+            <a href="javascript:backgroundObtainUserCalendars__MODULE_ID__();">SYNCHRONISE WITH GOOGLE CALENDAR</a>
+        </div>
         <div id="sync_div_choice" class="modtitle tabtitle addTaskEntry">
             <select class="selectedtab tabtitle addTaskEntryTextbox" style="font-size: smaller;" id="calendar_choice">
             </select>
-            <a href="javascript:closeSyncCal();" class="stealImage delbox"></a>
-            <img onclick="backgroundSynchroniseWithGcal();" src="http://timesheetmod.googlecode.com/svn/trunk/images/calendar_sync.png" style="cursor:pointer;float:right;"/>
+            <a href="javascript:closeSyncCal__MODULE_ID__();" class="stealImage delbox"></a>
+            <img onclick="backgroundSynchroniseWithGcal__MODULE_ID__();" src="http://timesheetmod.googlecode.com/svn/trunk/images/calendar_sync.png" style="cursor:pointer;float:right;"/>
         </div>
     </div>
     <div id="controls" style="float:right;clear:both;width:100%;">
         <div class="control addTaskControl" id="add_task_control">
-            <a href="javascript:addTask();">ADD TASK</a></div>
+            <a href="javascript:addTask__MODULE_ID__();">ADD TASK</a></div>
         <div id="add_task_entry" class="modtitle tabtitle addTaskEntry">
             <input class="selectedtab tabtitle addTaskEntryTextbox" type="text" id="new_task_name"/>
-            <a href="javascript:closeAddTask();" class="stealImage delbox"></a>
-            <a href="javascript:submitNewTaskName();" class="stealImage maxbox"></a></div>
+            <a href="javascript:closeAddTask__MODULE_ID__();" class="stealImage delbox"></a>
+            <a href="javascript:submitNewTaskName__MODULE_ID__();" class="stealImage maxbox"></a></div>
     </div>
-    <div id="calMessage" style="clear:both;float:right;margin-bottom:5px;width:100%;height:auto;display:none;">
+    <div id="messages">
     </div>
     <div id="task_list">
         <div id="title" class="title">
@@ -427,10 +430,7 @@
         Sortable.create('tasks', {handle:'handle',constraint:'vertical'})
     </script>
 
-    <div id="errorMessages">
-    </div>
-
-    <div id="dataDiv" style="display:none;"><br/>
+    <div id="dataDiv" style="display:none;"><!--<br/>
         <span id="event_data_23_heading">event_data_23 - </span>
         <span id="event_data_23">230707103435!|0:0:103438:103440||0:0:103442:103444||0:0:103729:105119|!|0:001354|</span>
         <br/>
@@ -465,7 +465,7 @@
         <span id="next_event_id">1</span>
         <br/>
         <span id="summary_date_format_heading">summary_date_format - </span>
-        <span id="summary_date_format">1</span>
+        <span id="summary_date_format">1</span>-->
     </div>
 </div>
 <div id="summaryContent" style="display:none">
@@ -473,13 +473,13 @@
         <div id="summary_controls"><br/>
 
             <div id="summary_previous" style="float:left;width:25%;text-align:left;">
-                <span id="previous_control" class="control addTaskControl"><a href="javascript:drawPeriod(1);">PREVIOUS</a></span>
+                <span id="previous_control" class="control addTaskControl"><a href="javascript:drawPeriod__MODULE_ID__(1);">PREVIOUS</a></span>
             </div>
             <div id="summary_display" style="float:left;width:49%;text-align:center;">
                 <span id="summary_date_range" class="control controlNoHover" style="border: none;cursor:auto;"></span>
             </div>
             <div id="summary_next" style="float:left;width:25%;text-align:right;">
-                <span id="next_control" class="control addTaskControl" style="visibility:hidden;"><a href="javascript:drawPeriod(0);">NEXT</a></span>
+                <span id="next_control" class="control addTaskControl" style="visibility:hidden;"><a href="javascript:drawPeriod__MODULE_ID__(0);">NEXT</a></span>
             </div>
         </div>
         <br clear="all"/>
@@ -490,7 +490,7 @@
 
 <script type="text/javascript">
 
-function captureKeys(ev)
+function captureKeys__MODULE_ID__(ev)
 {
     var kCode;
 
@@ -510,78 +510,80 @@ function captureKeys(ev)
         var target = ev.target || ev.srcElement;
         if (target.id == 'new_task_name')
         {
-            submitNewTaskName(); // another function that does something
+            submitNewTaskName__MODULE_ID__(); // another function that does something
         }
         else if (target.id.indexOf("rename_text_") != -1)
         {
             target.blur();
-//            replaceWithContent(ev.target);
         }
         return true;  // make it so the browser ignores key combo
     }
 }
 
-var syncing = false;
-var obtainingUserCals = false;
-var calMessage = new _IG_MiniMessage(__MODULE_ID__, _gel("calMessage"));
-var currentMessage = null;
+var syncing__MODULE_ID__ = false;
+var obtainingUserCals__MODULE_ID__ = false;
+var calMessage__MODULE_ID__ = new _IG_MiniMessage(__MODULE_ID__, _gel("messages"));
+var currentMessage__MODULE_ID__ = null;
 
-Calendar.prototype._name = null;
-Calendar.prototype._url = null;
+Calendar__MODULE_ID__.prototype._name = null;
+Calendar__MODULE_ID__.prototype._url = null;
 
-Calendar.prototype.getName = function()
+Calendar__MODULE_ID__.prototype.getName = function()
 {
     return this._name;
 }
-Calendar.prototype.getUrl = function()
+Calendar__MODULE_ID__.prototype.getUrl = function()
 {
     return this._url;
 }
 
-function Calendar(name, url)
+function Calendar__MODULE_ID__(name, url)
 {
     this._name = name;
     this._url = url;
 }
 
-function backgroundSynchroniseWithGcal()
+function backgroundSynchroniseWithGcal__MODULE_ID__()
 {
-    if (!syncing)
+    if (!syncing__MODULE_ID__)
     {
-        syncing = true;
-        currentMessage = calMessage.createStaticMessage("Synchronising timesheet data with Google Calendar");
-        showCalMessage();
-        setTimeout("synchroniseWithGcal()", 10);
+        syncing__MODULE_ID__ = true;
+        currentMessage__MODULE_ID__ =
+        calMessage__MODULE_ID__.createStaticMessage("Synchronising timesheet data with Google Calendar");
+        showMessages__MODULE_ID__();
+        setTimeout("synchroniseWithGcal__MODULE_ID__()", 10);
     }
 }
 
-function hideCalMessage()
+function hideMessages__MODULE_ID__()
 {
-    var calMessage = _gel("calMessage");
-    calMessage.style.display = 'none';
+    var messages = _gel("messages");
+    messages.style.display = 'none';
 }
 
-function showCalMessage()
+function showMessages__MODULE_ID__()
 {
-    var calMessage = _gel("calMessage");
-    calMessage.style.display = 'block';
+    var messages = _gel("messages");
+    messages.style.display = 'block';
 }
 
-function backgroundObtainUserCalendars()
+function backgroundObtainUserCalendars__MODULE_ID__()
 {
-    if (!obtainingUserCals)
+    if (!obtainingUserCals__MODULE_ID__)
     {
         var currentTime = new Date();
 
-        if (!lastCalendarUpdate || currentTime.getTime() - lastCalendarUpdate.getTime() > 600000)
+        if (!lastCalendarUpdate__MODULE_ID__ || currentTime.getTime() - lastCalendarUpdate__MODULE_ID__.getTime()
+                > 600000)
 
         {
-            obtainingUserCals = true;
-            lastCalendarUpdate = currentTime;
+            obtainingUserCals__MODULE_ID__ = true;
+            lastCalendarUpdate__MODULE_ID__ = currentTime;
 
-            currentMessage = calMessage.createStaticMessage("Obtaining your Google calendars");
-            showCalMessage();
-            setTimeout("obtainUserCalendars()", 10);
+            currentMessage__MODULE_ID__ =
+            calMessage__MODULE_ID__.createStaticMessage("Obtaining your Google calendars");
+            showMessages__MODULE_ID__();
+            setTimeout("obtainUserCalendars__MODULE_ID__()", 10);
         }
         else
         {
@@ -595,13 +597,13 @@ function backgroundObtainUserCalendars()
     }
 }
 
-function obtainUserCalendars()
+function obtainUserCalendars__MODULE_ID__()
 {
     // http://www.google.com/calendar/feeds/default/owncalendars/full
     var prefs = new _IG_Prefs(__MODULE_ID__);
 
     var httpReq = getBrowserRequestObject__MODULE_ID__("text/xml");
-    var calUrl = httpType + "://" + domain + "/calendar/feeds/default/owncalendars/full";
+    var calUrl = httpType__MODULE_ID__ + "://" + domain__MODULE_ID__ + "/calendar/feeds/default/owncalendars/full";
     httpReq.open('get', calUrl, false);
     httpReq.setRequestHeader('Authorization', 'GoogleLogin auth=' + prefs.getString("calauth"));
     httpReq.setRequestHeader('Content-type', 'application/atom+xml');
@@ -624,29 +626,29 @@ function obtainUserCalendars()
 
     if (status == 200)
     {
-        parseUserCalendars(httpReq);
+        parseUserCalendars__MODULE_ID__(httpReq);
     }
     else
     {
-        var link = httpType + "://" + domain + "/calendar";
+        var link = httpType__MODULE_ID__ + "://" + domain__MODULE_ID__ + "/calendar";
         var googleCalendarLink = "<a href='" + link + "' target='blank'>" + link + "</a>";
-        calMessage.createDismissibleMessage("Error obtaining calendars - please ensure you have logged into Google calendar at "
-                + googleCalendarLink, hideCalMessage);
+        calMessage__MODULE_ID__.createDismissibleMessage("Error obtaining calendars - please ensure you have logged into Google calendar at "
+                + googleCalendarLink, hideMessages__MODULE_ID__);
     }
 }
 
-var calendars = null;
-var lastCalendarUpdate = null;
+var calendars__MODULE_ID__ = null;
+var lastCalendarUpdate__MODULE_ID__ = null;
 
-function getNodeValue(obj, elementName)
+function getNodeValue__MODULE_ID__(obj, elementName)
 {
     return obj.getElementsByTagName(elementName)[0].firstChild.nodeValue;
 }
-function getNodeAttribute(obj, elementName, attributeName)
+function getNodeAttribute__MODULE_ID__(obj, elementName, attributeName)
 {
     return obj.getElementsByTagName(elementName)[0].getAttribute(attributeName);
 }
-function createXMLFromString(xmlText)
+function createXMLFromString__MODULE_ID__(xmlText)
 {
     try
     {
@@ -660,21 +662,21 @@ function createXMLFromString(xmlText)
     }
 }
 
-function parseUserCalendars(httpReq)
+function parseUserCalendars__MODULE_ID__(httpReq)
 {
     var responseXml = httpReq.responseXML;
 
     if (!responseXml || responseXml.getElementsByTagName("entry").length == 0)
     {
-        responseXml = createXMLFromString(httpReq.responseText);
+        responseXml = createXMLFromString__MODULE_ID__(httpReq.responseText);
     }
     var entries = responseXml.getElementsByTagName("entry");
 
-    calendars = new Array();
+    calendars__MODULE_ID__ = new Array();
 
     for (var i = 0; i < entries.length; i++)
     {
-        var name = getNodeValue(entries[i], "title");
+        var name = getNodeValue__MODULE_ID__(entries[i], "title");
         var url = null;
 
         var feeds = entries[i].getElementsByTagName("link");
@@ -687,19 +689,19 @@ function parseUserCalendars(httpReq)
             {
                 var localUrl = feeds[j].getAttribute("href");
                 var calIndex = localUrl.indexOf("/calendar");
-                url = httpType + "://" + domain + localUrl.slice(calIndex, localUrl.length);
+                url = httpType__MODULE_ID__ + "://" + domain__MODULE_ID__ + localUrl.slice(calIndex, localUrl.length);
             }
         }
 
         if (url)
         {
-            var currentCal = new Calendar(name, url);
-            calendars.push(currentCal);
+            var currentCal = new Calendar__MODULE_ID__(name, url);
+            calendars__MODULE_ID__.push(currentCal);
         }
     }
 
-    var localCalendars = calendars;
-    localCalendars.sort(sortCalendars);
+    var localCalendars = calendars__MODULE_ID__;
+    localCalendars.sort(sortCalendars__MODULE_ID__);
 
     var chooseCalendar = _gel("calendar_choice");
     var options = chooseCalendar.childNodes;
@@ -729,20 +731,20 @@ function parseUserCalendars(httpReq)
     syncCalDiv.style.visibility = 'visible';
     syncCalControlDiv.style.display = 'none';
     syncCalDiv.style.display = 'block';
-    obtainingUserCals = false;
+    obtainingUserCals__MODULE_ID__ = false;
 
-    calMessage.dismissMessage(currentMessage);
-    hideCalMessage();
+    calMessage__MODULE_ID__.dismissMessage(currentMessage__MODULE_ID__);
+    hideMessages__MODULE_ID__();
 }
 
-function sortCalendars(optionOne, optionTwo)
+function sortCalendars__MODULE_ID__(optionOne, optionTwo)
 {
     var a = optionOne.getName();
     var b = optionTwo.getName();
     return a > b ? 1 : a < b ? -1 : 0;
 }
 
-function closeSyncCal()
+function closeSyncCal__MODULE_ID__()
 {
     var syncCalDiv = _gel("sync_div_choice");
     var syncCalControlDiv = _gel("synchronise_calendar_div");
@@ -751,13 +753,13 @@ function closeSyncCal()
     syncCalDiv.style.display = 'none';
 }
 
-function synchroniseWithGcal()
+function synchroniseWithGcal__MODULE_ID__()
 {
-    closeSyncCal();
+    closeSyncCal__MODULE_ID__();
     var calDropdown = _gel("calendar_choice");
     var selectedOption = calDropdown.options[calDropdown.selectedIndex];
     var selectedOptionValue = selectedOption.value;
-    timesheetCalFeed = calendars[selectedOptionValue].getUrl();
+    timesheetCalFeed__MODULE_ID__ = calendars__MODULE_ID__[selectedOptionValue].getUrl();
 
     var prefs = new _IG_Prefs(__MODULE_ID__);
     var calendarName = selectedOption.text;
@@ -782,7 +784,7 @@ function synchroniseWithGcal()
         startTime = startDay.getTime();
         startTime += 1000 * 60 * 60 * 24;
         startDay.setTime(startTime);
-        var dateRecord = monthsEvents[startDay.getDate()];
+        var dateRecord = monthsEvents__MODULE_ID__[startDay.getDate()];
 
         if (dateRecord)
         {
@@ -831,7 +833,7 @@ function synchroniseWithGcal()
         //            i += (j - 1);
         //        }
 
-        var taskName = getTaskName(firstEvent.getTask().getId());
+        var taskName = getTaskName__MODULE_ID__(firstEvent.getTask().getId());
         var startTime = firstEvent.getStart().toDate();
         var end = newEvent[newEvent.length - 1].getEnd();
         var endTime;
@@ -873,37 +875,37 @@ function synchroniseWithGcal()
 
         if (dateRecordToUpdate)
         {
-            updateDateRecord(dateRecordToUpdate);
+            updateDateRecord__MODULE_ID__(dateRecordToUpdate);
         }
     }
 
-    syncing = false;
+    syncing__MODULE_ID__ = false;
 
-    calMessage.dismissMessage(currentMessage);
+    calMessage__MODULE_ID__.dismissMessage(currentMessage__MODULE_ID__);
     if (!error)
     {
         _IG_Analytics("UA-2305736-1", "/timesheetmod/gcal_synchronisation");
-        calMessage.createTimerMessage("Timesheet data synchronised", 5, hideCalMessage);
+        calMessage__MODULE_ID__.createTimerMessage("Timesheet data synchronised", 5, hideMessages__MODULE_ID__);
     }
     else
     {
-        var link = httpType + "://" + domain + "/calendar";
+        var link = httpType__MODULE_ID__ + "://" + domain__MODULE_ID__ + "/calendar";
         var googleCalendarLink = "<a href='" + link + "' target='blank'>" + link + "</a>";
-        calMessage.createDismissibleMessage("Error synchronising timesheet data - please ensure you have logged into Google calendar at "
-                + googleCalendarLink, hideCalMessage);
+        calMessage__MODULE_ID__.createDismissibleMessage("Error synchronising timesheet data - please ensure you have logged into Google calendar at "
+                + googleCalendarLink, hideMessages__MODULE_ID__);
     }
 }
 
-var currentTimeTimer = null;
+var currentTimeTimer__MODULE_ID__ = null;
 
-function monitorCurrentTime()
+function monitorCurrentTime__MODULE_ID__()
 {
-    var currentData = getTodaysEventData();
+    var currentData = getTodaysEventData__MODULE_ID__();
     var date = new Date();
 
     if (date.getDate() != currentData.getDate().getDate())
     {
-        var activeTaskIds = getArray("active_task_ids");
+        var activeTaskIds = getArray__MODULE_ID__("active_task_ids");
 
         if (activeTaskIds)
         {
@@ -911,7 +913,7 @@ function monitorCurrentTime()
             {
                 var taskId = activeTaskIds[i];
                 var timeSpan = _gel("total_time_span_" + taskId);
-                var total = getTodaysEventData().getTotalForTask(taskId);
+                var total = getTodaysEventData__MODULE_ID__().getTotalForTask(taskId);
                 var totalDuration = null;
 
                 if (total)
@@ -919,21 +921,128 @@ function monitorCurrentTime()
                     totalDuration = total.getDuration();
                 }
 
-                timeSpan.innerHTML = getDurationDisplayString(totalDuration);
+                timeSpan.innerHTML = getDurationDisplayString__MODULE_ID__(totalDuration);
             }
         }
     }
 
-    currentTimeTimer = setTimeout("monitorCurrentTime()", 1000);
+    currentTimeTimer__MODULE_ID__ = setTimeout("monitorCurrentTime__MODULE_ID__()", 1000);
 }
 
-var monthsEvents = new Array();
-var todaysEventData = null;
-var nextEventId = null;
+var monthsEvents__MODULE_ID__ = new Array();
+var todaysEventData__MODULE_ID__ = null;
+var nextEventId__MODULE_ID__ = null;
 
-function getNextEventId()
+TimerEvent.prototype.getEventId = function()
 {
-    var eventId = ++nextEventId;
+    if (!this._eventId)
+    {
+        this._eventId = getNextEventId__MODULE_ID__();
+    }
+    return this._eventId;
+}
+
+TimerEvent.prototype.splitDates = function()
+{
+    var events = new Array();
+    var index = 0;
+    var duration = this.getDuration();
+
+    var startDate = this.getStart().toDate();
+    var endDate = this.getEnd().toDate();
+
+    var numberOfEvents = 1;
+    while (startDate.getDate() != endDate.getDate())
+    {
+        numberOfEvents++;
+        var time = startDate.getTime();
+        time += 1000 * 60 * 60 * 24;
+        startDate.setTime(time);
+    }
+
+    if (this.getStart().getDate() != this.getEnd().getDate() || this.getStart().getMonth() != this.getEnd().getMonth())
+    {
+        var lastDate = null;
+        var eventId = getNextEventId__MODULE_ID__();
+
+        for (; index < numberOfEvents; index++)
+        {
+            var newEvent = new TimerEvent();
+            newEvent.setTask(this.getTask());
+            newEvent.setSynced(this.isSynced());
+            newEvent.setMultiEvent(true);
+            newEvent.setEventId(eventId);
+
+            var start;
+            var end;
+            var lastDateValue;
+            if (index > 0 && (index + 1) != numberOfEvents)
+            {
+                lastDateValue = lastDate.getTime();
+                lastDateValue += 1000 * 60 * 60 * 24;
+                lastDate = new Date();
+                lastDate.setTime(lastDateValue);
+
+                start = new BasicTime();
+                end = new BasicTime();
+                start.setDataFromDate(lastDate);
+                end.setDataFromDate(lastDate);
+
+                start.setHours(0);
+                start.setMinutes(0);
+                start.setSeconds(0);
+                end.setHours(23);
+                end.setMinutes(59);
+                end.setSeconds(59);
+
+                newEvent.setStart(start);
+                newEvent.setEnd(end);
+            }
+            else if (index + 1 == numberOfEvents)
+            {
+                lastDateValue = lastDate.getTime();
+                lastDateValue += 1000 * 60 * 60 * 24;
+                lastDate = new Date();
+                lastDate.setTime(lastDateValue);
+
+                start = new BasicTime();
+                start.setDataFromDate(lastDate);
+
+                start.setHours(0);
+                start.setMinutes(0);
+                start.setSeconds(0);
+
+                newEvent.setStart(start);
+                newEvent.setEnd(this.getEnd());
+            }
+            else
+            {
+                lastDate = this.getStart().toDate();
+
+                end = new BasicTime();
+                end.setDataFromDate(lastDate);
+                end.setHours(23);
+                end.setMinutes(59);
+                end.setSeconds(59);
+
+                newEvent.setStart(this.getStart());
+                newEvent.setEnd(end);
+            }
+
+            events[index] = newEvent;
+        }
+    }
+    else
+    {
+        events[index] = this;
+    }
+
+    return events;
+}
+
+function getNextEventId__MODULE_ID__()
+{
+    var eventId = ++nextEventId__MODULE_ID__;
 
     var prefs = new _IG_Prefs(__MODULE_ID__);
     prefs.set("next_event_id", eventId);
@@ -941,11 +1050,11 @@ function getNextEventId()
     return eventId;
 }
 
-function getDateRecord(date, persistIfOutOfDate)
+function getDateRecord__MODULE_ID__(date, persistIfOutOfDate)
 {
     var today = new Date();
     var currentDate = date.getDate();
-    var dateRecord = monthsEvents[currentDate];
+    var dateRecord = monthsEvents__MODULE_ID__[currentDate];
 
     var dateCorrectedMonth = date.getMonth() + 1;
     if (!dateRecord || eval(dateRecord.getDate().getMonth()) != dateCorrectedMonth)
@@ -970,10 +1079,10 @@ function getDateRecord(date, persistIfOutOfDate)
             var newDate = new BasicTime();
             newDate.setDataFromDate(date);
             dateRecord.setDate(newDate);
-            monthsEvents[currentDate] = dateRecord;
+            monthsEvents__MODULE_ID__[currentDate] = dateRecord;
             if (persistIfOutOfDate)
             {
-                updateDateRecord(dateRecord);
+                updateDateRecord__MODULE_ID__(dateRecord);
             }
         }
     }
@@ -982,18 +1091,18 @@ function getDateRecord(date, persistIfOutOfDate)
     var dateRecordMonth = eval(dateRecord.getDate().getMonth());
     if (dateRecordDate == today.getDate() && dateRecordMonth == (today.getMonth() + 1))
     {
-        todaysEventData = dateRecord;
+        todaysEventData__MODULE_ID__ = dateRecord;
     }
 
     return dateRecord;
 }
 
-function getTodaysEventData()
+function getTodaysEventData__MODULE_ID__()
 {
-    return todaysEventData;
+    return todaysEventData__MODULE_ID__;
 }
 
-function getArray(prefName)
+function getArray__MODULE_ID__(prefName)
 {
     var prefs = new _IG_Prefs(__MODULE_ID__);
 
@@ -1009,15 +1118,15 @@ function getArray(prefName)
     }
 }
 
-function setArray(prefName, arrayData)
+function setArray__MODULE_ID__(prefName, arrayData)
 {
     var prefs = new _IG_Prefs(__MODULE_ID__);
     prefs.set(prefName, arrayData.join("|"));
 }
 
-function getTaskName(taskId)
+function getTaskName__MODULE_ID__(taskId)
 {
-    var allTaskNames = getArray("task_names");
+    var allTaskNames = getArray__MODULE_ID__("task_names");
 
     var name = null;
 
@@ -1029,16 +1138,16 @@ function getTaskName(taskId)
     return name;
 }
 
-var currentEvent;
-var timer;
-var taskOrderTimer = null;
+var currentEvent__MODULE_ID__;
+var timer__MODULE_ID__;
+var taskOrderTimer__MODULE_ID__ = null;
 
-function monitorTaskOrder()
+function monitorTaskOrder__MODULE_ID__()
 {
     var taskList = _gel("tasks");
 
     var tasks = taskList.childNodes;
-    var activeTaskIds = getArray("active_task_ids");
+    var activeTaskIds = getArray__MODULE_ID__("active_task_ids");
 
     if (activeTaskIds && activeTaskIds.length > 0 && tasks.length == activeTaskIds.length)
     {
@@ -1054,48 +1163,48 @@ function monitorTaskOrder()
 
         if (newData != currentData)
         {
-            setArray("active_task_ids", newOrder);
+            setArray__MODULE_ID__("active_task_ids", newOrder);
         }
     }
 
-    taskOrderTimer = setTimeout("monitorTaskOrder()", 5000);
+    taskOrderTimer__MODULE_ID__ = setTimeout("monitorTaskOrder__MODULE_ID__()", 5000);
 }
 
-function displayTaskTimers()
+function displayTaskTimers__MODULE_ID__()
 {
     _IG_Analytics("UA-2305736-1", "/timesheetmod/display_task_timers");
 }
 
-function startStopTimer(source)
+function startStopTimer__MODULE_ID__(source)
 {
     var nameSplit = source.id.split("_");
     var taskId = eval(nameSplit[nameSplit.length - 1]);
     var currentTime = new Date();
     var prefs = new _IG_Prefs(__MODULE_ID__);
 
-    if (currentEvent)
+    if (currentEvent__MODULE_ID__)
     {
-        clearTimeout(timer);
-        if (!currentEvent.getEnd())
+        clearTimeout(timer__MODULE_ID__);
+        if (!currentEvent__MODULE_ID__.getEnd())
         {
             var endTime = new BasicTime();
             endTime.setDataFromDate(currentTime);
-            currentEvent.setEnd(endTime);
+            currentEvent__MODULE_ID__.setEnd(endTime);
         }
 
-        var oldTaskId = currentEvent.getTask().getId();
+        var oldTaskId = currentEvent__MODULE_ID__.getTask().getId();
         var timersButton = _gel("status_div_" + oldTaskId);
         timersButton.innerHTML =
         '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/start.png" alt="Start"/>';
 
         prefs.set("current_event", "");
-        addNewEvent(currentEvent);
+        addNewEvent__MODULE_ID__(currentEvent__MODULE_ID__);
         var timeSpan = _gel("total_time_span_" + oldTaskId);
         var currentTotalTimeSpan = _gel("current_task_total_time_span");
-        var total = getTodaysEventData().getTotalForTask(oldTaskId);
+        var total = getTodaysEventData__MODULE_ID__().getTotalForTask(oldTaskId);
         var totalDuration = total.getDuration();
 
-        timeSpan.innerHTML = getDurationDisplayString(totalDuration);
+        timeSpan.innerHTML = getDurationDisplayString__MODULE_ID__(totalDuration);
         timeSpan.className = "";
         currentTotalTimeSpan.className = "";
         currentTotalTimeSpan.innerHTML = "None";
@@ -1103,28 +1212,28 @@ function startStopTimer(source)
         _IG_Analytics("UA-2305736-1", "/timesheetmod/new_event");
     }
 
-    if (!currentEvent || currentEvent.getTask().getId() != taskId)
+    if (!currentEvent__MODULE_ID__ || currentEvent__MODULE_ID__.getTask().getId() != taskId)
     {
-        currentEvent = new TimerEvent();
+        currentEvent__MODULE_ID__ = new TimerEvent();
         var task = new Task();
         task.setId(taskId);
 
         var startTime = new BasicTime();
         startTime.setDataFromDate(currentTime);
-        currentEvent.setTask(task);
-        currentEvent.setStart(startTime);
+        currentEvent__MODULE_ID__.setTask(task);
+        currentEvent__MODULE_ID__.setStart(startTime);
 
         source.innerHTML = '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/stop.png" alt="Stop"/>';
-        prefs.set("current_event", currentEvent.toString());
-        refreshCurrentTimer();
+        prefs.set("current_event", currentEvent__MODULE_ID__.toString());
+        refreshCurrentTimer__MODULE_ID__();
     }
     else
     {
-        currentEvent = null;
+        currentEvent__MODULE_ID__ = null;
     }
 }
 
-function addNewEvent(event)
+function addNewEvent__MODULE_ID__(event)
 {
     var eventsToAdd = event.splitDates();
 
@@ -1133,9 +1242,9 @@ function addNewEvent(event)
         var newEvent = eventsToAdd[i];
         var startDate = newEvent.getStart().toDate();
 
-        var dateRecord = getDateRecord(startDate, true);
+        var dateRecord = getDateRecord__MODULE_ID__(startDate, true);
         dateRecord.addNewEvent(newEvent);
-        updateDateRecord(dateRecord);
+        updateDateRecord__MODULE_ID__(dateRecord);
     }
 }
 
@@ -1178,13 +1287,13 @@ function createEvent__MODULE_ID__(taskName, eventId, start, end)
 
     var httpReq = getBrowserRequestObject__MODULE_ID__();
     var calUrl;
-    if (timesheetCalFeed)
+    if (timesheetCalFeed__MODULE_ID__)
     {
-        calUrl = timesheetCalFeed;
+        calUrl = timesheetCalFeed__MODULE_ID__;
     }
     else
     {
-        calUrl = httpType + "://" + domain + "/calendar/feeds/default/private/full";
+        calUrl = httpType__MODULE_ID__ + "://" + domain__MODULE_ID__ + "/calendar/feeds/default/private/full";
     }
     httpReq.open('POST', calUrl, false);
     httpReq.setRequestHeader('Authorization', 'GoogleLogin auth=' + prefs.getString("calauth"));
@@ -1257,9 +1366,9 @@ function getBrowserRequestObject__MODULE_ID__(mimetype)
     return requestObject;
 }
 
-function refreshCurrentTimer()
+function refreshCurrentTimer__MODULE_ID__()
 {
-    var taskId = currentEvent.getTask().getId();
+    var taskId = currentEvent__MODULE_ID__.getTask().getId();
     var currentTime = new Date();
 
     var timeSpan = _gel("total_time_span_" + taskId);
@@ -1269,13 +1378,13 @@ function refreshCurrentTimer()
 
     var endTime = new BasicTime();
     endTime.setDataFromDate(currentTime);
-    currentEvent.setEnd(endTime);
+    currentEvent__MODULE_ID__.setEnd(endTime);
 
-    var eventDuration = currentEvent.getDuration();
+    var eventDuration = currentEvent__MODULE_ID__.getDuration();
 
     var tempDuration = new BasicTime();
 
-    var total = getTodaysEventData().getTotalForTask(taskId);
+    var total = getTodaysEventData__MODULE_ID__().getTotalForTask(taskId);
     if (total)
     {
         var totalDuration = total.getDuration();
@@ -1288,21 +1397,21 @@ function refreshCurrentTimer()
     tempDuration.addMinutes(eventDuration.getMinutes());
     tempDuration.addHours(eventDuration.getHours());
 
-    currentTotalTimeSpan.innerHTML = getDurationDisplayString(eventDuration);
+    currentTotalTimeSpan.innerHTML = getDurationDisplayString__MODULE_ID__(eventDuration);
 
-    if (currentEvent.getStart().getDate() != currentEvent.getEnd().getDate())
+    if (currentEvent__MODULE_ID__.getStart().getDate() != currentEvent__MODULE_ID__.getEnd().getDate())
     {
-        tempDuration.setHours(currentEvent.getEnd().getHours());
-        tempDuration.setMinutes(currentEvent.getEnd().getMinutes());
-        tempDuration.setSeconds(currentEvent.getEnd().getSeconds());
+        tempDuration.setHours(currentEvent__MODULE_ID__.getEnd().getHours());
+        tempDuration.setMinutes(currentEvent__MODULE_ID__.getEnd().getMinutes());
+        tempDuration.setSeconds(currentEvent__MODULE_ID__.getEnd().getSeconds());
     }
 
-    timeSpan.innerHTML = getDurationDisplayString(tempDuration);
+    timeSpan.innerHTML = getDurationDisplayString__MODULE_ID__(tempDuration);
 
-    timer = setTimeout("refreshCurrentTimer()", 1000);
+    timer__MODULE_ID__ = setTimeout("refreshCurrentTimer__MODULE_ID__()", 1000);
 }
 
-function getDurationDisplayString(duration)
+function getDurationDisplayString__MODULE_ID__(duration)
 {
     var durationString;
     if (duration)
@@ -1316,7 +1425,7 @@ function getDurationDisplayString(duration)
     return durationString;
 }
 
-function replaceWithTextBox(source)
+function replaceWithTextBox__MODULE_ID__(source)
 {
     source.onclick = null;
     var currentContent = source.innerHTML;
@@ -1325,7 +1434,8 @@ function replaceWithTextBox(source)
     var taskId = eval(nameSplit[nameSplit.length - 1]);
 
     var textElementId = "rename_text_" + taskId;
-    source.innerHTML = "<input class='editTaskName' type=\'text\' id=\'" + textElementId + "\' onBlur=\'replaceWithContent(this);\'/>";
+    source.innerHTML = "<input class='editTaskName' type=\'text\' id=\'" + textElementId
+            + "\' onBlur=\'replaceWithContent__MODULE_ID__(this);\'/>";
 
     var textElement = _gel(textElementId);
     if (window.XMLHttpRequest && !document.all)
@@ -1340,7 +1450,7 @@ function replaceWithTextBox(source)
     textElement.select();
 }
 
-function updateDateRecord(dateRecord)
+function updateDateRecord__MODULE_ID__(dateRecord)
 {
     var prefs = new _IG_Prefs(__MODULE_ID__);
     prefs.set("event_data_" + eval(dateRecord.getDate().getDate()), dateRecord.toString());
@@ -1348,9 +1458,9 @@ function updateDateRecord(dateRecord)
 
 var currentVersion__MODULE_ID__ = 2;
 
-var localSessionId = (new Date()).getTime();
+var localSessionId__MODULE_ID__ = (new Date()).getTime();
 
-function checkSessionStatus()
+function checkSessionStatus__MODULE_ID__()
 {
     var cookiePrefs = document.cookie.split(";");
     var sessionId = null;
@@ -1365,17 +1475,17 @@ function checkSessionStatus()
         }
     }
 
-    if (sessionId != localSessionId)
+    if (sessionId != localSessionId__MODULE_ID__)
     {
-        disableGadget();
+        disableGadget__MODULE_ID__();
     }
     else
     {
-        setTimeout("checkSessionStatus()", 5000);
+        setTimeout("checkSessionStatus__MODULE_ID__()", 5000);
     }
 }
 
-function disableGadget()
+function disableGadget__MODULE_ID__()
 {
     tabs.displayTabs(false);
 
@@ -1390,7 +1500,7 @@ function disableGadget()
     "The timesheet gadget has been disabled to protect your timesheet data, as another instance is currently running in another tab/window.<br/><br/>To enable the gadget again, please refresh the page by clicking <a class='modboxin' style='border:0px none;margin:0px;padding:0px;' href='javaScript:location.reload(true);'>here</a>.";
     mainDiv.appendChild(disabledGadgetDiv);
 
-    var activeTasks = getArray("active_task_ids");
+    var activeTasks = getArray__MODULE_ID__("active_task_ids");
     var taskList = _gel("tasks");
 
     for (var i = 0; i < activeTasks.length; i++)
@@ -1400,32 +1510,32 @@ function disableGadget()
         taskList.removeChild(rowToRemove);
     }
 
-    if (currentTimeTimer)
+    if (currentTimeTimer__MODULE_ID__)
     {
-        clearTimeout(currentTimeTimer);
-        currentTimeTimer = null;
+        clearTimeout(currentTimeTimer__MODULE_ID__);
+        currentTimeTimer__MODULE_ID__ = null;
     }
-    if (taskOrderTimer)
+    if (taskOrderTimer__MODULE_ID__)
     {
-        clearTimeout(taskOrderTimer);
-        taskOrderTimer = null;
+        clearTimeout(taskOrderTimer__MODULE_ID__);
+        taskOrderTimer__MODULE_ID__ = null;
     }
 }
 
-function setSessionId()
+function setSessionId__MODULE_ID__()
 {
-    document.cookie = "session_id=" + localSessionId;
+    document.cookie = "session_id=" + localSessionId__MODULE_ID__;
 }
 
 var tabs = null;
 
-function createTabs()
+function createTabs__MODULE_ID__()
 {
     if (!tabs)
     {
         tabs = new _IG_Tabs(__MODULE_ID__, "Today");
-        tabs.addTab("Today", "taskContent", displayTaskTimers);
-        tabs.addTab("Summary", "summaryContent", initialiseSummary);
+        tabs.addTab("Today", "taskContent", displayTaskTimers__MODULE_ID__);
+        tabs.addTab("Summary", "summaryContent", initialiseSummary__MODULE_ID__);
         tabs.alignTabs("left", 3);
     }
     else
@@ -1434,16 +1544,16 @@ function createTabs()
     }
 }
 
-var domain = null;
-var httpType = null;
-var timesheetCalFeed = null;
+var domain__MODULE_ID__ = null;
+var httpType__MODULE_ID__ = null;
+var timesheetCalFeed__MODULE_ID__ = null;
 
-function initialise()
+function initialise__MODULE_ID__()
 {
-    document.onkeypress = captureKeys;
+    document.onkeypress = captureKeys__MODULE_ID__;
     _IG_Analytics("UA-2305736-1", "/timesheetmod");
-    domain = document.domain;
-    httpType = document.location.toString().match(/[^:]*/);
+    domain__MODULE_ID__ = document.domain;
+    httpType__MODULE_ID__ = document.location.toString().match(/[^:]*/);
 
     var disabledGadgetDiv = _gel("disabled_gadget_div");
     if (disabledGadgetDiv)
@@ -1452,22 +1562,22 @@ function initialise()
         mainDiv.removeChild(disabledGadgetDiv);
     }
     //    disabledGadgetDiv.style.display = "none";
-    setSessionId();
-    initialiseTaskList();
-    createTabs();
-    setTimeout("checkSessionStatus()", 10000);
+    setSessionId__MODULE_ID__();
+    initialiseTaskList__MODULE_ID__();
+    createTabs__MODULE_ID__();
+    setTimeout("checkSessionStatus__MODULE_ID__()", 10000);
 }
 
-function initialiseTaskList()
+function initialiseTaskList__MODULE_ID__()
 {
     var prefs = new _IG_Prefs(__MODULE_ID__);
     var currentVersion = prefs.getInt("current_version");
-    nextEventId = prefs.getInt("next_event_id");
+    nextEventId__MODULE_ID__ = prefs.getInt("next_event_id");
 
-    if (!nextEventId)
+    if (!nextEventId__MODULE_ID__)
     {
-        nextEventId = 1;
-        prefs.set("next_event_id", nextEventId);
+        nextEventId__MODULE_ID__ = 1;
+        prefs.set("next_event_id", nextEventId__MODULE_ID__);
     }
 
     for (var i = 1; i < 32; i++)
@@ -1477,13 +1587,13 @@ function initialiseTaskList()
         if (eventDataString)
         {
             var errorDetectedAndFixed = eventData.setDataFromString(eventDataString, currentVersion);
-            monthsEvents[i] = eventData;
+            monthsEvents__MODULE_ID__[i] = eventData;
 
             if (!currentVersion || currentVersion__MODULE_ID__ != currentVersion || errorDetectedAndFixed)
             {
                 if (!errorDetectedAndFixed)
                 {
-                    updateDateRecord(eventData);
+                    updateDateRecord__MODULE_ID__(eventData);
                 }
                 else
                 {
@@ -1499,50 +1609,50 @@ function initialiseTaskList()
     }
 
     var today = new Date();
-    getDateRecord(today, true);
+    getDateRecord__MODULE_ID__(today, true);
 
-    var activeTaskIds = getArray("active_task_ids");
+    var activeTaskIds = getArray__MODULE_ID__("active_task_ids");
 
     if (activeTaskIds && activeTaskIds.length > 0)
     {
         for (i = 0; i < activeTaskIds.length; i++)
         {
-            createNewTask(activeTaskIds[i], false);
+            createNewTask__MODULE_ID__(activeTaskIds[i], false);
         }
 
         var currentEventData = prefs.getString("current_event");
 
         if (currentEventData && _trim(currentEventData).length > 0)
         {
-            currentEvent = new TimerEvent();
-            currentEvent.setDataFromString(currentEventData);
+            currentEvent__MODULE_ID__ = new TimerEvent();
+            currentEvent__MODULE_ID__.setDataFromString(currentEventData);
 
-            var taskId = currentEvent.getTask().getId();
+            var taskId = currentEvent__MODULE_ID__.getTask().getId();
 
             if (taskId && taskId != "undefined")
             {
                 var statusControl = _gel("status_div_" + taskId);
                 statusControl.innerHTML =
                 '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/stop.png" alt="Stop"/>';
-                refreshCurrentTimer();
+                refreshCurrentTimer__MODULE_ID__();
             }
             else
             {
-                currentEvent = null;
+                currentEvent__MODULE_ID__ = null;
                 prefs.set("current_event", "");
             }
         }
     }
     else
     {
-        displayNoTaskMessage(true);
+        displayNoTaskMessage__MODULE_ID__(true);
     }
 
-    monitorTaskOrder();
-    monitorCurrentTime();
+    monitorTaskOrder__MODULE_ID__();
+    monitorCurrentTime__MODULE_ID__();
 }
 
-function displayNoTaskMessage(display)
+function displayNoTaskMessage__MODULE_ID__(display)
 {
     var timerHeaderTable = _gel("timer_header_table");
     var messageRow = _gel("no_task_message");
@@ -1574,7 +1684,7 @@ function displayNoTaskMessage(display)
     }
 }
 
-function replaceWithContent(source)
+function replaceWithContent__MODULE_ID__(source)
 {
     var nameSplit = source.id.split("_");
     var taskId = eval(nameSplit[nameSplit.length - 1]);
@@ -1585,28 +1695,30 @@ function replaceWithContent(source)
 
     if (taskName.length == 0)
     {
-        var miniMessage = new _IG_MiniMessage(__MODULE_ID__, _gel("errorMessages"));
-        miniMessage.createTimerMessage("Please enter a task name", 2);
+        var miniMessage = new _IG_MiniMessage(__MODULE_ID__, _gel("messages"));
+        showMessages__MODULE_ID__();
+        miniMessage.createTimerMessage("Please enter a task name", 2, hideMessages__MODULE_ID__);
         textEntry.focus();
     }
     else
     {
-        var existingTaskId = getTaskId(taskName);
-        var existingTaskName = getTaskName(existingTaskId);
+        var existingTaskId = getTaskId__MODULE_ID__(taskName);
+        var existingTaskName = getTaskName__MODULE_ID__(existingTaskId);
 
         if (existingTaskId == taskId || !existingTaskName)
         {
-            setTaskName(taskId, taskName);
+            setTaskName__MODULE_ID__(taskId, taskName);
             containingDiv.innerHTML = taskName;
             containingDiv.onclick = function()
             {
-                replaceWithTextBox(this);
+                replaceWithTextBox__MODULE_ID__(this);
             };
         }
-        else if (isActiveTask(existingTaskId))
+        else if (isActiveTask__MODULE_ID__(existingTaskId))
         {
-            var miniMessage = new _IG_MiniMessage(__MODULE_ID__, _gel("errorMessages"));
-            miniMessage.createTimerMessage("There is already an active task with that name, please enter another.", 4);
+            var miniMessage = new _IG_MiniMessage(__MODULE_ID__, _gel("messages"));
+            showMessages__MODULE_ID__();
+            miniMessage.createTimerMessage("There is already an active task with that name, please enter another.", 5, hideMessages__MODULE_ID__);
             textEntry.focus();
         }
         else
@@ -1617,53 +1729,53 @@ function replaceWithContent(source)
             {
                 _IG_Analytics("UA-2305736-1", "/timesheetmod/task_replaced_with_existing");
 
-                if (currentEvent)
+                if (currentEvent__MODULE_ID__)
                 {
-                    startStopTimer(_gel("status_div_" + currentEvent.getTask().getId()));
+                    startStopTimer__MODULE_ID__(_gel("status_div_" + currentEvent__MODULE_ID__.getTask().getId()));
                 }
 
                 containingDiv.innerHTML = taskName;
                 containingDiv.onclick = function()
                 {
-                    replaceWithTextBox(this);
+                    replaceWithTextBox__MODULE_ID__(this);
                 };
 
                 var taskRow = _gel("li_row_" + taskId);
                 taskRow.id = "li_row_" + existingTaskId;
                 var html = taskRow.innerHTML;
                 var regex = new RegExp("_" + taskId, "g");
-                var regex2 = new RegExp("disableTask\\(" + taskId, "g");
+                var regex2 = new RegExp("disableTask__MODULE_ID__\\(" + taskId, "g");
                 html = html.replace(regex, "_" + existingTaskId);
-                html = html.replace(regex2, "disableTask(" + existingTaskId);
+                html = html.replace(regex2, "disableTask__MODULE_ID__(" + existingTaskId);
                 taskRow.innerHTML = html;
 
                 var nameDiv = _gel("name_div_" + existingTaskId);
                 var statusDiv = _gel("status_div_" + existingTaskId);
                 nameDiv.onclick = function()
                 {
-                    replaceWithTextBox(this);
+                    replaceWithTextBox__MODULE_ID__(this);
                 };
                 statusDiv.onclick = function()
                 {
-                    startStopTimer(this);
+                    startStopTimer__MODULE_ID__(this);
                 };
 
                 var totalSpan = _gel("total_time_span_" + existingTaskId);
-                var total = getTodaysEventData().getTotalForTask(existingTaskId);
+                var total = getTodaysEventData__MODULE_ID__().getTotalForTask(existingTaskId);
 
                 var durationString;
                 if (total)
                 {
-                    durationString = getDurationDisplayString(total.getDuration());
+                    durationString = getDurationDisplayString__MODULE_ID__(total.getDuration());
                 }
                 else
                 {
-                    durationString = getDurationDisplayString();
+                    durationString = getDurationDisplayString__MODULE_ID__();
                 }
 
                 totalSpan.innerHTML = durationString;
 
-                var activeTaskIds = getArray("active_task_ids");
+                var activeTaskIds = getArray__MODULE_ID__("active_task_ids");
 
                 for (var i = 0; i < activeTaskIds.length; i++)
                 {
@@ -1674,7 +1786,7 @@ function replaceWithContent(source)
                     }
                 }
 
-                setArray("active_task_ids", activeTaskIds);
+                setArray__MODULE_ID__("active_task_ids", activeTaskIds);
 
                 Sortable.create('tasks', {handle:'handle',constraint:'vertical'});
             }
@@ -1682,20 +1794,20 @@ function replaceWithContent(source)
     }
 }
 
-function setTaskName(taskId, taskName)
+function setTaskName__MODULE_ID__(taskId, taskName)
 {
     var taskNamesPref = "task_names";
-    var allTaskNames = getArray(taskNamesPref);
+    var allTaskNames = getArray__MODULE_ID__(taskNamesPref);
 
     if (!allTaskNames)
     {
         allTaskNames = new Array();
     }
     allTaskNames[taskId] = taskName;
-    setArray(taskNamesPref, allTaskNames);
+    setArray__MODULE_ID__(taskNamesPref, allTaskNames);
 }
 
-function addTask()
+function addTask__MODULE_ID__()
 {
     var addTaskDiv = _gel("add_task_entry");
     var addTaskControlDiv = _gel("add_task_control");
@@ -1706,7 +1818,7 @@ function addTask()
     newTaskName.focus();
 }
 
-function closeAddTask()
+function closeAddTask__MODULE_ID__()
 {
     var addTaskDiv = _gel("add_task_entry");
     var newTaskName = _gel("new_task_name");
@@ -1716,7 +1828,7 @@ function closeAddTask()
     addTaskControlDiv.style.display = 'block';
 }
 
-function disableTask(taskId, prompt)
+function disableTask__MODULE_ID__(taskId, prompt)
 {
     var choice = false;
 
@@ -1727,13 +1839,13 @@ function disableTask(taskId, prompt)
 
     if (choice || !prompt)
     {
-        if (currentEvent)
+        if (currentEvent__MODULE_ID__)
         {
-            var timerTaskId = currentEvent.getTask().getId();
+            var timerTaskId = currentEvent__MODULE_ID__.getTask().getId();
             if (timerTaskId == taskId)
             {
                 var timersButton = _gel("status_div_" + timerTaskId);
-                startStopTimer(timersButton);
+                startStopTimer__MODULE_ID__(timersButton);
             }
         }
 
@@ -1741,13 +1853,13 @@ function disableTask(taskId, prompt)
         var rowToRemove = _gel("li_row_" + taskId);
         taskList.removeChild(rowToRemove);
 
-        removeTaskFromActiveList(taskId);
+        removeTaskFromActiveList__MODULE_ID__(taskId);
     }
 }
 
-function removeTaskFromActiveList(taskId)
+function removeTaskFromActiveList__MODULE_ID__(taskId)
 {
-    var activeTaskIds = getArray("active_task_ids");
+    var activeTaskIds = getArray__MODULE_ID__("active_task_ids");
 
     var newActiveTaskIds = new Array();
 
@@ -1762,45 +1874,47 @@ function removeTaskFromActiveList(taskId)
 
     if (newActiveTaskIds.length == 0)
     {
-        displayNoTaskMessage(true);
+        displayNoTaskMessage__MODULE_ID__(true);
     }
 
-    setArray("active_task_ids", newActiveTaskIds);
+    setArray__MODULE_ID__("active_task_ids", newActiveTaskIds);
 }
 
-function submitNewTaskName()
+function submitNewTaskName__MODULE_ID__()
 {
     var newTaskName = _gel("new_task_name");
     var taskName = _trim(newTaskName.value);
 
     if (taskName.length == 0)
     {
-        var miniMessage = new _IG_MiniMessage(__MODULE_ID__, _gel("errorMessages"));
-        miniMessage.createTimerMessage("Please enter a task name", 2);
+        var miniMessage = new _IG_MiniMessage(__MODULE_ID__, _gel("messages"));
+        showMessages__MODULE_ID__();
+        miniMessage.createTimerMessage("Please enter a task name", 2, hideMessages__MODULE_ID__);
         newTaskName.focus();
     }
     else
     {
-        var taskId = getTaskId(taskName);
-        setTaskName(taskId, taskName);
+        var taskId = getTaskId__MODULE_ID__(taskName);
+        setTaskName__MODULE_ID__(taskId, taskName);
 
-        if (isActiveTask(taskId))
+        if (isActiveTask__MODULE_ID__(taskId))
         {
-            var miniMessage = new _IG_MiniMessage(__MODULE_ID__, _gel("errorMessages"));
-            miniMessage.createTimerMessage("There is already an active task with that name, please enter another.", 4);
+            var miniMessage = new _IG_MiniMessage(__MODULE_ID__, _gel("messages"));
+            showMessages__MODULE_ID__();
+            miniMessage.createTimerMessage("There is already an active task with that name, please enter another.", 5, hideMessages__MODULE_ID__);
             newTaskName.focus();
         }
         else
         {
-            closeAddTask();
-            createNewTask(taskId, true);
+            closeAddTask__MODULE_ID__();
+            createNewTask__MODULE_ID__(taskId, true);
         }
     }
 }
 
-function isActiveTask(taskId)
+function isActiveTask__MODULE_ID__(taskId)
 {
-    var activeTaskIds = getArray("active_task_ids");
+    var activeTaskIds = getArray__MODULE_ID__("active_task_ids");
 
     var found = false;
 
@@ -1818,9 +1932,9 @@ function isActiveTask(taskId)
     return found;
 }
 
-function addActiveTask(taskId)
+function addActiveTask__MODULE_ID__(taskId)
 {
-    var activeTaskIds = getArray("active_task_ids");
+    var activeTaskIds = getArray__MODULE_ID__("active_task_ids");
 
     if (!activeTaskIds)
     {
@@ -1828,12 +1942,12 @@ function addActiveTask(taskId)
     }
 
     activeTaskIds[activeTaskIds.length] = "" + taskId;
-    setArray("active_task_ids", activeTaskIds);
+    setArray__MODULE_ID__("active_task_ids", activeTaskIds);
 }
 
-function getTaskId(taskName)
+function getTaskId__MODULE_ID__(taskName)
 {
-    var allTaskNames = getArray("task_names");
+    var allTaskNames = getArray__MODULE_ID__("task_names");
     var taskId = 0;
 
     if (allTaskNames)
@@ -1851,13 +1965,13 @@ function getTaskId(taskName)
     return taskId;
 }
 
-function createNewTask(taskId, setActiveTaskData)
+function createNewTask__MODULE_ID__(taskId, setActiveTaskData)
 {
-    displayNoTaskMessage(false);
+    displayNoTaskMessage__MODULE_ID__(false);
 
     if (setActiveTaskData)
     {
-        addActiveTask(taskId);
+        addActiveTask__MODULE_ID__(taskId);
         _IG_Analytics("UA-2305736-1", "/timesheetmod/new_task_added");
     }
     var taskList = _gel("tasks");
@@ -1891,7 +2005,7 @@ function createNewTask(taskId, setActiveTaskData)
     nameDiv.style.width = "100%";
     nameDiv.onclick = function()
     {
-        replaceWithTextBox(this);
+        replaceWithTextBox__MODULE_ID__(this);
     };
     totalTimeTd.id = "total_time_td_" + taskId;
     totalTimeTd.className = 'task_data total_time';
@@ -1902,26 +2016,27 @@ function createNewTask(taskId, setActiveTaskData)
     statusDiv.id = "status_div_" + taskId;
     statusDiv.onclick = function()
     {
-        startStopTimer(this);
+        startStopTimer__MODULE_ID__(this);
     };
     disableTd.id = "disable_td_" + taskId;
     disableTd.className = 'task_data change';
 
-    var taskName = getTaskName(taskId);
+    var taskName = getTaskName__MODULE_ID__(taskId);
 
     handleDiv.innerHTML = "&nbsp;";
     nameDiv.innerHTML = taskName;
-    var total = getTodaysEventData().getTotalForTask(taskId);
+    var total = getTodaysEventData__MODULE_ID__().getTotalForTask(taskId);
     if (total)
     {
-        totalTimeSpan.innerHTML = getDurationDisplayString(total.getDuration());
+        totalTimeSpan.innerHTML = getDurationDisplayString__MODULE_ID__(total.getDuration());
     }
     else
     {
-        totalTimeSpan.innerHTML = getDurationDisplayString();
+        totalTimeSpan.innerHTML = getDurationDisplayString__MODULE_ID__();
     }
     statusDiv.innerHTML = '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/start.png" alt="Start"/>';
-    disableTd.innerHTML = '<a href="javascript:disableTask(' + taskId + ', true);" class="delbox stealImage"></a>';
+    disableTd.innerHTML =
+    '<a href="javascript:disableTask__MODULE_ID__(' + taskId + ', true);" class="delbox stealImage"></a>';
 
     handleTd.appendChild(handleDiv);
     taskRow.appendChild(handleTd);
@@ -1942,13 +2057,13 @@ function createNewTask(taskId, setActiveTaskData)
     Sortable.create('tasks', {handle:'handle',constraint:'vertical'})
 }
 
-function initialiseSummary()
+function initialiseSummary__MODULE_ID__()
 {
     _IG_Analytics("UA-2305736-1", "/timesheetmod/display_summary");
-    drawPeriod(0);
+    drawPeriod__MODULE_ID__(0);
 }
 
-function getFormattedDateString(date)
+function getFormattedDateString__MODULE_ID__(date)
 {
     var prefs = new _IG_Prefs(__MODULE_ID__);
     var dateFormat = prefs.getInt("summary_date_format");
@@ -1968,7 +2083,7 @@ function getFormattedDateString(date)
     return dateString;
 }
 
-function drawPeriod(week)
+function drawPeriod__MODULE_ID__(week)
 {
     var dateShift = 7 * week;
     var startDate = new Date();
@@ -2006,8 +2121,8 @@ function drawPeriod(week)
         }
     }
 
-    previousControl.innerHTML = '<a href="javascript:drawPeriod(' + (week + 1) + ');">PREVIOUS</a>'
-    nextControl.innerHTML = '<a href="javascript:drawPeriod(' + (week - 1) + ');">NEXT</a>'
+    previousControl.innerHTML = '<a href="javascript:drawPeriod__MODULE_ID__(' + (week + 1) + ');">PREVIOUS</a>'
+    nextControl.innerHTML = '<a href="javascript:drawPeriod__MODULE_ID__(' + (week - 1) + ');">NEXT</a>'
 
     var startDateValue = startDate.getTime();
 
@@ -2059,7 +2174,7 @@ function drawPeriod(week)
     startDateValue -= (1000 * 60 * 60 * 24) * (dateShift + dayOfWeekShift);
     startDate.setTime(startDateValue);
 
-    var firstDay = getFormattedDateString(startDate);
+    var firstDay = getFormattedDateString__MODULE_ID__(startDate);
 
     var eventDataArray = new Array();
     var taskIds = new Array();
@@ -2067,7 +2182,7 @@ function drawPeriod(week)
 
     for (var i = 0; i < numberOfDatesToRetrieve; i++)
     {
-        var eventData = getDateRecord(startDate, false);
+        var eventData = getDateRecord__MODULE_ID__(startDate, false);
         eventDataArray[i] = eventData;
 
         var totals = eventData.getTotals();
@@ -2083,7 +2198,7 @@ function drawPeriod(week)
     startDateValue -= 1000 * 60 * 60 * 24;
     startDate.setTime(startDateValue);
 
-    var lastDay = getFormattedDateString(startDate);
+    var lastDay = getFormattedDateString__MODULE_ID__(startDate);
 
     var dateRangeDisplay = _gel("summary_date_range");
     dateRangeDisplay.innerHTML = firstDay + " - " + lastDay;
@@ -2140,14 +2255,15 @@ function drawPeriod(week)
                 newRow.id = "summary_row_" + taskId;
 
                 var taskNameTd = document.createElement("td");
-                taskNameTd.innerHTML = getTaskName(taskId);
+                taskNameTd.innerHTML = getTaskName__MODULE_ID__(taskId);
                 taskNameTd.className = "summary_task_data task_title_data";
                 newRow.appendChild(taskNameTd);
 
                 for (j = 0; j < numberOfDatesToRetrieve; j++)
                 {
                     var currentTd = document.createElement("td");
-                    currentTd.innerHTML = getTotalString(eventDataArray[dayCounter++].getTotalForTask(taskId))
+                    currentTd.innerHTML =
+                    getTotalString__MODULE_ID__(eventDataArray[dayCounter++].getTotalForTask(taskId))
                     if (numberOfDatesToRetrieve == 7)
                     {
                         currentTd.className = "summary_task_data summary_total";
@@ -2174,7 +2290,7 @@ function drawPeriod(week)
 
 }
 
-function getTotalString(total)
+function getTotalString__MODULE_ID__(total)
 {
     var duration;
 
@@ -2245,7 +2361,7 @@ function getTotalString(total)
 </script>
 
 <script type="text/javascript">
-    _IG_RegisterOnloadHandler(initialise);
+    _IG_RegisterOnloadHandler(initialise__MODULE_ID__);
 </script>
 </body>
 </html>
