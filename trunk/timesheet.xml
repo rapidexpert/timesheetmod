@@ -969,6 +969,10 @@ function synchroniseNextEvent(i)
 
             sendEventXml__MODULE_ID__(i, events, eventXml, true);
         }
+        else
+        {
+            synchroniseNextEvent(++i);
+        }
     }
     else
     {
