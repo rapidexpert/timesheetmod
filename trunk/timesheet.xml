@@ -5,7 +5,7 @@
                  description="A tool for recording timesheet data.  Tasks can be created, renamed and reordered, with a second tab providing a summary of the last 4 weeks of your recorded data.  Event data can also be synchronised with a chosen Google calendar."
                  author="Qiladan" author_email="qiladan+timesheet@gmail.com"
                  author_location="Bristol, UK" category="Tools"
-                 title_url="http://bonstio.net/timesheet"
+                 title_url="http://bonstio.net/google-gadgets/timesheet-recorder"
                  screenshot="http://timesheetmod.googlecode.com/svn/trunk/images/screenshot.png"
                  thumbnail="http://timesheetmod.googlecode.com/svn/trunk/images/thumbnail.png"
                  singleton="true">
