@@ -1,6 +1,13 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <Module>
-    <ModulePrefs title="Timesheet" height="250">
+    <ModulePrefs title="Timesheet Recorder" height="250"
+                 directory_title="Timesheet Recorder"
+                 description="A tool for recording timesheet data.  Tasks can be created, renamed and reordered, with a second tab providing a summary of the last 4 weeks of your recorded data.  Event data can also be synchronised with a chosen Google calendar."
+                 author="Qiladan" author_email="qiladan+timesheet@gmail.com"
+                 author_location="Bristol, UK" category="Tools"
+                 screenshot="http://timesheetmod.googlecode.com/svn/trunk/images/screenshot.png"
+                 thumbnail="http://timesheetmod.googlecode.com/svn/trunk/images/thumbnail.png"
+                 singleton="true">
         <Require feature="setprefs"/>
         <Require feature="tabs"/>
         <Require feature="analytics"/>
