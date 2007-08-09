@@ -16,7 +16,7 @@
 }
 
 #taskContent #task_list {
-    width: 99%;
+    width: 30%;
     overflow: visible;
     clear: both;
     margin-left: 2px;
@@ -50,8 +50,7 @@
 }
 
 #taskContent #tasks table td {
-    border-width: 0 1px 1px 1px;
-    border-style: solid;
+    border-width: 0 1px 1px 1px; /*border-style: solid;*/
 }
 
 #taskContent #title table {
@@ -123,7 +122,7 @@
 }
 
 .handle {
-    border: thin hidden;
+    border: solid 1px;
     width: 10px;
     cursor: move;
     padding: 0px;
@@ -140,6 +139,13 @@
     width: auto;
 }
 
+.time_editor {
+    border-left: none;
+    text-align: center;
+    width: 45%;
+    padding-right: 1px;
+}
+
 .total_time {
     border-left: none;
     text-align: center;
@@ -148,6 +154,7 @@
 
 .status {
     border-left: none;
+    text-align: center;
     width: 20%;
 }
 
@@ -263,6 +270,13 @@
 
 .currentTimer {
     font-style: oblique;
+}
+
+.emptyTaskTd {
+    border: none;
+    border-bottom: solid;
+    background-color: transparent;
+    background-image: none;
 }
 
 .empty {
@@ -427,10 +441,10 @@
     </div>
 
     <script type="text/javascript" language="javascript">
-        Sortable.create('tasks', {handle:'handle',constraint:'vertical'})
+        Sortable.create('tasks', {handle:'handle_image',constraint:'vertical'})
     </script>
 
-    <div id="dataDiv" style="display:none;"><!--<br/>
+    <div id="dataDiv" style="display:block;"><br/>
         <span id="event_data_23_heading">event_data_23 - </span>
         <span id="event_data_23">230707103435!|0:0:103438:103440||0:0:103442:103444||0:0:103729:105119|!|0:001354|</span>
         <br/>
@@ -465,7 +479,7 @@
         <span id="next_event_id">1</span>
         <br/>
         <span id="summary_date_format_heading">summary_date_format - </span>
-        <span id="summary_date_format">1</span>-->
+        <span id="summary_date_format">1</span>
     </div>
 </div>
 <div id="summaryContent" style="display:none">
@@ -1233,6 +1247,54 @@ function displayTaskTimers__MODULE_ID__()
     _IG_Analytics("UA-2305736-1", "/timesheetmod/display_task_timers");
 }
 
+function startStopTimerAtTime__MODULE_ID__(source)
+{
+    var nameSplit = source.id.split("_");
+    var taskId = eval(nameSplit[nameSplit.length - 1]);
+
+    var taskTable = _gel("table_" + taskId);
+
+    var lastRow = taskTable.rows.length;
+
+    if (lastRow == 1)
+    {
+        var taskRow = taskTable.insertRow(lastRow);
+
+        var handleTd = document.createElement("td");
+        var handleImage = document.createElement("img");
+        var nameTd = document.createElement("td");
+        var nameDiv = document.createElement("div");
+        var timeEditorTd = document.createElement("td");
+        var timeEditorSpan = document.createElement("span");
+        var disableTd = document.createElement("td");
+
+        handleTd.id = "timed_handle_td_" + taskId;
+        handleTd.className = "modtitle tabtitle handle emptyTaskTd";
+        nameTd.id = "timed_name_td_" + taskId;
+        nameTd.className = 'task_data task_name';
+        nameDiv.id = "timed_name_div_" + taskId;
+        nameDiv.style.width = "100%";
+        timeEditorTd.id = "timed_total_time_td_" + taskId;
+        timeEditorTd.className = 'task_data time_editor';
+        timeEditorTd.colSpan = 2;
+        timeEditorSpan.innerHTML = getTimeEditorControls__MODULE_ID__();
+        disableTd.id = "timed_disable_td_" + taskId;
+        disableTd.className = 'task_data emptyTaskTd';
+        handleTd.innerHTML = "&nbsp;";
+        taskRow.appendChild(handleTd);
+        nameTd.appendChild(nameDiv);
+        taskRow.appendChild(nameTd);
+        timeEditorTd.appendChild(timeEditorSpan);
+        taskRow.appendChild(timeEditorTd);
+        taskRow.appendChild(disableTd);
+    }
+}
+
+function getTimeEditorControls__MODULE_ID__()
+{
+    return "Time Controls<br/>Date Controls If Necessary";
+}
+
 function startStopTimer__MODULE_ID__(source)
 {
     var nameSplit = source.id.split("_");
@@ -1251,9 +1313,13 @@ function startStopTimer__MODULE_ID__(source)
         }
 
         var oldTaskId = currentEvent__MODULE_ID__.getTask().getId();
-        var timersButton = _gel("status_div_" + oldTaskId);
-        timersButton.innerHTML =
-        '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/start.png" alt="Start"/>';
+        var immediateTimersButton = _gel("status_immediate_img_" + oldTaskId);
+        immediateTimersButton.src = "http://timesheetmod.googlecode.com/svn/trunk/images/start_immediate.png";
+        immediateTimersButton.alt = "Start";
+
+        var timersButton = _gel("status_timed_img_" + oldTaskId);
+        timersButton.src = "http://timesheetmod.googlecode.com/svn/trunk/images/start.png";
+        timersButton.alt = "Start at Time";
 
         prefs.set("current_event", "");
         addNewEvent__MODULE_ID__(currentEvent__MODULE_ID__);
@@ -1281,7 +1347,14 @@ function startStopTimer__MODULE_ID__(source)
         currentEvent__MODULE_ID__.setTask(task);
         currentEvent__MODULE_ID__.setStart(startTime);
 
-        source.innerHTML = '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/stop.png" alt="Stop"/>';
+        var immediateTimersButton = _gel("status_immediate_img_" + taskId);
+        immediateTimersButton.src = "http://timesheetmod.googlecode.com/svn/trunk/images/stop_immediate.png";
+        immediateTimersButton.alt = "Stop";
+
+        var timersButton = _gel("status_timed_img_" + taskId);
+        timersButton.src = "http://timesheetmod.googlecode.com/svn/trunk/images/stop.png";
+        timersButton.alt = "Stop at Time";
+
         prefs.set("current_event", currentEvent__MODULE_ID__.toString());
         refreshCurrentTimer__MODULE_ID__();
     }
@@ -1658,9 +1731,12 @@ function initialiseTaskList__MODULE_ID__()
 
             if (taskId && taskId != "undefined")
             {
-                var statusControl = _gel("status_div_" + taskId);
-                statusControl.innerHTML =
-                '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/stop.png" alt="Stop"/>';
+                var immediateStatusControl = _gel("status_immediate_img_" + taskId);
+                immediateStatusControl.src = "http://timesheetmod.googlecode.com/svn/trunk/images/stop_immediate.png";
+                immediateStatusControl.alt = "Stop";
+                var timedStatusControl = _gel("status_timed_img_" + taskId);
+                timedStatusControl.src = "http://timesheetmod.googlecode.com/svn/trunk/images/stop.png";
+                timedStatusControl.alt = "Stop at Time";
                 refreshCurrentTimer__MODULE_ID__();
             }
             else
@@ -1758,7 +1834,8 @@ function replaceWithContent__MODULE_ID__(source)
 
                 if (currentEvent__MODULE_ID__)
                 {
-                    startStopTimer__MODULE_ID__(_gel("status_div_" + currentEvent__MODULE_ID__.getTask().getId()));
+                    startStopTimer__MODULE_ID__(_gel("status_immediate_img_"
+                            + currentEvent__MODULE_ID__.getTask().getId()));
                 }
 
                 containingDiv.innerHTML = taskName;
@@ -1777,12 +1854,12 @@ function replaceWithContent__MODULE_ID__(source)
                 taskRow.innerHTML = html;
 
                 var nameDiv = _gel("name_div_" + existingTaskId);
-                var statusDiv = _gel("status_div_" + existingTaskId);
+                var statusImg = _gel("status_immediate_img_" + existingTaskId);
                 nameDiv.onclick = function()
                 {
                     replaceWithTextBox__MODULE_ID__(this);
                 };
-                statusDiv.onclick = function()
+                statusImg.onclick = function()
                 {
                     startStopTimer__MODULE_ID__(this);
                 };
@@ -1815,7 +1892,7 @@ function replaceWithContent__MODULE_ID__(source)
 
                 setArray__MODULE_ID__("active_task_ids", activeTaskIds);
 
-                Sortable.create('tasks', {handle:'handle',constraint:'vertical'});
+                Sortable.create('tasks', {handle:'handle_image',constraint:'vertical'});
             }
         }
     }
@@ -1871,7 +1948,7 @@ function disableTask__MODULE_ID__(taskId, prompt)
             var timerTaskId = currentEvent__MODULE_ID__.getTask().getId();
             if (timerTaskId == taskId)
             {
-                var timersButton = _gel("status_div_" + timerTaskId);
+                var timersButton = _gel("status_immediate_img_" + timerTaskId);
                 startStopTimer__MODULE_ID__(timersButton);
             }
         }
@@ -2015,7 +2092,8 @@ function createNewTask__MODULE_ID__(taskId, setActiveTaskData)
     var totalTimeTd = document.createElement("td");
     var totalTimeSpan = document.createElement("span");
     var statusTd = document.createElement("td");
-    var statusDiv = document.createElement("div");
+    var statusImmediateImg = document.createElement("img");
+    var statusTimedImg = document.createElement("img");
     var disableTd = document.createElement("td");
 
     listRow.id = "li_row_" + taskId;
@@ -2039,12 +2117,26 @@ function createNewTask__MODULE_ID__(taskId, setActiveTaskData)
     totalTimeSpan.id = "total_time_span_" + taskId;
     totalTimeSpan.style.width = "100%"
     statusTd.id = "status_td_" + taskId;
-    statusTd.className = 'task_data status control';
-    statusDiv.id = "status_div_" + taskId;
-    statusDiv.onclick = function()
+    statusTd.className = 'task_data status';
+    statusImmediateImg.id = "status_immediate_img_" + taskId;
+    statusImmediateImg.className = "control";
+    statusImmediateImg.src = "http://timesheetmod.googlecode.com/svn/trunk/images/start_immediate.png"
+    statusImmediateImg.alt = "Start";
+    statusImmediateImg.onclick = function()
     {
         startStopTimer__MODULE_ID__(this);
     };
+
+    statusTimedImg.id = "status_timed_img_" + taskId;
+    statusTimedImg.className = "control";
+    statusTimedImg.style.paddingLeft = "5px";
+    statusTimedImg.src = "http://timesheetmod.googlecode.com/svn/trunk/images/start.png"
+    statusTimedImg.alt = "Start At Time";
+    statusTimedImg.onclick = function()
+    {
+        startStopTimerAtTime__MODULE_ID__(this);
+    };
+
     disableTd.id = "disable_td_" + taskId;
     disableTd.className = 'task_data change';
 
@@ -2061,7 +2153,6 @@ function createNewTask__MODULE_ID__(taskId, setActiveTaskData)
     {
         totalTimeSpan.innerHTML = getDurationDisplayString__MODULE_ID__();
     }
-    statusDiv.innerHTML = '<img src="http://timesheetmod.googlecode.com/svn/trunk/images/start.png" alt="Start"/>';
     disableTd.innerHTML =
     '<a href="javascript:disableTask__MODULE_ID__(' + taskId + ', true);" class="delbox stealImage"></a>';
 
@@ -2071,7 +2162,8 @@ function createNewTask__MODULE_ID__(taskId, setActiveTaskData)
     taskRow.appendChild(nameTd);
     totalTimeTd.appendChild(totalTimeSpan);
     taskRow.appendChild(totalTimeTd);
-    statusTd.appendChild(statusDiv)
+    statusTd.appendChild(statusImmediateImg);
+    statusTd.appendChild(statusTimedImg);
     taskRow.appendChild(statusTd);
     taskRow.appendChild(disableTd);
 
@@ -2081,7 +2173,7 @@ function createNewTask__MODULE_ID__(taskId, setActiveTaskData)
     taskList.appendChild(listRow);
 
     Effect.BlindDown(listRow.id);
-    Sortable.create('tasks', {handle:'handle',constraint:'vertical'})
+    Sortable.create('tasks', {handle:'handle_image',constraint:'vertical'})
 }
 
 function initialiseSummary__MODULE_ID__()
