@@ -651,7 +651,8 @@ function parseUserCalendars__MODULE_ID__(httpReq, retry)
             {
                 obtainAuthId__MODULE_ID__(httpReq);
                 httpReq = getBrowserRequestObject__MODULE_ID__();
-                var calUrl = httpType__MODULE_ID__ + "://" + domain__MODULE_ID__ + "/calendar/feeds/default/owncalendars/full";
+                var calUrl = httpType__MODULE_ID__ + "://" + domain__MODULE_ID__
+                        + "/calendar/feeds/default/owncalendars/full";
                 httpReq.open('get', calUrl, false);
                 httpReq.setRequestHeader('Authorization', 'GoogleLogin auth=' + prefs.getString("calauth"));
                 httpReq.setRequestHeader('Content-type', 'application/atom+xml');
@@ -810,7 +811,7 @@ function synchroniseWithGcal__MODULE_ID__()
     synchroniseNextEvent(0);
 }
 
-function finishCalendarSync__MODULE_ID__()
+function finishCalendarSync__MODULE_ID__(error)
 {
     for (var l = 0; l < dateRecordsToUpdate__MODULE_ID__.length; l++)
     {
@@ -824,8 +825,19 @@ function finishCalendarSync__MODULE_ID__()
 
     syncing__MODULE_ID__ = false;
     calMessage__MODULE_ID__.dismissMessage(currentMessage__MODULE_ID__);
-    _IG_Analytics("UA-2305736-1", "/timesheetmod/gcal_synchronisation");
-    calMessage__MODULE_ID__.createTimerMessage("Timesheet data synchronised", 5, hideMessages__MODULE_ID__);
+    if (error)
+    {
+        var link = httpType__MODULE_ID__ + "://" + domain__MODULE_ID__ + "/calendar";
+        var googleCalendarLink = "<a href='" + link + "' target='blank'>" + link + "</a>";
+        calMessage__MODULE_ID__.createDismissibleMessage("Error synchronising timesheet data - please ensure you have logged into Google calendar at "
+                + googleCalendarLink, hideMessages__MODULE_ID__);
+    }
+    else
+    {
+        _IG_Analytics("UA-2305736-1", "/timesheetmod/gcal_synchronisation");
+        calMessage__MODULE_ID__.createTimerMessage("Timesheet data synchronised", 5, hideMessages__MODULE_ID__);
+    }
+
 }
 
 var dateRecordsToUpdate__MODULE_ID__ = null;
@@ -884,7 +896,7 @@ function synchroniseNextEvent(i)
     }
     else
     {
-        finishCalendarSync__MODULE_ID__();
+        finishCalendarSync__MODULE_ID__(false);
     }
 }
 
@@ -918,10 +930,7 @@ function sendEventXml__MODULE_ID__(i, events, eventXml, retry)
                 }
                 else
                 {
-                    var link = httpType__MODULE_ID__ + "://" + domain__MODULE_ID__ + "/calendar";
-                    var googleCalendarLink = "<a href='" + link + "' target='blank'>" + link + "</a>";
-                    calMessage__MODULE_ID__.createDismissibleMessage("Error synchronising timesheet data - please ensure you have logged into Google calendar at "
-                            + googleCalendarLink, hideMessages__MODULE_ID__);
+                    finishCalendarSync__MODULE_ID__(true);
                 }
             }
             else
