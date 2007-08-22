@@ -750,6 +750,7 @@ function parseUserCalendars__MODULE_ID__(httpReq, retry)
         {
             if (retry)
             {
+                var prefs = new _IG_Prefs(__MODULE_ID__);
                 obtainAuthId__MODULE_ID__(httpReq);
                 httpReq = getBrowserRequestObject__MODULE_ID__();
                 var calUrl = httpType__MODULE_ID__ + "://" + domain__MODULE_ID__ + "/calendar/feeds/default/owncalendars/full";
