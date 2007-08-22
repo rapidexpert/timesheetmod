@@ -14,12 +14,12 @@ BasicTime.prototype._seconds = null;
 
 BasicTime.prototype.addHours = function(hours)
 {
-    this._hours = eval(this._hours) + eval(hours);
+    this._hours = parseInt(this._hours, 10) + parseInt(hours, 10);
 }
 
 BasicTime.prototype.addMinutes = function(minutes)
 {
-    var tempMinutes = eval(this._minutes) + eval(minutes);
+    var tempMinutes = parseInt(this._minutes, 10) + parseInt(minutes, 10);
     var potentialHoursAddition = Math.floor(tempMinutes / 60);
     this.addHours(potentialHoursAddition);
     this._minutes = tempMinutes % 60;
@@ -27,7 +27,7 @@ BasicTime.prototype.addMinutes = function(minutes)
 
 BasicTime.prototype.addSeconds = function(seconds)
 {
-    var tempSeconds = eval(this._seconds) + eval(seconds);
+    var tempSeconds = parseInt(this._seconds, 10) + parseInt(seconds, 10);
     var potentialMinutesAddition = Math.floor(tempSeconds / 60);
     this.addMinutes(potentialMinutesAddition);
     this._seconds = tempSeconds % 60;
@@ -105,11 +105,11 @@ BasicTime.prototype.toDate = function()
 
     if (date)
     {
-        currentDate.setDate(eval(this.getDate()));
-        currentDate.setMonth(eval(this.getMonth()) - 1);
-        currentDate.setYear(eval("20" + this.getYear()));
+        currentDate.setDate(parseInt(this.getDate(), 10));
+        currentDate.setMonth(parseInt(this.getMonth(), 10) - 1);
+        currentDate.setYear(parseInt("20" + this.getYear(), 10));
     }
-    currentDate.setHours(eval(this.getHours()), eval(this.getMinutes()), eval(this.getSeconds()), 0)
+    currentDate.setHours(parseInt(this.getHours(), 10), parseInt(this.getMinutes(), 10), parseInt(this.getSeconds(), 10), 0)
     return currentDate;
 }
 
