@@ -767,6 +767,7 @@ function parseUserCalendars__MODULE_ID__(httpReq, retry)
             {
                 var link = httpType__MODULE_ID__ + "://" + domain__MODULE_ID__ + "/calendar";
                 var googleCalendarLink = "<a href='" + link + "' target='blank'>" + link + "</a>";
+                calMessage__MODULE_ID__.dismissMessage(currentMessage__MODULE_ID__);
                 calMessage__MODULE_ID__.createDismissibleMessage("Error obtaining calendars - please ensure you have logged into Google calendar at "
                         + googleCalendarLink, hideMessages__MODULE_ID__);
                 obtainingUserCals__MODULE_ID__ = false;
