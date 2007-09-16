@@ -184,6 +184,7 @@
 }
 
 .title_heading {
+    background-repeat: repeat-y;
     font-weight: bold;
     font-size: smaller;
     border: solid;
@@ -220,7 +221,6 @@
     width: 10px;
     cursor: auto;
     padding: 0px;
-    background-repeat: repeat-y;
 }
 
 .handle {
@@ -249,6 +249,7 @@
 
 .status {
     border-left: none;
+    text-align: center;
     width: 20%;
 }
 
@@ -771,7 +772,7 @@ function parseUserCalendars__MODULE_ID__(httpReq, retry)
                 calMessage__MODULE_ID__.createDismissibleMessage("Error obtaining calendars - please ensure you have logged into Google calendar at "
                         + googleCalendarLink, hideMessages__MODULE_ID__);
                 obtainingUserCals__MODULE_ID__ = false;
-           }
+            }
         }
         else
         {
@@ -1051,7 +1052,7 @@ function updateDateRecordsAfterSync__MODULE_ID__(events, i)
     {
         var event = events[k];
         event.setSynced(true);
-        var dateRecordId = eval(event.getDateRecord().getDate().getDate());
+        var dateRecordId = parseInt(event.getDateRecord().getDate().getDate(), 10);
         dateRecordsToUpdate__MODULE_ID__[dateRecordId] = event.getDateRecord();
     }
     synchroniseNextEvent(++i);
@@ -1218,7 +1219,7 @@ function getDateRecord__MODULE_ID__(date, persistIfOutOfDate)
     var dateRecord = monthsEvents__MODULE_ID__[currentDate];
 
     var dateCorrectedMonth = date.getMonth() + 1;
-    if (!dateRecord || eval(dateRecord.getDate().getMonth()) != dateCorrectedMonth)
+    if (!dateRecord || parseInt(dateRecord.getDate().getMonth(), 10) != dateCorrectedMonth)
     {
         var prefs = new _IG_Prefs(__MODULE_ID__);
         var existingDateRecordString = prefs.getString("event_data_" + currentDate);
@@ -1248,8 +1249,8 @@ function getDateRecord__MODULE_ID__(date, persistIfOutOfDate)
         }
     }
 
-    var dateRecordDate = eval(dateRecord.getDate().getDate());
-    var dateRecordMonth = eval(dateRecord.getDate().getMonth());
+    var dateRecordDate = parseInt(dateRecord.getDate().getDate(), 10);
+    var dateRecordMonth = parseInt(dateRecord.getDate().getMonth(), 10);
     if (dateRecordDate == today.getDate() && dateRecordMonth == (today.getMonth() + 1))
     {
         todaysEventData__MODULE_ID__ = dateRecord;
@@ -1339,7 +1340,7 @@ function displayTaskTimers__MODULE_ID__()
 function startStopTimer__MODULE_ID__(source)
 {
     var nameSplit = source.id.split("_");
-    var taskId = eval(nameSplit[nameSplit.length - 1]);
+    var taskId = parseInt(nameSplit[nameSplit.length - 1], 10);
     var currentTime = new Date();
     var prefs = new _IG_Prefs(__MODULE_ID__);
 
@@ -1431,14 +1432,21 @@ function getEventXml__MODULE_ID__(taskName, eventId, start, end)
     eventXML += "<gd:transparency value='http://schemas.google.com/g/2005#event.opaque'></gd:transparency>\n";
     eventXML += "<gCal:sendEventNotifications value='false'></gCal:sendEventNotifications>\n";
 
+    var tempDate = new Date();
+    var timeString = tempDate.toString();
+
+    var timeTokens = timeString.split(" ");
+    var timezoneToken = timeTokens[5];
+    var formattedTimezone = timezoneToken.slice(3,6) + ":" + timezoneToken.slice(6, timezoneToken.length);
+
     var startTime = start.getFullYear() + "-" + getFormattedNumber(start.getMonth() + 1) + "-"
             + getFormattedNumber(start.getDate());
     startTime += "T" + getFormattedNumber(start.getHours()) + ":" + getFormattedNumber(start.getMinutes());
-    startTime += ":00.000+01:00";
+    startTime += ":00.000" + formattedTimezone;
     var endTime = end.getFullYear() + "-" + getFormattedNumber(end.getMonth() + 1) + "-"
             + getFormattedNumber(end.getDate());
     endTime += "T" + getFormattedNumber(end.getHours()) + ":" + getFormattedNumber(end.getMinutes())
-    endTime += ":00.000+01:00";
+    endTime += ":00.000" + formattedTimezone;
 
     eventXML += "<gd:when startTime='" + startTime + "' endTime='" + endTime + "'></gd:when>\n";
     eventXML += "<gd:where></gd:where>\n";
@@ -1561,7 +1569,7 @@ function replaceWithTextBox__MODULE_ID__(source)
     var currentContent = source.innerHTML;
 
     var nameSplit = source.id.split("_");
-    var taskId = eval(nameSplit[nameSplit.length - 1]);
+    var taskId = parseInt(nameSplit[nameSplit.length - 1], 10);
 
     var textElementId = "rename_text_" + taskId;
     source.innerHTML = "<input class='editTaskName' type=\'text\' id=\'" + textElementId
@@ -1583,7 +1591,7 @@ function replaceWithTextBox__MODULE_ID__(source)
 function updateDateRecord__MODULE_ID__(dateRecord)
 {
     var prefs = new _IG_Prefs(__MODULE_ID__);
-    prefs.set("event_data_" + eval(dateRecord.getDate().getDate()), dateRecord.toString());
+    prefs.set("event_data_" + parseInt(dateRecord.getDate().getDate(), 10), dateRecord.toString());
 }
 
 var currentVersion__MODULE_ID__ = 2;
@@ -1817,7 +1825,7 @@ function displayNoTaskMessage__MODULE_ID__(display)
 function replaceWithContent__MODULE_ID__(source)
 {
     var nameSplit = source.id.split("_");
-    var taskId = eval(nameSplit[nameSplit.length - 1]);
+    var taskId = parseInt(nameSplit[nameSplit.length - 1], 10);
 
     var containingDiv = _gel("name_div_" + taskId);
     var taskName = _trim(source.value);
@@ -2432,9 +2440,9 @@ function getTotalString__MODULE_ID__(total)
     {
         duration = new BasicTime();
     }
-    var hours = eval(duration.getHours());
-    var minutes = eval(duration.getMinutes());
-    var seconds = eval(duration.getSeconds());
+    var hours = parseInt(duration.getHours(), 10);
+    var minutes = parseInt(duration.getMinutes(), 10);
+    var seconds = parseInt(duration.getSeconds(), 10);
 
     minutes += seconds / 60;
 
