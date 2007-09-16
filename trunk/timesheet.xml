@@ -1436,7 +1436,18 @@ function getEventXml__MODULE_ID__(taskName, eventId, start, end)
     var timeString = tempDate.toString();
 
     var timeTokens = timeString.split(" ");
-    var timezoneToken = timeTokens[5];
+    var timezoneToken;
+
+    for (var i = 0; i < timeTokens.length; i++)
+    {
+        var tempToken = timeTokens[i];
+        if (tempToken.indexOf("+") != -1 || tempToken.indexOf("-") != -1)
+        {
+            timezoneToken = tempToken;
+            break;
+        }
+    }
+    
     var formattedTimezone = timezoneToken.slice(3,6) + ":" + timezoneToken.slice(6, timezoneToken.length);
 
     var startTime = start.getFullYear() + "-" + getFormattedNumber(start.getMonth() + 1) + "-"
