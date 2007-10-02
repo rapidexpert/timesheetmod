@@ -184,18 +184,17 @@
 }
 
 .title_heading {
-    background-repeat: repeat-y;
-    font-weight: bold;
-    font-size: smaller;
+    font-weight: bold !important;
+    font-size: smaller !important;
     border: solid;
     border-width: 1px;
     text-align: center;
     float: none;
-    line-height: 21px;
+    line-height: 21px !important;
     vertical-align: middle;
     cursor: default;
-    padding: 2px;
-    background-repeat: repeat;
+    padding: 2px !important;
+    background-repeat: repeat !important;
 }
 
 .no_left_border {
@@ -203,14 +202,14 @@
 }
 
 .task_data {
-    font-weight: normal;
+    font-weight: normal !important;
     border: solid;
     border-top: none;
     text-align: left;
     float: none;
     vertical-align: middle;
     cursor: default;
-    padding: 2px;
+    padding: 2px !important;
     height: auto;
     font-size: smaller;
     background-image: none;
@@ -220,14 +219,15 @@
     border: thin hidden;
     width: 10px;
     cursor: auto;
-    padding: 0px;
+    padding: 0px !important;
+    background-repeat: repeat-y !important;
 }
 
 .handle {
-    border: thin hidden;
+    border: solid 1px;
     width: 10px;
     cursor: move;
-    padding: 0px;
+    padding: 0px !important;
     text-align: center;
 }
 
