@@ -312,16 +312,16 @@
 }
 
 .addTaskEntry {
-    border: solid 1px;
+    border: solid 1px !important;
     height: 21px;
     clear: right;
     float: right;
     visibility: hidden;
     display: none;
     width: 200px;
-    padding: 5px;
+    padding: 5px !important;
     margin: 5px;
-    background-repeat: repeat;
+    background-repeat: repeat !important;
 }
 
 .addTaskEntryTextbox {
