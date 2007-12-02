@@ -2,6 +2,9 @@ function TimerEvent()
 {
 }
 
+TimerEvent.MODULE_ID = null;
+TimerEvent.DAYS_MILLISECONDS = 1000 * 60 * 60 * 24;
+
 TimerEvent.prototype._task = null;
 TimerEvent.prototype._start = null;
 TimerEvent.prototype._end = null;
@@ -38,7 +41,7 @@ TimerEvent.prototype.setDataFromString = function(eventString, version)
         var index = 0;
         var splitData = eventString.split(":");
 
-        this.setTask(getTaskById(splitData[index++]));
+        this.setTask(_getTaskById(splitData[index++]));
         var start = new BasicTime();
         start.setDataFromString(splitData[index++]);
         this.setStart(start);
@@ -79,6 +82,111 @@ TimerEvent.prototype.toString = function()
     }
 
     return eventString;
+}
+
+TimerEvent.prototype.splitDates = function()
+{
+    var events = new Array();
+    var index = 0;
+
+    var startDate = this.getStart().toDate();
+    var endDate = this.getEnd().toDate();
+
+    var numberOfEvents = 1;
+    while (startDate.getDate() != endDate.getDate())
+    {
+        numberOfEvents++;
+        var time = startDate.getTime();
+        time += TimerEvent.DAYS_MILLISECONDS;
+        startDate.setTime(time);
+    }
+
+    if (this.getStart().getDate() != this.getEnd().getDate() || this.getStart().getMonth() != this.getEnd().getMonth())
+    {
+        var lastDate = null;
+        var eventId = this.getNextEventId();
+
+        for (; index < numberOfEvents; index++)
+        {
+            var newEvent = new TimerEvent();
+            newEvent.setTask(this.getTask());
+            newEvent.setSynced(this.isSynced());
+            newEvent.setMultiEvent(true);
+            newEvent.setEventId(eventId);
+
+            var start;
+            var end;
+            var lastDateValue;
+            if (index > 0 && (index + 1) != numberOfEvents)
+            {
+                lastDateValue = lastDate.getTime();
+                lastDateValue += TimerEvent.DAYS_MILLISECONDS;
+                lastDate = new Date();
+                lastDate.setTime(lastDateValue);
+
+                start = new BasicTime();
+                end = new BasicTime();
+                start.setDataFromDate(lastDate);
+                end.setDataFromDate(lastDate);
+
+                start.setHours(0);
+                start.setMinutes(0);
+                start.setSeconds(0);
+                end.setHours(23);
+                end.setMinutes(59);
+                end.setSeconds(59);
+
+                newEvent.setStart(start);
+                newEvent.setEnd(end);
+            }
+            else if (index + 1 == numberOfEvents)
+            {
+                lastDateValue = lastDate.getTime();
+                lastDateValue += TimerEvent.DAYS_MILLISECONDS;
+                lastDate = new Date();
+                lastDate.setTime(lastDateValue);
+
+                start = new BasicTime();
+                start.setDataFromDate(lastDate);
+
+                start.setHours(0);
+                start.setMinutes(0);
+                start.setSeconds(0);
+
+                newEvent.setStart(start);
+                newEvent.setEnd(this.getEnd());
+            }
+            else
+            {
+                lastDate = this.getStart().toDate();
+
+                end = new BasicTime();
+                end.setDataFromDate(lastDate);
+                end.setHours(23);
+                end.setMinutes(59);
+                end.setSeconds(59);
+
+                newEvent.setStart(this.getStart());
+                newEvent.setEnd(end);
+            }
+
+            events[index] = newEvent;
+        }
+    }
+    else
+    {
+        events[index] = this;
+    }
+
+    return events;
+}
+
+TimerEvent.prototype.getNextEventId = function()
+{
+    var prefName = "next_event_id";
+    var eventId = ++_getPrefInt(prefName, TimerEvent.MODULE_ID);
+    _setPref(prefName, eventId, TimerEvent.MODULE_ID)
+    return eventId;
 }
 
 TimerEvent.prototype.getTask = function()
@@ -132,4 +240,12 @@ TimerEvent.prototype.getDateRecord = function()
 TimerEvent.prototype.setDateRecord = function(dateRecord)
 {
     this._dateRecord = dateRecord;
+}
+TimerEvent.prototype.getEventId = function()
+{
+    if (!this._eventId)
+    {
+        this._eventId = getNextEventId();
+    }
+    return this._eventId;
 }
