@@ -11,7 +11,7 @@ Total.prototype.setDataFromString = function(totalString, version)
     {
         var splitData = totalString.split(":");
 
-        this.setTask(getTaskById(splitData[0]));
+        this.setTask(_getTaskById(splitData[0]));
 
         var duration = new BasicTime();
         duration.setDataFromString(splitData[1]);

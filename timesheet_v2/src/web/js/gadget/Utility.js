@@ -3,7 +3,7 @@ function _pInt(intValue)
     return parseInt(intValue, 10);
 }
 
-function getFormattedNumber(value, ignoreLargeNumbers)
+function _getFormattedNumber(value, ignoreLargeNumbers)
 {
     if (!value)
     {
@@ -22,9 +22,25 @@ function getFormattedNumber(value, ignoreLargeNumbers)
     return stringValue;
 }
 
-function getTaskById(taskId)
+function _getTaskById(taskId)
 {
     var task = new Task();
     task.setId(taskId);
     return task;
+}
+
+function _getPrefInt(prefName, moduleId)
+{
+    var prefs = new _IG_Prefs(moduleId);
+    return prefs.getInt(prefName);
+}
+function _getPrefString(prefName, moduleId)
+{
+    var prefs = new _IG_Prefs(moduleId);
+    return prefs.getString(prefName);
+}
+function _setPref(prefName, prefValue, moduleId)
+{
+    var prefs = new _IG_Prefs(moduleId);
+    prefs.set(prefName, prefValue);
 }

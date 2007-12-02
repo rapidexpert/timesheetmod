@@ -35,12 +35,12 @@ BasicTime.prototype.addSeconds = function(seconds)
 
 BasicTime.prototype.setDataFromDate = function(date)
 {
-    this.setDate(getFormattedNumber(date.getDate()));
-    this.setMonth(getFormattedNumber(date.getMonth() + 1));
-    this.setYear(getFormattedNumber(date.getYear()));
-    this.setHours(getFormattedNumber(date.getHours()));
-    this.setMinutes(getFormattedNumber(date.getMinutes()));
-    this.setSeconds(getFormattedNumber(date.getSeconds()));
+    this.setDate(_getFormattedNumber(date.getDate()));
+    this.setMonth(_getFormattedNumber(date.getMonth() + 1));
+    this.setYear(_getFormattedNumber(date.getYear()));
+    this.setHours(_getFormattedNumber(date.getHours()));
+    this.setMinutes(_getFormattedNumber(date.getMinutes()));
+    this.setSeconds(_getFormattedNumber(date.getSeconds()));
 }
 
 BasicTime.prototype.setDataFromString = function(dateString, version)
@@ -139,7 +139,7 @@ BasicTime.prototype.setDate = function(date)
 }
 BasicTime.prototype.getHours = function()
 {
-    return getFormattedNumber(this._hours, true);
+    return _getFormattedNumber(this._hours, true);
 }
 BasicTime.prototype.setHours = function(hours)
 {
@@ -147,7 +147,7 @@ BasicTime.prototype.setHours = function(hours)
 }
 BasicTime.prototype.getMinutes = function()
 {
-    return getFormattedNumber(this._minutes);
+    return _getFormattedNumber(this._minutes);
 }
 BasicTime.prototype.setMinutes = function(minutes)
 {
@@ -155,7 +155,7 @@ BasicTime.prototype.setMinutes = function(minutes)
 }
 BasicTime.prototype.getSeconds = function()
 {
-    return getFormattedNumber(this._seconds);
+    return _getFormattedNumber(this._seconds);
 }
 BasicTime.prototype.setSeconds = function(seconds)
 {
