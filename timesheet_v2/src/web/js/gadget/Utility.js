@@ -39,8 +39,33 @@ function _getPrefString(prefName, moduleId)
     var prefs = new _IG_Prefs(moduleId);
     return prefs.getString(prefName);
 }
+
+function _getPrefArray(prefName, moduleId)
+{
+    var arrayData = _getPrefString(prefName, moduleId);
+
+    if (arrayData && _trim(arrayData).length > 0)
+    {
+        return arrayData.split("|");
+    }
+    else
+    {
+        return null;
+    }
+}
+
 function _setPref(prefName, prefValue, moduleId)
 {
     var prefs = new _IG_Prefs(moduleId);
     prefs.set(prefName, prefValue);
+}
+
+function _setPrefArray(prefName, arrayData, moduleId)
+{
+    _setPref(prefName, arrayData.join("|"), moduleId);
+}
+
+function _getTimesheet(moduleId)
+{
+    return eval("timesheetv2_" + moduleId);
 }

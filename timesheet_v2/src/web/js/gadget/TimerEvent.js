@@ -2,7 +2,6 @@ function TimerEvent()
 {
 }
 
-TimerEvent.MODULE_ID = null;
 TimerEvent.DAYS_MILLISECONDS = 1000 * 60 * 60 * 24;
 
 TimerEvent.prototype._task = null;
@@ -13,6 +12,7 @@ TimerEvent.prototype._multiEvent = null;
 TimerEvent.prototype._eventId = null;
 TimerEvent.prototype._nextEventId = null;
 TimerEvent.prototype._dateRecord = null;
+TimerEvent.prototype._moduleId = null;
 
 TimerEvent.prototype.getDuration = function()
 {
@@ -184,8 +184,8 @@ TimerEvent.prototype.splitDates = function()
 TimerEvent.prototype.getNextEventId = function()
 {
     var prefName = "next_event_id";
-    var eventId = ++_getPrefInt(prefName, TimerEvent.MODULE_ID);
-    _setPref(prefName, eventId, TimerEvent.MODULE_ID)
+    var eventId = ++_getPrefInt(prefName, this.getModuleId());
+    _setPref(prefName, eventId, this.getModuleId())
     return eventId;
 }
 
@@ -240,6 +240,14 @@ TimerEvent.prototype.getDateRecord = function()
 TimerEvent.prototype.setDateRecord = function(dateRecord)
 {
     this._dateRecord = dateRecord;
+}
+TimerEvent.prototype.getModuleId = function()
+{
+    return this._moduleId;
+}
+TimerEvent.prototype.setModuleId = function(moduleId)
+{
+    this._moduleId = moduleId;
 }
 TimerEvent.prototype.getEventId = function()
 {
