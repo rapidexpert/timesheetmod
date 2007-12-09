@@ -462,21 +462,6 @@ this.getTodaysEventData()
     return todaysEventData__MODULE_ID__;
 }
 
-function getTaskName__MODULE_ID__(taskId)
-{
-    var allTaskNames = this.getPrefArray("task_names");
-
-    var name = null;
-
-    if (allTaskNames)
-    {
-        name = allTaskNames[taskId];
-    }
-
-    return name;
-}
-
-var currentEvent__MODULE_ID__;
 var timer__MODULE_ID__;
 var taskOrderTimer__MODULE_ID__ = null;
 
@@ -559,75 +544,6 @@ function startStopTimerAtTime__MODULE_ID__(source)
 function getTimeEditorControls__MODULE_ID__()
 {
     return "Time Controls<br/>Date Controls If Necessary";
-}
-
-function startStopTimer__MODULE_ID__(source)
-{
-    var nameSplit = source.id.split("_");
-    var taskId = parseInt(nameSplit[nameSplit.length - 1], 10);
-    var currentTime = new Date();
-    var prefs = new _IG_Prefs(__MODULE_ID__);
-
-    if (currentEvent__MODULE_ID__)
-    {
-        clearTimeout(timer__MODULE_ID__);
-        if (!currentEvent__MODULE_ID__.getEnd())
-        {
-            var endTime = new BasicTime();
-            endTime.setDataFromDate(currentTime);
-            currentEvent__MODULE_ID__.setEnd(endTime);
-        }
-
-        var oldTaskId = currentEvent__MODULE_ID__.getTask().getId();
-        var immediateTimersButton = _gel("status_immediate_img_" + oldTaskId);
-        immediateTimersButton.src = "http://timesheetmod.googlecode.com/svn/trunk/images/start_immediate.png";
-        immediateTimersButton.alt = "Start";
-
-        var timersButton = _gel("status_timed_img_" + oldTaskId);
-        timersButton.src = "http://timesheetmod.googlecode.com/svn/trunk/images/start.png";
-        timersButton.alt = "Start at Time";
-
-        prefs.set("current_event", "");
-        addNewEvent__MODULE_ID__(currentEvent__MODULE_ID__);
-        var timeSpan = _gel("total_time_span_" + oldTaskId);
-        var currentTotalTimeSpan = _gel("current_task_total_time_span");
-        var total = this.getTodaysEventData().getTotalForTask(oldTaskId);
-        var totalDuration = total.getDuration();
-
-        timeSpan.innerHTML = getDurationDisplayString__MODULE_ID__(totalDuration);
-        timeSpan.className = "";
-        currentTotalTimeSpan.className = "";
-        currentTotalTimeSpan.innerHTML = "None";
-
-        _IG_Analytics("UA-2305736-1", "/timesheetmod/new_event");
-    }
-
-    if (!currentEvent__MODULE_ID__ || currentEvent__MODULE_ID__.getTask().getId() != taskId)
-    {
-        currentEvent__MODULE_ID__ = new TimerEvent();
-        var task = new Task();
-        task.setId(taskId);
-
-        var startTime = new BasicTime();
-        startTime.setDataFromDate(currentTime);
-        currentEvent__MODULE_ID__.setTask(task);
-        currentEvent__MODULE_ID__.setStart(startTime);
-
-        var immediateTimersButton = _gel("status_immediate_img_" + taskId);
-        immediateTimersButton.src = "http://timesheetmod.googlecode.com/svn/trunk/images/stop_immediate.png";
-        immediateTimersButton.alt = "Stop";
-
-        var timersButton = _gel("status_timed_img_" + taskId);
-        timersButton.src = "http://timesheetmod.googlecode.com/svn/trunk/images/stop.png";
-        timersButton.alt = "Stop at Time";
-
-        prefs.set("current_event", currentEvent__MODULE_ID__.toString());
-        refreshCurrentTimer__MODULE_ID__();
-    }
-    else
-    {
-        currentEvent__MODULE_ID__ = null;
-    }
 }
 
 function addNewEvent__MODULE_ID__(event)
@@ -730,65 +646,6 @@ function getBrowserRequestObject__MODULE_ID__(mimetype)
         requestObject = new ActiveXObject("Microsoft.XMLHTTP");
     }
     return requestObject;
-}
-
-function refreshCurrentTimer__MODULE_ID__()
-{
-    var taskId = currentEvent__MODULE_ID__.getTask().getId();
-    var currentTime = new Date();
-
-    var timeSpan = _gel("total_time_span_" + taskId);
-    var currentTotalTimeSpan = _gel("current_task_total_time_span");
-    timeSpan.className = "currentTimer";
-    currentTotalTimeSpan.className = "currentTimer";
-
-    var endTime = new BasicTime();
-    endTime.setDataFromDate(currentTime);
-    currentEvent__MODULE_ID__.setEnd(endTime);
-
-    var eventDuration = currentEvent__MODULE_ID__.getDuration();
-
-    var tempDuration = new BasicTime();
-
-    var total = this.getTodaysEventData().getTotalForTask(taskId);
-    if (total)
-    {
-        var totalDuration = total.getDuration();
-        tempDuration.addSeconds(totalDuration.getSeconds());
-        tempDuration.addMinutes(totalDuration.getMinutes());
-        tempDuration.addHours(totalDuration.getHours());
-    }
-
-    tempDuration.addSeconds(eventDuration.getSeconds());
-    tempDuration.addMinutes(eventDuration.getMinutes());
-    tempDuration.addHours(eventDuration.getHours());
-
-    currentTotalTimeSpan.innerHTML = getDurationDisplayString__MODULE_ID__(eventDuration);
-
-    if (currentEvent__MODULE_ID__.getStart().getDate() != currentEvent__MODULE_ID__.getEnd().getDate())
-    {
-        tempDuration.setHours(currentEvent__MODULE_ID__.getEnd().getHours());
-        tempDuration.setMinutes(currentEvent__MODULE_ID__.getEnd().getMinutes());
-        tempDuration.setSeconds(currentEvent__MODULE_ID__.getEnd().getSeconds());
-    }
-
-    timeSpan.innerHTML = getDurationDisplayString__MODULE_ID__(tempDuration);
-
-    timer__MODULE_ID__ = setTimeout("refreshCurrentTimer__MODULE_ID__()", 1000);
-}
-
-function getDurationDisplayString__MODULE_ID__(duration)
-{
-    var durationString;
-    if (duration)
-    {
-        durationString = duration.getHours() + "h " + duration.getMinutes() + "m " + duration.getSeconds() + "s";
-    }
-    else
-    {
-        durationString = "00h 00m 00s";
-    }
-    return durationString;
 }
 
 var currentVersion__MODULE_ID__ = 2;
@@ -959,10 +816,10 @@ function initialiseTaskList__MODULE_ID__()
 
         if (currentEventData && _trim(currentEventData).length > 0)
         {
-            currentEvent__MODULE_ID__ = new TimerEvent();
-            currentEvent__MODULE_ID__.setDataFromString(currentEventData);
+            this.setCurrentEvent(new TimerEvent());
+            this.getCurrentEvent().setDataFromString(currentEventData);
 
-            var taskId = currentEvent__MODULE_ID__.getTask().getId();
+            var taskId = this.getCurrentEvent().getTask().getId();
 
             if (taskId && taskId != "undefined")
             {
@@ -976,7 +833,7 @@ function initialiseTaskList__MODULE_ID__()
             }
             else
             {
-                currentEvent__MODULE_ID__ = null;
+                this.setCurrentEvent(null);
                 prefs.set("current_event", "");
             }
         }
@@ -1012,9 +869,9 @@ function disableTask__MODULE_ID__(taskId, prompt)
 
     if (choice || !prompt)
     {
-        if (currentEvent__MODULE_ID__)
+        if (this.getCurrentEvent())
         {
-            var timerTaskId = currentEvent__MODULE_ID__.getTask().getId();
+            var timerTaskId = this.getCurrentEvent().getTask().getId();
             if (timerTaskId == taskId)
             {
                 var timersButton = _gel("status_immediate_img_" + timerTaskId);

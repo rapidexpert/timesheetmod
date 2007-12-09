@@ -65,7 +65,14 @@ function _setPrefArray(prefName, arrayData, moduleId)
     _setPref(prefName, arrayData.join("|"), moduleId);
 }
 
-function _getTimesheet(moduleId)
+function _getTimesheetForModuleId(moduleId)
 {
     return eval("timesheetv2_" + moduleId);
+}
+
+function _getTimesheetForElement(element)
+{
+    var elementId = element.id;
+    var splitId = elementId.split("_");
+    return _getTimesheetForModuleId(splitId);
 }
