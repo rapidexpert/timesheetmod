@@ -77,12 +77,10 @@ TimesheetDisplay.prototype.showMessages = function()
     messages.style.display = 'block';
 }
 
-
-// todo Not yet done this method.
 TimesheetDisplay.prototype.replaceWithContent = function(source)
 {
     var nameSplit = source.id.split("_");
-    var taskId = parseInt(nameSplit[nameSplit.length - 1], 10);
+    var taskId = _pInt(nameSplit[nameSplit.length - 1]);
 
     var containingDiv = _gel("name_div_" + taskId);
     var taskName = _trim(source.value);
@@ -90,15 +88,14 @@ TimesheetDisplay.prototype.replaceWithContent = function(source)
 
     if (taskName.length == 0)
     {
-        var miniMessage = new _IG_MiniMessage(__MODULE_ID__, _gel("messages"));
-        this.getDisplay().showMessages();
-        miniMessage.createTimerMessage("Please enter a task name", 2, this.getDisplay().hideMessages);
+        this.displayTimerMessage("Please enter a task name", 2);
         textEntry.focus();
     }
     else
     {
         var existingTaskId = this.getTaskId(taskName);
-        var existingTaskName = getTaskName__MODULE_ID__(existingTaskId);
+        var timesheetData = _getTimesheetForModuleId(this.getModuleId());
+        var existingTaskName = timesheetData.getTaskName(existingTaskId);
 
         if (existingTaskId == taskId || !existingTaskName)
         {
@@ -106,14 +103,12 @@ TimesheetDisplay.prototype.replaceWithContent = function(source)
             containingDiv.innerHTML = taskName;
             containingDiv.onclick = function()
             {
-                replaceWithTextBox__MODULE_ID__(this);
+                _getTimesheetForElement(this).getDisplay().replaceWithTextBox(this);
             };
         }
         else if (this.isActiveTask(existingTaskId))
         {
-            var miniMessage = new _IG_MiniMessage(__MODULE_ID__, _gel("messages"));
-            this.getDisplay().showMessages();
-            miniMessage.createTimerMessage("There is already an active task with that name, please enter another.", 5, this.getDisplay().hideMessages);
+            this.displayTimerMessage("There is already an active task with that name, please enter another.", 5);
             textEntry.focus();
         }
         else
@@ -124,16 +119,16 @@ TimesheetDisplay.prototype.replaceWithContent = function(source)
             {
                 _IG_Analytics("UA-2305736-1", "/timesheetmod/task_replaced_with_existing");
 
-                if (currentEvent__MODULE_ID__)
+                var currentEvent = timesheetData.getCurrentEvent();
+                if (currentEvent)
                 {
-                    startStopTimer__MODULE_ID__(_gel("status_immediate_img_"
-                            + currentEvent__MODULE_ID__.getTask().getId()));
+                    timesheetData.startStopTimer(_gel("status_immediate_img_" + currentEvent.getTask().getId()));
                 }
 
                 containingDiv.innerHTML = taskName;
                 containingDiv.onclick = function()
                 {
-                    replaceWithTextBox__MODULE_ID__(this);
+                    _getTimesheetForElement(this).getDisplay().replaceWithTextBox(this);
                 };
 
                 var taskRow = _gel("li_row_" + taskId);
@@ -149,11 +144,11 @@ TimesheetDisplay.prototype.replaceWithContent = function(source)
                 var statusImg = _gel("status_immediate_img_" + existingTaskId);
                 nameDiv.onclick = function()
                 {
-                    replaceWithTextBox__MODULE_ID__(this);
+                    _getTimesheetForElement(this).getDisplay().replaceWithTextBox(this);
                 };
                 statusImg.onclick = function()
                 {
-                    startStopTimer__MODULE_ID__(this);
+                    _getTimesheetForElement(this).startStopTimer(this);
                 };
 
                 var totalSpan = _gel("total_time_span_" + existingTaskId);
@@ -162,16 +157,16 @@ TimesheetDisplay.prototype.replaceWithContent = function(source)
                 var durationString;
                 if (total)
                 {
-                    durationString = getDurationDisplayString__MODULE_ID__(total.getDuration());
+                    durationString = this.getDurationDisplayString(total.getDuration());
                 }
                 else
                 {
-                    durationString = getDurationDisplayString__MODULE_ID__();
+                    durationString = this.getDurationDisplayString();
                 }
 
                 totalSpan.innerHTML = durationString;
 
-                var activeTaskIds = this.getPrefArray("active_task_ids");
+                var activeTaskIds = timesheetData.getPrefArray("active_task_ids");
 
                 for (var i = 0; i < activeTaskIds.length; i++)
                 {
@@ -182,12 +177,26 @@ TimesheetDisplay.prototype.replaceWithContent = function(source)
                     }
                 }
 
-                this.setPrefArray("active_task_ids", activeTaskIds);
+                timesheetData.setPrefArray("active_task_ids", activeTaskIds);
 
                 Sortable.create('tasks', {handle:'handle_image',constraint:'vertical'});
             }
         }
     }
+}
+
+TimesheetDisplay.prototype.getDurationDisplayString = function(duration)
+{
+    var durationString;
+    if (duration)
+    {
+        durationString = duration.getHours() + "h " + duration.getMinutes() + "m " + duration.getSeconds() + "s";
+    }
+    else
+    {
+        durationString = "00h 00m 00s";
+    }
+    return durationString;
 }
 
 TimesheetDisplay.prototype.replaceWithTextBox = function(source)
@@ -196,7 +205,7 @@ TimesheetDisplay.prototype.replaceWithTextBox = function(source)
     var currentContent = source.innerHTML;
 
     var nameSplit = source.id.split("_");
-    var taskId = parseInt(nameSplit[nameSplit.length - 1], 10);
+    var taskId = _pInt(nameSplit[nameSplit.length - 1]);
 
     var textElementId = "rename_text_" + taskId;
     source.innerHTML = "<input class='editTaskName' type=\'text\' id=\'" + textElementId + "\' onBlur=\'_getTimesheet("
@@ -247,10 +256,9 @@ TimesheetDisplay.prototype.displayNewTask = function(taskId)
     nameTd.className = 'task_data task_name';
     nameDiv.id = "name_div_" + taskId;
     nameDiv.style.width = "100%";
-    var moduleIdString = "" + this.getModuleId();
     nameDiv.onclick = function()
     {
-        _getTimesheet(moduleIdString).getDisplay().replaceWithTextBox(this);
+        _getTimesheetForElement(this).getDisplay().replaceWithTextBox(this);
     };
     totalTimeTd.id = "total_time_td_" + taskId;
     totalTimeTd.className = 'task_data total_time';
@@ -265,7 +273,7 @@ TimesheetDisplay.prototype.displayNewTask = function(taskId)
 
     statusImmediateImg.onclick = function()
     {
-        _getTimesheet(moduleIdString).startStopTimer__MODULE_ID__(this);
+        _getTimesheetForElement(this).startStopTimer(this);
     };
 
     statusTimedImg.id = "status_timed_img_" + taskId;
@@ -275,24 +283,24 @@ TimesheetDisplay.prototype.displayNewTask = function(taskId)
     statusTimedImg.alt = "Start At Time";
     statusTimedImg.onclick = function()
     {
-        _getTimesheet(moduleIdString).startStopTimerAtTime__MODULE_ID__(this);
+        _getTimesheetForElement(this).startStopTimerAtTime(this);
     };
 
     disableTd.id = "disable_td_" + taskId;
     disableTd.className = 'task_data change';
 
-    var taskName = _getTimesheet().getTaskName__MODULE_ID__(taskId);
+    var taskName = _getTimesheetForModuleId(this.getModuleId()).getTaskName(taskId);
 
     handleDiv.innerHTML = "&nbsp;";
     nameDiv.innerHTML = taskName;
-    var total = _getTimesheet().getTodaysEventData().getTotalForTask(taskId);
+    var total = _getTimesheetForModuleId().getTodaysEventData().getTotalForTask(taskId);
     if (total)
     {
-        totalTimeSpan.innerHTML = getDurationDisplayString__MODULE_ID__(total.getDuration());
+        totalTimeSpan.innerHTML = this.getDurationDisplayString(total.getDuration());
     }
     else
     {
-        totalTimeSpan.innerHTML = getDurationDisplayString__MODULE_ID__();
+        totalTimeSpan.innerHTML = this.getDurationDisplayString();
     }
     disableTd.innerHTML =
     '<a href="javascript:disableTask__MODULE_ID__(' + taskId + ', true);" class="delbox stealImage"></a>';
@@ -332,7 +340,7 @@ TimesheetDisplay.prototype.captureKeys = function(ev)
         var target = ev.target || ev.srcElement;
         if (target.id == 'new_task_name')
         {
-            _getTimesheet(this.getModuleId()).submitNewTaskName();
+            _getTimesheetForModuleId(this.getModuleId()).submitNewTaskName();
         }
         else if (target.id.indexOf("rename_text_") != -1)
         {
