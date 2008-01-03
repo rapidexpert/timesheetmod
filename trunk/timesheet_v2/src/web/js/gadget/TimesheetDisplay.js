@@ -77,6 +77,11 @@ TimesheetDisplay.prototype.showMessages = function()
     messages.style.display = 'block';
 }
 
+TimesheetDisplay.prototype.getTimesheetData = function()
+{
+    return _getTimesheetForModuleId(this.getModuleId());
+}
+
 TimesheetDisplay.prototype.replaceWithContent = function(source)
 {
     var nameSplit = source.id.split("_");
@@ -93,20 +98,20 @@ TimesheetDisplay.prototype.replaceWithContent = function(source)
     }
     else
     {
-        var existingTaskId = this.getTaskId(taskName);
-        var timesheetData = _getTimesheetForModuleId(this.getModuleId());
+        var timesheetData = this.getTimesheetData();
+        var existingTaskId = timesheetData.getTaskId(taskName);
         var existingTaskName = timesheetData.getTaskName(existingTaskId);
 
         if (existingTaskId == taskId || !existingTaskName)
         {
-            this.setTaskName(taskId, taskName);
+            timesheetData.setTaskName(taskId, taskName);
             containingDiv.innerHTML = taskName;
             containingDiv.onclick = function()
             {
                 _getTimesheetForElement(this).getDisplay().replaceWithTextBox(this);
             };
         }
-        else if (this.isActiveTask(existingTaskId))
+        else if (timesheetData.isActiveTask(existingTaskId))
         {
             this.displayTimerMessage("There is already an active task with that name, please enter another.", 5);
             textEntry.focus();
@@ -135,9 +140,9 @@ TimesheetDisplay.prototype.replaceWithContent = function(source)
                 taskRow.id = "li_row_" + existingTaskId;
                 var html = taskRow.innerHTML;
                 var regex = new RegExp("_" + taskId, "g");
-                var regex2 = new RegExp("disableTask__MODULE_ID__\\(" + taskId, "g");
+                var regex2 = new RegExp("disableTask\\(" + taskId, "g");
                 html = html.replace(regex, "_" + existingTaskId);
-                html = html.replace(regex2, "disableTask__MODULE_ID__(" + existingTaskId);
+                html = html.replace(regex2, "disableTask(" + existingTaskId);
                 taskRow.innerHTML = html;
 
                 var nameDiv = _gel("name_div_" + existingTaskId);
@@ -152,7 +157,7 @@ TimesheetDisplay.prototype.replaceWithContent = function(source)
                 };
 
                 var totalSpan = _gel("total_time_span_" + existingTaskId);
-                var total = this.getTodaysEventData().getTotalForTask(existingTaskId);
+                var total = timesheetData.getTodaysEventData().getTotalForTask(existingTaskId);
 
                 var durationString;
                 if (total)
@@ -289,11 +294,12 @@ TimesheetDisplay.prototype.displayNewTask = function(taskId)
     disableTd.id = "disable_td_" + taskId;
     disableTd.className = 'task_data change';
 
-    var taskName = _getTimesheetForModuleId(this.getModuleId()).getTaskName(taskId);
+    var timesheetData = this.getTimesheetData();
+    var taskName = timesheetData.getTaskName(taskId);
 
     handleDiv.innerHTML = "&nbsp;";
     nameDiv.innerHTML = taskName;
-    var total = _getTimesheetForModuleId().getTodaysEventData().getTotalForTask(taskId);
+    var total = timesheetData.getTodaysEventData().getTotalForTask(taskId);
     if (total)
     {
         totalTimeSpan.innerHTML = this.getDurationDisplayString(total.getDuration());
@@ -302,8 +308,8 @@ TimesheetDisplay.prototype.displayNewTask = function(taskId)
     {
         totalTimeSpan.innerHTML = this.getDurationDisplayString();
     }
-    disableTd.innerHTML =
-    '<a href="javascript:disableTask__MODULE_ID__(' + taskId + ', true);" class="delbox stealImage"></a>';
+    disableTd.innerHTML = '<a href="javascript:_getTimesheetForElement(this).disableTask(' + taskId
+            + ', true);" class="delbox stealImage"></a>';
 
     handleTd.appendChild(handleDiv);
     taskRow.appendChild(handleTd);
@@ -325,6 +331,300 @@ TimesheetDisplay.prototype.displayNewTask = function(taskId)
     Sortable.create('tasks', {handle:'handle_image',constraint:'vertical'})
 }
 
+TimesheetDisplay.prototype.drawPeriod = function(week)
+{
+    var dateShift = 7 * week;
+    var startDate = new Date();
+
+    // <a href="javascript:drawPeriod(1);">PREVIOUS WEEK</a>
+
+    var previousControl = _gel("previous_control");
+    var nextControl = _gel("next_control");
+
+    switch (week)
+            {
+        case 0:
+        {
+            nextControl.style.visibility = "hidden";
+            previousControl.style.visibility = "visible";
+            break;
+        }
+        case 1:
+        {
+            nextControl.style.visibility = "visible";
+            previousControl.style.visibility = "visible";
+            break;
+        }
+        case 2:
+        {
+            nextControl.style.visibility = "visible";
+            previousControl.style.visibility = "visible";
+            break;
+        }
+        case 3:
+        {
+            nextControl.style.visibility = "visible";
+            previousControl.style.visibility = "hidden";
+            break;
+        }
+    }
+
+    previousControl.innerHTML = '<a href="javascript:drawPeriod__MODULE_ID__(' + (week + 1) + ');">PREVIOUS</a>'
+    nextControl.innerHTML = '<a href="javascript:drawPeriod__MODULE_ID__(' + (week - 1) + ');">NEXT</a>'
+
+    var startDateValue = startDate.getTime();
+
+    var dayOfWeekShift;
+
+    var dayOfWeekString = startDate.toString().slice(0, 3);
+
+    switch (dayOfWeekString)
+            {
+        case "Mon" : {
+            dayOfWeekShift = 0;
+            break;
+        }
+        case "Tue" : {
+            dayOfWeekShift = 1;
+            break;
+        }
+        case "Wed" : {
+            dayOfWeekShift = 2;
+            break;
+        }
+        case "Thu" : {
+            dayOfWeekShift = 3;
+            break;
+        }
+        case "Fri" : {
+            dayOfWeekShift = 4;
+            break;
+        }
+        case "Sat" : {
+            dayOfWeekShift = 5;
+            break;
+        }
+        case "Sun" : {
+            dayOfWeekShift = 6;
+            break;
+        }
+    }
+
+    var timesheetData = this.getTimesheetData();
+
+    var startDayOfWeek = timesheetData.getPrefString("start_day_of_week");
+    var hideWeekend = timesheetData.getPrefInt("hide_weekend");
+
+    if (startDayOfWeek == 'S' && hideWeekend == 0)
+    {
+        dayOfWeekShift++;
+    }
+
+    startDateValue -= (1000 * 60 * 60 * 24) * (dateShift + dayOfWeekShift);
+    startDate.setTime(startDateValue);
+
+    var firstDay = this.getFormattedDateString(startDate);
+
+    var eventDataArray = new Array();
+    var taskIds = new Array();
+    var numberOfDatesToRetrieve = hideWeekend == 0 ? 7 : 5;
+
+    for (var i = 0; i < numberOfDatesToRetrieve; i++)
+    {
+        var eventData = timesheetData.getDateRecord(startDate, false);
+        eventDataArray[i] = eventData;
+
+        var totals = eventData.getTotals();
+
+        for (var j = 0; j < totals.length; j++)
+        {
+            taskIds[totals[j].getTask().getId()] = true;
+        }
+        startDateValue += 1000 * 60 * 60 * 24;
+        startDate.setTime(startDateValue);
+    }
+
+    startDateValue -= 1000 * 60 * 60 * 24;
+    startDate.setTime(startDateValue);
+
+    var lastDay = this.getFormattedDateString(startDate);
+
+    var dateRangeDisplay = _gel("summary_date_range");
+    dateRangeDisplay.innerHTML = firstDay + " - " + lastDay;
+
+    var summaryTable = _gel("summary_table");
+    var tableRowsToRemove = summaryTable.rows;
+
+    var tableRowsToRemoveLength = tableRowsToRemove.length;
+
+    if (tableRowsToRemoveLength == 0)
+    {
+        var lastRow = summaryTable.rows.length;
+        var newRow = summaryTable.insertRow(lastRow);
+        var taskNameTd = document.createElement("td");
+        taskNameTd.className = "modtitle title_heading task_title";
+        taskNameTd.innerHTML = "Task";
+        newRow.appendChild(taskNameTd);
+
+        var columnWidth = numberOfDatesToRetrieve == 5 ? "15%" : "11%";
+        for (j = 0; j < numberOfDatesToRetrieve; j++)
+        {
+            var column = document.createElement("td");
+            var eventData = eventDataArray[j];
+            var date = eventData.getDate().toDate();
+            column.className = "modtitle title_heading day_title";
+            column.style.width = columnWidth;
+            column.innerHTML = date.toString().slice(0, 1);
+            newRow.appendChild(column);
+        }
+    }
+
+    if (tableRowsToRemoveLength > 1)
+    {
+        for (i = 1; i < tableRowsToRemoveLength; i++)
+        {
+            var currentRow = tableRowsToRemove[1];
+            summaryTable.deleteRow(currentRow.rowIndex);
+        }
+    }
+
+    if (taskIds.length > 0)
+    {
+        for (i = 0; i < taskIds.length; i++)
+        {
+            var taskIdPointer = taskIds[i];
+            if (taskIdPointer)
+            {
+                var taskId = i;
+                var dayCounter = 0;
+
+                var lastRow = summaryTable.rows.length;
+                var newRow = summaryTable.insertRow(lastRow);
+                newRow.id = "summary_row_" + taskId;
+
+                var taskNameTd = document.createElement("td");
+                taskNameTd.innerHTML = timesheetData.getTaskName(taskId);
+                taskNameTd.className = "summary_task_data task_title_data";
+                newRow.appendChild(taskNameTd);
+
+                for (j = 0; j < numberOfDatesToRetrieve; j++)
+                {
+                    var currentTd = document.createElement("td");
+                    currentTd.innerHTML = this.getTotalString(eventDataArray[dayCounter++].getTotalForTask(taskId))
+                    if (numberOfDatesToRetrieve == 7)
+                    {
+                        currentTd.className = "summary_task_data summary_total";
+                    }
+                    else
+                    {
+                        currentTd.className = "summary_task_data summary_total_larger";
+                    }
+                    newRow.appendChild(currentTd);
+                }
+            }
+        }
+    }
+    else
+    {
+        var lastRow = summaryTable.rows.length;
+        var newRow = summaryTable.insertRow(lastRow);
+        var noTaskTd = document.createElement("td");
+        noTaskTd.colSpan = numberOfDatesToRetrieve + 1;
+        noTaskTd.innerHTML = "No timesheet data recorded";
+        noTaskTd.className = "selectedtab tabtitle summary_task_data task_title_data";
+        newRow.appendChild(noTaskTd);
+    }
+
+}
+
+TimesheetDisplay.prototype.getTotalString = function(total)
+{
+    var duration;
+    var timesheetData = this.getTimesheetData();
+
+    if (total)
+    {
+        duration = total.getDuration();
+    }
+    else
+    {
+        duration = new BasicTime();
+    }
+    var hours = _pInt(duration.getHours());
+    var minutes = _pInt(duration.getMinutes());
+    var seconds = _pInt(duration.getSeconds());
+
+    minutes += seconds / 60;
+
+    var round = timesheetData.getPrefInt("summary_round");
+    var format = timesheetData.getPrefInt("summary_format");
+    var zeroDurationFormat = timesheetData.getPrefInt("summary_zero_duration_format");
+
+    if (round > 0)
+    {
+        minutes = Math.round(minutes / round) * round;
+        if (minutes == 60)
+        {
+            hours += 1;
+        }
+    }
+
+    var totalString = '';
+    if (hours != 0 || minutes != 0 || zeroDurationFormat == 0)
+    {
+        totalString += hours;
+
+        if (format == 0)
+        {
+            totalString += '.';
+            totalString += _getFormattedNumber(Math.round((minutes / 60) * 100), false);
+        }
+        else
+        {
+            totalString += 'h ';
+            totalString += _getFormattedNumber(minutes);
+            totalString += 'm';
+        }
+    }
+    else
+    {
+        switch (zeroDurationFormat)
+                {
+            case 1:
+            {
+                totalString += "-";
+                break;
+            }
+            case 2:
+            {
+                totalString += "&nbsp;";
+                break;
+            }
+        }
+    }
+
+    return totalString;
+}
+
+TimesheetDisplay.prototype.getFormattedDateString = function(date)
+{
+    var dateFormat = this.getTimesheetData().getPrefInt("summary_date_format");
+
+    var dateString;
+    if (dateFormat == 1)
+    {
+        dateString = _getFormattedNumber(date.getDate()) + "/" + _getFormattedNumber(date.getMonth() + 1) + "/"
+                + _getFormattedNumber(date.getYear());
+    }
+    else
+    {
+        dateString = _getFormattedNumber(date.getMonth() + 1) + "/" + _getFormattedNumber(date.getDate()) + "/"
+                + _getFormattedNumber(date.getYear());
+    }
+
+    return dateString;
+}
+
 TimesheetDisplay.prototype.captureKeys = function(ev)
 {
     var kCode;
@@ -340,7 +640,7 @@ TimesheetDisplay.prototype.captureKeys = function(ev)
         var target = ev.target || ev.srcElement;
         if (target.id == 'new_task_name')
         {
-            _getTimesheetForModuleId(this.getModuleId()).submitNewTaskName();
+            this.getTimesheetData().submitNewTaskName();
         }
         else if (target.id.indexOf("rename_text_") != -1)
         {
