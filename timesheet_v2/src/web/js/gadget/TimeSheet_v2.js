@@ -5,20 +5,22 @@ function TimeSheet_v2(moduleId)
     this.setDisplay(new TimesheetDisplay(this, moduleId));
 }
 
-TimeSheet_v2.initialise = function(moduleId)
-{
-    TimeSheet_v2.MODULE_ID = moduleId;
-    TimerEvent.MODULE_ID = moduleId;
-    DateRecord.MODULE_ID = moduleId;
-}
-
 TimeSheet_v2.prototype._moduleId = null;
 TimeSheet_v2.prototype._monthsEvents = null;
 TimeSheet_v2.prototype._todaysEventData = null;
 TimeSheet_v2.prototype._display = null;
 TimeSheet_v2.prototype._currentEvent = null;
 TimeSheet_v2.prototype._currentTimer = null;
+TimeSheet_v2.prototype._tabs = null;
 
+TimeSheet_v2.prototype.getTabs = function()
+{
+    return this._tabs;
+}
+TimeSheet_v2.prototype.setTabs = function(tabs)
+{
+    this._tabs = tabs;
+}
 TimeSheet_v2.prototype.getCurrentTimer = function()
 {
     return this._currentTimer;
@@ -68,6 +70,34 @@ TimeSheet_v2.prototype.setTodaysEventData = function(todaysEventData)
     this._todaysEventData = todaysEventData;
 }
 
+TimeSheet_v2.prototype.createTabs = function()
+{
+    var tabs = this.getTabs();
+    if (!tabs)
+    {
+        tabs = new _IG_Tabs(__MODULE_ID__, "Today");
+        tabs.addTab("Today", "taskContent", this.displayTaskTimers());
+        tabs.addTab("Summary", "summaryContent", this.initialiseSummary());
+        tabs.alignTabs("left", 3);
+        this.setTabs(tabs)
+    }
+    else
+    {
+        tabs.displayTabs(true);
+    }
+}
+
+TimeSheet_v2.prototype.displayTaskTimers = function()
+{
+    _IG_Analytics("UA-2305736-1", "/timesheetmod/display_task_timers");
+}
+
+TimeSheet_v2.prototype.initialiseSummary = function()
+{
+    _IG_Analytics("UA-2305736-1", "/timesheetmod/display_summary");
+    this.drawPeriod(0);
+}
+
 TimeSheet_v2.prototype.getDateRecord = function(date, persistIfOutOfDate)
 {
     var today = new Date();
@@ -113,6 +143,118 @@ TimeSheet_v2.prototype.getDateRecord = function(date, persistIfOutOfDate)
     }
 
     return dateRecord;
+}
+
+TimeSheet_v2.prototype.addNewEvent = function(event)
+{
+    var eventsToAdd = event.splitDates();
+
+    for (var i = 0; i < eventsToAdd.length; i++)
+    {
+        var newEvent = eventsToAdd[i];
+        var startDate = newEvent.getStart().toDate();
+
+        var dateRecord = this.getDateRecord(startDate, true);
+        dateRecord.addNewEvent(newEvent);
+        this.updateDateRecord(dateRecord);
+    }
+}
+
+TimeSheet_v2.prototype.disableTask = function(taskId, prompt)
+{
+    var choice = false;
+
+    if (prompt)
+    {
+        choice = confirm("Are you sure you wish to disable this task?")
+    }
+
+    if (choice || !prompt)
+    {
+        if (this.getCurrentEvent())
+        {
+            var timerTaskId = this.getCurrentEvent().getTask().getId();
+            if (timerTaskId == taskId)
+            {
+                var timersButton = _gel("status_immediate_img_" + timerTaskId);
+                this.startStopTimer(timersButton);
+            }
+        }
+
+        var taskList = _gel("tasks");
+        var rowToRemove = _gel("li_row_" + taskId);
+        taskList.removeChild(rowToRemove);
+
+        this.removeTaskFromActiveList(taskId);
+    }
+}
+
+TimeSheet_v2.prototype.disableGadget = function()
+{
+    this.getTabs().displayTabs(false);
+
+    var mainDiv = _gel("m_" + __MODULE_ID__ + "_b");
+
+    var disabledGadgetDiv = document.createElement("div");
+    disabledGadgetDiv.id = "disabled_gadget_div";
+    disabledGadgetDiv.style.display = "block";
+    disabledGadgetDiv.style.visibility = "visible";
+    //noinspection StringLiteralBreaksHTMLJS
+    disabledGadgetDiv.innerHTML =
+    "The timesheet gadget has been disabled to protect your timesheet data, as another instance is currently running in another tab/window.<br/><br/>To enable the gadget again, please refresh the page by clicking <a class='modboxin' style='border:0px none;margin:0px;padding:0px;' href='javaScript:location.reload(true);'>here</a>.";
+    mainDiv.appendChild(disabledGadgetDiv);
+
+    var activeTasks = this.getPrefArray("active_task_ids");
+    var taskList = _gel("tasks");
+
+    for (var i = 0; i < activeTasks.length; i++)
+    {
+        var taskId = activeTasks[i];
+        var rowToRemove = _gel("li_row_" + taskId);
+        taskList.removeChild(rowToRemove);
+    }
+
+    var currentTimer = this.getCurrentTimer();
+    if (currentTimer)
+    {
+        clearTimeout(currentTimer);
+        this.setCurrentTimer(null);
+    }
+}
+
+TimeSheet_v2.prototype.addTask = function()
+{
+    var addTaskDiv = _gel("add_task_entry");
+    var addTaskControlDiv = _gel("add_task_control");
+    addTaskDiv.style.visibility = 'visible';
+    addTaskControlDiv.style.display = 'none';
+    addTaskDiv.style.display = 'block';
+    var newTaskName = _gel("new_task_name");
+    newTaskName.focus();
+}
+
+TimeSheet_v2.prototype.removeTaskFromActiveList = function(taskId)
+{
+    var activeTaskIds = this.getPrefArray("active_task_ids");
+
+    var newActiveTaskIds = new Array();
+
+    var activeTaskIdLength = activeTaskIds.length;
+    for (var i = 0, j = 0; i < activeTaskIdLength; i++)
+    {
+        var activeTaskId = activeTaskIds[i];
+        if (taskId != activeTaskId)
+        {
+            newActiveTaskIds[j++] = activeTaskId;
+        }
+    }
+
+    if (newActiveTaskIds.length == 0)
+    {
+        this.getDisplay().displayNoTaskMessage(true);
+    }
+
+    this.setPrefArray("active_task_ids", newActiveTaskIds);
 }
 
 TimeSheet_v2.prototype.startStopTimer = function(source)
