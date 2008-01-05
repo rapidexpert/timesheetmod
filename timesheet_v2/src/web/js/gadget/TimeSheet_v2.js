@@ -1,8 +1,12 @@
 function TimeSheet_v2(moduleId)
 {
+    // Current version of the timesheet gadget.
+    this.setCurrentVersion(2);
+
     this.setModuleId(moduleId);
     this.setMonthsEvents(new Array());
     this.setDisplay(new TimesheetDisplay(this, moduleId));
+    this.setLocalSessionId(new Date().getTime());
 }
 
 TimeSheet_v2.prototype._moduleId = null;
@@ -11,8 +15,29 @@ TimeSheet_v2.prototype._todaysEventData = null;
 TimeSheet_v2.prototype._display = null;
 TimeSheet_v2.prototype._currentEvent = null;
 TimeSheet_v2.prototype._currentTimer = null;
+TimeSheet_v2.prototype._currentVersion = null;
+TimeSheet_v2.prototype._localSessionId = null;
 TimeSheet_v2.prototype._tabs = null;
+TimeSheet_v2.prototype._currentTimeTimer = null;
+TimeSheet_v2.prototype._domain = null;
+TimeSheet_v2.prototype._httpType = null;
 
+TimeSheet_v2.prototype.getHttpType = function()
+{
+    return this._httpType;
+}
+TimeSheet_v2.prototype.setHttpType = function(httpType)
+{
+    this._httpType = httpType;
+}
+TimeSheet_v2.prototype.getDomain = function()
+{
+    return this._domain;
+}
+TimeSheet_v2.prototype.setDomain = function(domain)
+{
+    this._domain = domain;
+}
 TimeSheet_v2.prototype.getTabs = function()
 {
     return this._tabs;
@@ -21,6 +46,22 @@ TimeSheet_v2.prototype.setTabs = function(tabs)
 {
     this._tabs = tabs;
 }
+TimeSheet_v2.prototype.getLocalSessionId = function()
+{
+    return this._localSessionId;
+}
+TimeSheet_v2.prototype.setLocalSessionId = function(localSessionId)
+{
+    this._localSessionId = localSessionId;
+}
+TimeSheet_v2.prototype.getCurrentVersion = function()
+{
+    return this._currentVersion;
+}
+TimeSheet_v2.prototype.setCurrentVersion = function(currentVersion)
+{
+    this._currentVersion = currentVersion;
+}
 TimeSheet_v2.prototype.getCurrentTimer = function()
 {
     return this._currentTimer;
@@ -28,6 +69,14 @@ TimeSheet_v2.prototype.getCurrentTimer = function()
 TimeSheet_v2.prototype.setCurrentTimer = function(currentTimer)
 {
     this._currentTimer = currentTimer;
+}
+TimeSheet_v2.prototype.getCurrentTimeTimer = function()
+{
+    return this._currentTimeTimer;
+}
+TimeSheet_v2.prototype.setCurrentTimeTimer = function(currentTimeTimer)
+{
+    this._currentTimeTimer = currentTimeTimer;
 }
 TimeSheet_v2.prototype.getCurrentEvent = function()
 {
@@ -70,6 +119,36 @@ TimeSheet_v2.prototype.setTodaysEventData = function(todaysEventData)
     this._todaysEventData = todaysEventData;
 }
 
+TimeSheet_v2.prototype.setSessionId = function()
+{
+    document.cookie = "session_id=" + this.getLocalSessionId();
+}
+
+TimeSheet_v2.prototype.checkSessionStatus = function()
+{
+    var cookiePrefs = document.cookie.split(";");
+    var sessionId = null;
+    var cookieName = "session_id=";
+
+    for (var i = 0; i < cookiePrefs.length; i++)
+    {
+        var current = _trim(cookiePrefs[i]);
+        if (current.indexOf(cookieName) == 0)
+        {
+            sessionId = current.substring(cookieName.length, current.length);
+        }
+    }
+
+    if (sessionId != this.getLocalSessionId())
+    {
+        this.disableGadget();
+    }
+    else
+    {
+        setTimeout(this.checkSessionStatus, 5000);
+    }
+}
+
 TimeSheet_v2.prototype.createTabs = function()
 {
     var tabs = this.getTabs();
@@ -85,6 +164,111 @@ TimeSheet_v2.prototype.createTabs = function()
     {
         tabs.displayTabs(true);
     }
+}
+
+TimeSheet_v2.prototype.initialiseTaskList = function()
+{
+    var currentVersion = this.getPrefInt("current_version");
+    var nextEventId = this.getPrefInt("next_event_id");
+
+    if (!nextEventId)
+    {
+        nextEventId = 1;
+        this.setPref("next_event_id", nextEventId);
+    }
+
+    for (var i = 1; i < 32; i++)
+    {
+        var eventDataString = this.getPrefString("event_data_" + i);
+        var eventData = new DateRecord();
+        if (eventDataString)
+        {
+            var errorDetectedAndFixed = eventData.setDataFromString(eventDataString, currentVersion);
+            this.getMonthsEvents()[i] = eventData;
+
+            if (!currentVersion || this.getCurrentVersion() != currentVersion || errorDetectedAndFixed)
+            {
+                if (!errorDetectedAndFixed)
+                {
+                    this.updateDateRecord(eventData);
+                }
+                else
+                {
+                    alert("Error with input string [" + eventDataString + "]");
+                }
+            }
+        }
+    }
+
+    if (!currentVersion || this.getCurrentVersion() != currentVersion)
+    {
+        this.setPref("current_version", this.getCurrentVersion());
+    }
+
+    var today = new Date();
+    this.getDateRecord(today, true);
+
+    var activeTaskIds = this.getPrefArray("active_task_ids");
+
+    if (activeTaskIds && activeTaskIds.length > 0)
+    {
+        for (i = 0; i < activeTaskIds.length; i++)
+        {
+            this.createNewTask(activeTaskIds[i], false);
+        }
+
+        var currentEventData = this.getPrefString("current_event");
+
+        if (currentEventData && _trim(currentEventData).length > 0)
+        {
+            this.setCurrentEvent(new TimerEvent());
+            this.getCurrentEvent().setDataFromString(currentEventData);
+
+            var taskId = this.getCurrentEvent().getTask().getId();
+
+            if (taskId && taskId != "undefined")
+            {
+                var immediateStatusControl = _gel("status_immediate_img_" + taskId);
+                immediateStatusControl.src = "http://timesheetmod.googlecode.com/svn/trunk/images/stop_immediate.png";
+                immediateStatusControl.alt = "Stop";
+                var timedStatusControl = _gel("status_timed_img_" + taskId);
+                timedStatusControl.src = "http://timesheetmod.googlecode.com/svn/trunk/images/stop.png";
+                timedStatusControl.alt = "Stop at Time";
+                this.refreshCurrentTimer();
+            }
+            else
+            {
+                this.setCurrentEvent(null);
+                this.setPref("current_event", "");
+            }
+        }
+    }
+    else
+    {
+        this.getDisplay().displayNoTaskMessage(true);
+    }
+
+    this.monitorCurrentTime();
+}
+
+TimeSheet_v2.prototype.initialise = function()
+{
+    document.onkeypress = this.getDisplay().captureKeys;
+    _IG_Analytics("UA-2305736-1", "/timesheetmod");
+    this.setDomain(document.domain);
+    this.setHttpType(document.location.toString().match(/[^:]*/));
+
+    var disabledGadgetDiv = _gel("disabled_gadget_div");
+    if (disabledGadgetDiv)
+    {
+        var mainDiv = _gel("m_" + __MODULE_ID__ + "_b");
+        mainDiv.removeChild(disabledGadgetDiv);
+    }
+    //    disabledGadgetDiv.style.display = "none";
+    this.setSessionId();
+    this.initialiseTaskList();
+    this.createTabs();
+    setTimeout(this.checkSessionStatus, 10000);
 }
 
 TimeSheet_v2.prototype.displayTaskTimers = function()
@@ -214,12 +398,43 @@ TimeSheet_v2.prototype.disableGadget = function()
         taskList.removeChild(rowToRemove);
     }
 
-    var currentTimer = this.getCurrentTimer();
-    if (currentTimer)
+    var currentTimeTimer = this.getCurrentTimeTimer();
+    if (currentTimeTimer)
     {
-        clearTimeout(currentTimer);
-        this.setCurrentTimer(null);
+        clearTimeout(currentTimeTimer);
+        this.setCurrentTimeTimer(null);
     }
+}
+
+TimeSheet_v2.prototype.monitorCurrentTime = function()
+{
+    var currentData = this.getTodaysEventData();
+    var date = new Date();
+
+    if (date.getDate() != currentData.getDate().getDate())
+    {
+        var activeTaskIds = this.getPrefArray("active_task_ids");
+
+        if (activeTaskIds)
+        {
+            for (var i = 0; i < activeTaskIds.length; i++)
+            {
+                var taskId = activeTaskIds[i];
+                var timeSpan = _gel("total_time_span_" + taskId);
+                var total = this.getTodaysEventData().getTotalForTask(taskId);
+                var totalDuration = null;
+
+                if (total)
+                {
+                    totalDuration = total.getDuration();
+                }
+
+                timeSpan.innerHTML = getDisplay().getDurationDisplayString(totalDuration);
+            }
+        }
+    }
+
+    this.setCurrentTimeTimer(setTimeout("monitorCurrentTime__MODULE_ID__()", 1000));
 }
 
 TimeSheet_v2.prototype.addTask = function()
