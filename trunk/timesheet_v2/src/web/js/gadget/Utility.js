@@ -74,5 +74,5 @@ function _getTimesheetForElement(element)
 {
     var elementId = element.id;
     var splitId = elementId.split("_");
-    return _getTimesheetForModuleId(splitId);
+    return _getTimesheetForModuleId(splitId[0]);
 }
