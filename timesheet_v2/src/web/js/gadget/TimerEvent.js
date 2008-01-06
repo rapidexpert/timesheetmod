@@ -36,7 +36,7 @@ TimerEvent.prototype.getDuration = function()
 
 TimerEvent.prototype.setDataFromString = function(eventString, version)
 {
-    if (!version || version == 2)
+    if (!version || version == 1 || version == 2)
     {
         var index = 0;
         var splitData = eventString.split(":");

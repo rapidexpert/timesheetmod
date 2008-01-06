@@ -10,7 +10,7 @@ DateRecord.prototype._totals = null;
 
 DateRecord.prototype.setDataFromString = function(dataString, version)
 {
-    if (!version || version == 2)
+    if (!version || version == 1 || version == 2)
     {
         var eventTotalSplit = dataString.split('!');
 

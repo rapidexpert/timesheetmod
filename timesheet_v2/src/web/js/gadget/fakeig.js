@@ -185,7 +185,7 @@ _IG_Prefs.prototype.setArray = function(name, values)
     }
 }
 
-var __MODULE_ID__ = "TESTING";
+var __MODULE_ID__ = "__MODULE_ID__";
 
 function _trim(a)
 {
