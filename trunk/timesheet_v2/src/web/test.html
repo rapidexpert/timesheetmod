@@ -1,13 +1,157 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
         "http://www.w3.org/TR/html4/loose.dtd">
 <html>
-    <head>
-        <title></title>
-        <script type="text/javascript" src="js/gadget/TimeSheet_v2.js"></script>
-        <script type="text/javascript" src="js/gadget/TimerEvent.js"></script>
-    </head>
-    <body>
-        <script type="text/javascript">
-        </script>
-    </body>
+<head>
+    <title></title>
+    <script type="text/javascript">
+        var __MODULE_ID__ = "__MODULE_ID__";
+    </script>
+</head>
+<body>
+
+<script type="text/javascript" src="js/gadget/BasicTime.js"></script>
+<script type="text/javascript" src="js/gadget/DateRecord.js"></script>
+<script type="text/javascript" src="js/gadget/fakeig.js"></script>
+<script type="text/javascript" src="js/gadget/Task.js"></script>
+<script type="text/javascript" src="js/gadget/TimerEvent.js"></script>
+<script type="text/javascript" src="js/gadget/TimeSheet_v2.js"></script>
+<script type="text/javascript" src="js/gadget/TimesheetDisplay.js"></script>
+<script type="text/javascript" src="js/gadget/Total.js"></script>
+<script type="text/javascript" src="js/gadget/Utility.js"></script>
+<script type="text/javascript" src="js/scriptaculous/prototype.js"></script>
+<script type="text/javascript" src="js/scriptaculous/builder.js"></script>
+<script type="text/javascript" src="js/scriptaculous/effects.js"></script>
+<script type="text/javascript" src="js/scriptaculous/controls.js"></script>
+<script type="text/javascript" src="js/scriptaculous/dragdrop.js"></script>
+<script type="text/javascript" src="js/scriptaculous/scriptaculous.js"></script>
+<script type="text/javascript" src="js/scriptaculous/slider.js"></script>
+<script type="text/javascript" src="js/scriptaculous/sound.js"></script>
+
+<div id="__MODULE_ID__taskContent" style="display:none">
+
+    <div id="__MODULE_ID__sync_div" style="clear:both;float:right; height:35px;">
+        <div class="control addTaskControl" style="float:right; height:23px;" id="__MODULE_ID__synchronise_calendar_div">
+            <a href="javascript:_getTimesheetForModuleId(__MODULE_ID__).backgroundObtainUserCalendars();">SYNCHRONISE WITH GOOGLE CALENDAR</a>
+        </div>
+        <div id="__MODULE_ID__sync_div_choice" class="modtitle tabtitle addTaskEntry">
+            <select class="selectedtab tabtitle addTaskEntryTextbox" style="font-size: smaller;" id="__MODULE_ID__calendar_choice">
+            </select>
+            <a href="javascript:_getTimesheetForModuleId(__MODULE_ID__).closeSyncCal();" class="stealImage delbox"></a>
+            <img onclick="_getTimesheetForModuleId(__MODULE_ID__).backgroundSynchroniseWithGcal();" src="http://timesheetmod.googlecode.com/svn/trunk/images/calendar_sync.png" style="cursor:pointer;float:right;"/>
+        </div>
+    </div>
+    <div id="__MODULE_ID__controls" style="float:right;clear:both;width:100%;">
+        <div class="control addTaskControl" id="__MODULE_ID__add_task_control">
+            <a href="javascript:_getTimesheetForModuleId(__MODULE_ID__).addTask();">ADD TASK</a></div>
+        <div id="__MODULE_ID__add_task_entry" class="modtitle tabtitle addTaskEntry">
+            <input class="selectedtab tabtitle addTaskEntryTextbox" type="text" id="__MODULE_ID__new_task_name"/>
+            <a href="javascript:_getTimesheetForModuleId(__MODULE_ID__).closeAddTask();" class="stealImage delbox"></a>
+            <a href="javascript:_getTimesheetForModuleId(__MODULE_ID__).submitNewTaskName();" class="stealImage maxbox"></a>
+        </div>
+    </div>
+    <div id="__MODULE_ID__messages">
+    </div>
+    <div id="__MODULE_ID__task_list">
+        <div id="__MODULE_ID__title" class="title">
+            <table id="__MODULE_ID__timer_header_table" cellspacing="0" cellpadding="2">
+                <tr>
+                    <td id="__MODULE_ID__no_handle" class="modtitle tabtitle invisihandle">&nbsp;</td>
+                    <td id="__MODULE_ID__task_name_title_div" class="modtitle title_heading task_name">TASK NAME</td>
+                    <td id="__MODULE_ID__total_time_title_div" class="modtitle title_heading total_time">TOTAL</td>
+                    <td id="__MODULE_ID__status_title_div" class="modtitle title_heading status">STATUS</td>
+                    <td id="__MODULE_ID__change_title_div" class="modtitle title_heading change">&nbsp;</td>
+                </tr>
+            </table>
+        </div>
+        <ul id="__MODULE_ID__tasks">
+        </ul>
+        <div id="__MODULE_ID__current_task" style="clear:both;">
+            <br/>
+            <table id="__MODULE_ID__current_task_timer_header_table" cellspacing="0" cellpadding="2">
+                <tr>
+                    <td id="__MODULE_ID__current_task_no_handle" class="modtitle tabtitle invisihandle" style="border: solid 1px;">&nbsp;</td>
+                    <td id="__MODULE_ID__current_task_title_td" class="modtitle title_heading task_name">CURRENT TASK DURATION</td>
+                    <td id="__MODULE_ID__current_task_total_time_td" class="task_data current_total_time">
+                        <span id="__MODULE_ID__current_task_total_time_span" style="width:100%">None</span>
+                    </td>
+                    <td id="__MODULE_ID__current_task_status_title_div" class="title_heading status empty">&nbsp;</td>
+                    <td id="__MODULE_ID__current_task_change_title_div" class="title_heading change empty">&nbsp;</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <script type="text/javascript" language="javascript">
+        Sortable.create('tasks', {handle:'handle_image',constraint:'vertical'})
+    </script>
+
+    <div id="dataDiv" style="display:block;"><br/>
+        <span id="event_data_23_heading">event_data_23 - </span>
+        <span id="event_data_23">230707103435!|0:0:103438:103440||0:0:103442:103444||0:0:103729:105119|!|0:001354|</span>
+        <br/>
+        <span id="task_names_heading">task_names - </span>
+        <span id="task_names">test2|test3</span>
+        <br/>
+        <span id="active_task_ids_heading">active_task_ids - </span>
+        <span id="active_task_ids">0|1</span>
+        <br/>
+        <span id="current_event_heading">current_event - </span>
+        <span id="current_event">1:230707105420</span>
+        <br/>
+        <span id="summary_round_heading">summary_round - </span>
+        <span id="summary_round">15</span>
+        <br/>
+        <span id="summary_zero_duration_format_heading">summary_zero_duration_format - </span>
+        <span id="summary_zero_duration_format">0</span>
+        <br/>
+        <span id="summary_format_heading">summary_format - </span>
+        <span id="summary_format">0</span>
+        <br/>
+        <span id="start_day_of_week_heading">start_day_of_week - </span>
+        <span id="start_day_of_week">M</span>
+        <br/>
+        <span id="hide_weekend_heading">hide_weekend - </span>
+        <span id="hide_weekend">1</span>
+        <br/>
+        <span id="current_version_heading">current_version - </span>
+        <span id="current_version">1</span>
+        <br/>
+        <span id="next_event_id_heading">next_event_id - </span>
+        <span id="next_event_id">1</span>
+        <br/>
+        <span id="summary_date_format_heading">summary_date_format - </span>
+        <span id="summary_date_format">1</span>
+    </div>
+</div>
+<div id="__MODULE_ID__summaryContent" style="display:none">
+    <div id="__MODULE_ID__summary">
+        <div id="__MODULE_ID__summary_controls"><br/>
+
+            <div id="__MODULE_ID__summary_previous" style="float:left;width:25%;text-align:left;">
+                <span id="__MODULE_ID__previous_control" class="control addTaskControl"><a href="javascript:drawPeriod__MODULE_ID__(1);">PREVIOUS</a></span>
+            </div>
+            <div id="__MODULE_ID__summary_display" style="float:left;width:49%;text-align:center;">
+                <span id="__MODULE_ID__summary_date_range" class="control controlNoHover" style="border: none;cursor:auto;"></span>
+            </div>
+            <div id="__MODULE_ID__summary_next" style="float:left;width:25%;text-align:right;">
+                <span id="__MODULE_ID__next_control" class="control addTaskControl" style="visibility:hidden;"><a href="javascript:drawPeriod__MODULE_ID__(0);">NEXT</a></span>
+            </div>
+        </div>
+        <br clear="all"/>
+        <table id="__MODULE_ID__summary_table" cellspacing="0" cellpadding="0" style="clear:both;">
+        </table>
+    </div>
+</div>
+
+<script type="text/javascript">
+    var timesheetv2___MODULE_ID__ = new TimeSheet_v2(__MODULE_ID__);
+
+    function initialise()
+    {
+        timesheetv2___MODULE_ID__.initialise();
+    }
+
+    _IG_RegisterOnloadHandler(initialise);
+</script>
+</body>
 </html>

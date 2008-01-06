@@ -149,14 +149,24 @@ TimeSheet_v2.prototype.checkSessionStatus = function()
     }
 }
 
+TimeSheet_v2.prototype.getModuleElementId = function(elementId)
+{
+    return _getElementId(elementId, this.getModuleId());
+}
+
+TimeSheet_v2.prototype.gel = function(elementId)
+{
+    return _gel(this.getModuleElementId(elementId));
+}
+
 TimeSheet_v2.prototype.createTabs = function()
 {
     var tabs = this.getTabs();
     if (!tabs)
     {
-        tabs = new _IG_Tabs(__MODULE_ID__, "Today");
-        tabs.addTab("Today", "taskContent", this.displayTaskTimers());
-        tabs.addTab("Summary", "summaryContent", this.initialiseSummary());
+        tabs = new _IG_Tabs(this.getModuleId(), "Today");
+        tabs.addTab("Today", this.getModuleElementId("taskContent"), this.displayTaskTimers());
+        tabs.addTab("Summary", this.getModuleElementId("summaryContent"), this.initialiseSummary());
         tabs.alignTabs("left", 3);
         this.setTabs(tabs)
     }
@@ -228,10 +238,10 @@ TimeSheet_v2.prototype.initialiseTaskList = function()
 
             if (taskId && taskId != "undefined")
             {
-                var immediateStatusControl = _gel("status_immediate_img_" + taskId);
+                var immediateStatusControl = this.gel("status_immediate_img_" + taskId);
                 immediateStatusControl.src = "http://timesheetmod.googlecode.com/svn/trunk/images/stop_immediate.png";
                 immediateStatusControl.alt = "Stop";
-                var timedStatusControl = _gel("status_timed_img_" + taskId);
+                var timedStatusControl = this.gel("status_timed_img_" + taskId);
                 timedStatusControl.src = "http://timesheetmod.googlecode.com/svn/trunk/images/stop.png";
                 timedStatusControl.alt = "Stop at Time";
                 this.refreshCurrentTimer();
@@ -258,10 +268,10 @@ TimeSheet_v2.prototype.initialise = function()
     this.setDomain(document.domain);
     this.setHttpType(document.location.toString().match(/[^:]*/));
 
-    var disabledGadgetDiv = _gel("disabled_gadget_div");
+    var disabledGadgetDiv = this.gel("disabled_gadget_div");
     if (disabledGadgetDiv)
     {
-        var mainDiv = _gel("m_" + __MODULE_ID__ + "_b");
+        var mainDiv = this.gel("m_" + __MODULE_ID__ + "_b");
         mainDiv.removeChild(disabledGadgetDiv);
     }
     //    disabledGadgetDiv.style.display = "none";
@@ -360,13 +370,13 @@ TimeSheet_v2.prototype.disableTask = function(taskId, prompt)
             var timerTaskId = this.getCurrentEvent().getTask().getId();
             if (timerTaskId == taskId)
             {
-                var timersButton = _gel("status_immediate_img_" + timerTaskId);
+                var timersButton = this.gel("status_immediate_img_" + timerTaskId);
                 this.startStopTimer(timersButton);
             }
         }
 
-        var taskList = _gel("tasks");
-        var rowToRemove = _gel("li_row_" + taskId);
+        var taskList = this.gel("tasks");
+        var rowToRemove = this.gel("li_row_" + taskId);
         taskList.removeChild(rowToRemove);
 
         this.removeTaskFromActiveList(taskId);
@@ -377,10 +387,10 @@ TimeSheet_v2.prototype.disableGadget = function()
 {
     this.getTabs().displayTabs(false);
 
-    var mainDiv = _gel("m_" + __MODULE_ID__ + "_b");
+    var mainDiv = this.gel("m_" + __MODULE_ID__ + "_b");
 
     var disabledGadgetDiv = document.createElement("div");
-    disabledGadgetDiv.id = "disabled_gadget_div";
+    disabledGadgetDiv.id = this.getModuleElementId("disabled_gadget_div");
     disabledGadgetDiv.style.display = "block";
     disabledGadgetDiv.style.visibility = "visible";
     //noinspection StringLiteralBreaksHTMLJS
@@ -389,12 +399,12 @@ TimeSheet_v2.prototype.disableGadget = function()
     mainDiv.appendChild(disabledGadgetDiv);
 
     var activeTasks = this.getPrefArray("active_task_ids");
-    var taskList = _gel("tasks");
+    var taskList = this.gel("tasks");
 
     for (var i = 0; i < activeTasks.length; i++)
     {
         var taskId = activeTasks[i];
-        var rowToRemove = _gel("li_row_" + taskId);
+        var rowToRemove = this.gel("li_row_" + taskId);
         taskList.removeChild(rowToRemove);
     }
 
@@ -420,7 +430,7 @@ TimeSheet_v2.prototype.monitorCurrentTime = function()
             for (var i = 0; i < activeTaskIds.length; i++)
             {
                 var taskId = activeTaskIds[i];
-                var timeSpan = _gel("total_time_span_" + taskId);
+                var timeSpan = this.gel("total_time_span_" + taskId);
                 var total = this.getTodaysEventData().getTotalForTask(taskId);
                 var totalDuration = null;
 
@@ -439,12 +449,12 @@ TimeSheet_v2.prototype.monitorCurrentTime = function()
 
 TimeSheet_v2.prototype.addTask = function()
 {
-    var addTaskDiv = _gel("add_task_entry");
-    var addTaskControlDiv = _gel("add_task_control");
+    var addTaskDiv = this.gel("add_task_entry");
+    var addTaskControlDiv = this.gel("add_task_control");
     addTaskDiv.style.visibility = 'visible';
     addTaskControlDiv.style.display = 'none';
     addTaskDiv.style.display = 'block';
-    var newTaskName = _gel("new_task_name");
+    var newTaskName = this.gel("new_task_name");
     newTaskName.focus();
 }
 
@@ -491,18 +501,18 @@ TimeSheet_v2.prototype.startStopTimer = function(source)
         }
 
         var oldTaskId = this.getCurrentEvent().getTask().getId();
-        immediateTimersButton = _gel("status_immediate_img_" + oldTaskId);
+        immediateTimersButton = this.gel("status_immediate_img_" + oldTaskId);
         immediateTimersButton.src = "http://timesheetmod.googlecode.com/svn/trunk/images/start_immediate.png";
         immediateTimersButton.alt = "Start";
 
-        timersButton = _gel("status_timed_img_" + oldTaskId);
+        timersButton = this.gel("status_timed_img_" + oldTaskId);
         timersButton.src = "http://timesheetmod.googlecode.com/svn/trunk/images/start.png";
         timersButton.alt = "Start at Time";
 
         this.setPref("current_event", "");
         this.addNewEvent(this.getCurrentEvent());
-        var timeSpan = _gel("total_time_span_" + oldTaskId);
-        var currentTotalTimeSpan = _gel("current_task_total_time_span");
+        var timeSpan = this.gel("total_time_span_" + oldTaskId);
+        var currentTotalTimeSpan = this.gel("current_task_total_time_span");
         var total = this.getTodaysEventData().getTotalForTask(oldTaskId);
         var totalDuration = total.getDuration();
 
@@ -525,11 +535,11 @@ TimeSheet_v2.prototype.startStopTimer = function(source)
         this.getCurrentEvent().setTask(task);
         this.getCurrentEvent().setStart(startTime);
 
-        immediateTimersButton = _gel("status_immediate_img_" + taskId);
+        immediateTimersButton = this.gel("status_immediate_img_" + taskId);
         immediateTimersButton.src = "http://timesheetmod.googlecode.com/svn/trunk/images/stop_immediate.png";
         immediateTimersButton.alt = "Stop";
 
-        timersButton = _gel("status_timed_img_" + taskId);
+        timersButton = this.gel("status_timed_img_" + taskId);
         timersButton.src = "http://timesheetmod.googlecode.com/svn/trunk/images/stop.png";
         timersButton.alt = "Stop at Time";
 
@@ -548,8 +558,8 @@ TimeSheet_v2.prototype.refreshCurrentTimer = function()
     var taskId = currentEvent.getTask().getId();
     var currentTime = new Date();
 
-    var timeSpan = _gel("total_time_span_" + taskId);
-    var currentTotalTimeSpan = _gel("current_task_total_time_span");
+    var timeSpan = this.gel("total_time_span_" + taskId);
+    var currentTotalTimeSpan = this.gel("current_task_total_time_span");
     timeSpan.className = "currentTimer";
     currentTotalTimeSpan.className = "currentTimer";
 
@@ -598,7 +608,7 @@ TimeSheet_v2.prototype.updateDateRecord = function(dateRecord)
 
 TimeSheet_v2.prototype.submitNewTaskName = function()
 {
-    var newTaskName = _gel("new_task_name");
+    var newTaskName = this.gel("new_task_name");
     var taskName = _trim(newTaskName.value);
 
     if (taskName.length == 0)
@@ -654,7 +664,8 @@ TimeSheet_v2.prototype.addActiveTask = function(taskId)
 
 TimeSheet_v2.prototype.createNewTask = function(taskId, setActiveTaskData)
 {
-    getDisplay().displayNoTaskMessage(false);
+    var display = this.getDisplay();
+    display.displayNoTaskMessage(false);
 
     if (setActiveTaskData)
     {
@@ -662,7 +673,7 @@ TimeSheet_v2.prototype.createNewTask = function(taskId, setActiveTaskData)
         _IG_Analytics("UA-2305736-1", "/timesheetmod/new_task_added");
     }
 
-    getDisplay().displayNewTask(taskId);
+    display.displayNewTask(taskId);
 }
 
 TimeSheet_v2.prototype.isActiveTask = function(taskId)
