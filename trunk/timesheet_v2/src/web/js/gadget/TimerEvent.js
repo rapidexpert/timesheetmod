@@ -1,5 +1,6 @@
-function TimerEvent()
+function TimerEvent(moduleId)
 {
+    this.setModuleId(moduleId);
 }
 
 TimerEvent.DAYS_MILLISECONDS = 1000 * 60 * 60 * 24;
@@ -108,7 +109,7 @@ TimerEvent.prototype.splitDates = function()
 
         for (; index < numberOfEvents; index++)
         {
-            var newEvent = new TimerEvent();
+            var newEvent = new TimerEvent(this.getModuleId());
             newEvent.setTask(this.getTask());
             newEvent.setSynced(this.isSynced());
             newEvent.setMultiEvent(true);
@@ -184,7 +185,8 @@ TimerEvent.prototype.splitDates = function()
 TimerEvent.prototype.getNextEventId = function()
 {
     var prefName = "next_event_id";
-    var eventId = ++_getPrefInt(prefName, this.getModuleId());
+    var currentEventId = _getPrefInt(prefName, this.getModuleId());
+    var eventId = ++currentEventId;
     _setPref(prefName, eventId, this.getModuleId())
     return eventId;
 }

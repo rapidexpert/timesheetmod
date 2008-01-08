@@ -5,7 +5,7 @@ function TimeSheet_v2(moduleId)
 
     this.setModuleId(moduleId);
     this.setMonthsEvents(new Array());
-    this.setDisplay(new TimesheetDisplay(this, moduleId));
+    this.setDisplay(new TimesheetDisplay(moduleId));
     this.setLocalSessionId(new Date().getTime());
 }
 
@@ -145,7 +145,7 @@ TimeSheet_v2.prototype.checkSessionStatus = function()
     }
     else
     {
-        setTimeout(this.checkSessionStatus, 5000);
+        setTimeout("timesheetv2_" + this.getModuleId() + ".checkSessionStatus();", 5000);
     }
 }
 
@@ -190,7 +190,7 @@ TimeSheet_v2.prototype.initialiseTaskList = function()
     for (var i = 1; i < 32; i++)
     {
         var eventDataString = this.getPrefString("event_data_" + i);
-        var eventData = new DateRecord();
+        var eventData = new DateRecord(this.getModuleId());
         if (eventDataString)
         {
             var errorDetectedAndFixed = eventData.setDataFromString(eventDataString, currentVersion);
@@ -231,7 +231,7 @@ TimeSheet_v2.prototype.initialiseTaskList = function()
 
         if (currentEventData && _trim(currentEventData).length > 0)
         {
-            this.setCurrentEvent(new TimerEvent());
+            this.setCurrentEvent(new TimerEvent(this.getModuleId()));
             this.getCurrentEvent().setDataFromString(currentEventData);
 
             var taskId = this.getCurrentEvent().getTask().getId();
@@ -278,7 +278,7 @@ TimeSheet_v2.prototype.initialise = function()
     this.setSessionId();
     this.initialiseTaskList();
     this.createTabs();
-    setTimeout(this.checkSessionStatus, 10000);
+    setTimeout("timesheetv2_" + this.getModuleId() + ".checkSessionStatus();", 10000);
 }
 
 TimeSheet_v2.prototype.displayTaskTimers = function()
@@ -289,7 +289,7 @@ TimeSheet_v2.prototype.displayTaskTimers = function()
 TimeSheet_v2.prototype.initialiseSummary = function()
 {
     _IG_Analytics("UA-2305736-1", "/timesheetmod/display_summary");
-    this.drawPeriod(0);
+    this.getDisplay().drawPeriod(0);
 }
 
 TimeSheet_v2.prototype.getDateRecord = function(date, persistIfOutOfDate)
@@ -307,7 +307,7 @@ TimeSheet_v2.prototype.getDateRecord = function(date, persistIfOutOfDate)
         var existingDateRecord;
         if (existingDateRecordString && _trim(existingDateRecordString).length > 0)
         {
-            existingDateRecord = new DateRecord();
+            existingDateRecord = new DateRecord(this.getModuleId);
             existingDateRecord.setDataFromString(existingDateRecordString);
         }
 
@@ -317,7 +317,7 @@ TimeSheet_v2.prototype.getDateRecord = function(date, persistIfOutOfDate)
         }
         else
         {
-            dateRecord = new DateRecord();
+            dateRecord = new DateRecord(this.getModuleId);
             var newDate = new BasicTime();
             newDate.setDataFromDate(date);
             dateRecord.setDate(newDate);
@@ -444,7 +444,7 @@ TimeSheet_v2.prototype.monitorCurrentTime = function()
         }
     }
 
-    this.setCurrentTimeTimer(setTimeout("monitorCurrentTime__MODULE_ID__()", 1000));
+    this.setCurrentTimeTimer(setTimeout("timesheetv2_" + this.getModuleId() + ".monitorCurrentTime();", 1000));
 }
 
 TimeSheet_v2.prototype.addTask = function()
@@ -526,7 +526,7 @@ TimeSheet_v2.prototype.startStopTimer = function(source)
 
     if (!this.getCurrentEvent() || this.getCurrentEvent().getTask().getId() != taskId)
     {
-        this.setCurrentEvent(new TimerEvent());
+        this.setCurrentEvent(new TimerEvent(this.getModuleId()));
         var task = new Task();
         task.setId(taskId);
 
@@ -597,7 +597,7 @@ TimeSheet_v2.prototype.refreshCurrentTimer = function()
     timeSpan.innerHTML = this.getDisplay().getDurationDisplayString(tempDuration);
 
     // todo This may not work, may need to be a string.
-    this.setCurrentTimer(setTimeout(this.refreshCurrentTimer, 1000));
+    this.setCurrentTimer(setTimeout("timesheetv2_" + this.getModuleId() + ".refreshCurrentTimer();", 1000));
 }
 
 TimeSheet_v2.prototype.updateDateRecord = function(dateRecord)

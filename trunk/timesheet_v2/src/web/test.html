@@ -3,11 +3,381 @@
 <html>
 <head>
     <title></title>
+    <link rel="stylesheet" href="ig.css" type="text/css"/>
     <script type="text/javascript">
         var __MODULE_ID__ = "__MODULE_ID__";
     </script>
 </head>
-<body>
+<body id="body">
+<style type="text/css">
+<!--
+
+#__MODULE_ID___taskContent {
+}
+
+#__MODULE_ID___taskContent #__MODULE_ID___task_list {
+    width: 99%;
+    overflow: visible;
+    clear: both;
+    margin-left: 2px;
+    margin-right: 1px;
+}
+
+#__MODULE_ID___taskContent #__MODULE_ID___tasks {
+    width: 33%;
+    overflow: visible;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+#__MODULE_ID___taskContent #__MODULE_ID___tasks li {
+    width: 100%;
+    margin: 0;
+    float: left;
+    clear: both;
+}
+
+#__MODULE_ID___taskContent #__MODULE_ID___tasks table {
+    width: 100%;
+    margin: 0;
+    float: left;
+    clear: both;
+    border-collapse: collapse;
+}
+
+#__MODULE_ID___taskContent #__MODULE_ID___tasks table tr {
+}
+
+#__MODULE_ID___taskContent #__MODULE_ID___tasks table td {
+    border-width: 0 1px 1px 1px; /*border-style: solid;*/
+    background-repeat: repeat;
+}
+
+#__MODULE_ID___taskContent #__MODULE_ID___title table {
+    width: 100%;
+    margin: 0;
+    float: left;
+    clear: both;
+    border-collapse: collapse;
+}
+
+#__MODULE_ID___taskContent #__MODULE_ID___current_task table {
+    width: 33%;
+    margin: 0;
+    float: left;
+    clear: both;
+    border-collapse: collapse;
+}
+
+#__MODULE_ID___taskContent #__MODULE_ID___title table tr {
+}
+
+#__MODULE_ID___taskContent #__MODULE_ID___title table td {
+    border-width: 1px;
+    border-style: solid;
+}
+
+.title {
+    width: 33%;
+}
+
+.title_heading {
+    font-weight: bold;
+    font-size: smaller;
+    border: solid;
+    border-width: 1px;
+    text-align: center;
+    float: none;
+    line-height: 21px;
+    vertical-align: middle;
+    cursor: default;
+    padding: 2px;
+    background-repeat: repeat;
+}
+
+.no_left_border {
+    border-left: none;
+}
+
+.task_data {
+    font-weight: normal;
+    border: solid;
+    border-top: none;
+    text-align: left;
+    float: none;
+    vertical-align: middle;
+    cursor: default;
+    padding: 2px;
+    height: auto;
+    font-size: smaller;
+    background-image: none;
+}
+
+.invisihandle {
+    border: thin hidden;
+    width: 10px;
+    cursor: auto;
+    padding: 0px;
+    background-repeat: repeat-y;
+}
+
+.handle {
+    border: solid 1px;
+    width: 10px;
+    cursor: move;
+    padding: 0px;
+    text-align: center;
+}
+
+.handle_image {
+    background-image: url( "http://timesheetmod.googlecode.com/svn/trunk/images/move.png" );
+    background-position: 0px;
+    background-repeat: repeat-y;
+}
+
+.task_name {
+    width: auto;
+}
+
+.time_editor {
+    border-left: none;
+    text-align: center;
+    width: 45%;
+    padding-right: 1px;
+}
+
+.total_time {
+    border-left: none;
+    text-align: center;
+    width: 25%;
+}
+
+.status {
+    border-left: none;
+    text-align: center;
+    width: 20%;
+}
+
+.change {
+    text-align: center;
+    border-left: none;
+    width: 6%;
+}
+
+.change a {
+    float: left;
+    font-size: smaller;
+}
+
+.control {
+    text-align: center;
+    font-size: smaller;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+.control:hover {
+    cursor: pointer;
+    text-decoration: underline overline;
+}
+
+.control a {
+    text-decoration: none;
+}
+
+.control a:hover {
+    cursor: pointer;
+    text-decoration: underline overline;
+}
+
+.controlNoHover:hover {
+    cursor: auto;
+    text-decoration: none;
+}
+
+.name_data {
+    float: left;
+}
+
+#__MODULE_ID___buttons {
+    clear: both;
+}
+
+.stealImage {
+    margin: 0px;
+    padding-bottom: 0px;
+    float: left;
+}
+
+.addTaskControl {
+    float: right;
+    padding: 5px;
+    height: 23px;
+    margin: 5px;
+}
+
+.addTaskEntry {
+    border: solid 1px;
+    height: 21px;
+    clear: right;
+    float: right;
+    visibility: hidden;
+    display: none;
+    width: 200px;
+    padding: 5px;
+    margin: 5px;
+    background-repeat: repeat;
+}
+
+.addTaskEntryTextbox {
+    height: 18px;
+    float: left;
+    width: 150px;
+    border: solid 1px;
+    font-weight: normal;
+    cursor: text;
+}
+
+.editTaskName {
+    height: 12px;
+    float: left;
+    border: solid 1px;
+    font-size: 100%;
+    font-weight: normal;
+    cursor: text;
+    width: 99%; /*padding: 5px;*/
+}
+
+.editTaskNameSmaller {
+    height: 12px;
+    float: left;
+    border: solid 1px;
+    font-size: smaller;
+    font-weight: normal;
+    cursor: text;
+    width: 99%; /*padding: 5px;*/
+}
+
+#messages {
+    clear: both;
+    float: right;
+    margin-bottom: 5px;
+    width: 100%;
+    height: auto;
+    display: none;
+    color: #ff3300;
+}
+
+.currentTimer {
+    font-style: oblique;
+}
+
+.emptyTaskTd {
+    border: none;
+    border-bottom: solid;
+    background-color: transparent;
+    background-image: none;
+}
+
+.empty {
+    border: none;
+    background-color: transparent;
+    background-image: none;
+    padding-right: 3px;
+}
+
+.current_total_time {
+    border: solid 1px;
+    border-left: none;
+    text-align: center;
+    width: 25%;
+}
+
+/*  To Be Removed */
+
+#dataDiv {
+    clear: both;
+    float: left;
+    margin-top: 20px;
+}
+
+#__MODULE_ID___summaryContent #__MODULE_ID___summary {
+    overflow-x: auto;
+}
+
+#__MODULE_ID___summaryContent #__MODULE_ID___summary table {
+    width: 99%;
+    margin: 1px;
+    float: left;
+    clear: both;
+    border-collapse: collapse;
+    margin-top: 1px;
+}
+
+#__MODULE_ID___summaryContent #__MODULE_ID___summary table tr {
+}
+
+#__MODULE_ID___summaryContent #__MODULE_ID___summary table td {
+    border: solid 1px;
+}
+
+.day_title {
+    border: solid 1px;
+}
+
+.task_title {
+    width: 23%;
+    border: solid 1px;
+}
+
+.task_title_data {
+    white-space: normal;
+    font-size: 75%;
+}
+
+.summary_task_data {
+    font-weight: bold;
+    border: solid 1px;
+    text-align: center;
+    float: none;
+    vertical-align: middle;
+    cursor: default;
+    padding: 1px;
+    height: auto;
+    background-image: none;
+}
+
+.summary_total {
+    white-space: nowrap;
+    font-size: 70%;
+}
+
+.summary_total_larger {
+    white-space: nowrap;
+    font-size: 75%;
+}
+
+    /*a.delbox {
+        background-image: url( "../ig/images/x_blue.gif" );
+    }
+
+    a.delbox:hover {
+        background-image: url( "../ig/images/x_blue_highlight.gif" );
+    }
+
+    a.maxbox {
+        background-image: url( "../ig/images/max_blue.gif" );
+    }
+
+    a.maxbox:hover {
+        background-image: url( "../ig/images/max_blue_highlight.gif" );
+    }*/
+
+/*  To Be Removed */
+
+-->
+</style>
 
 <script type="text/javascript" src="js/gadget/BasicTime.js"></script>
 <script type="text/javascript" src="js/gadget/DateRecord.js"></script>
@@ -27,67 +397,67 @@
 <script type="text/javascript" src="js/scriptaculous/slider.js"></script>
 <script type="text/javascript" src="js/scriptaculous/sound.js"></script>
 
-<div id="__MODULE_ID__taskContent" style="display:none">
+<div id="__MODULE_ID___taskContent" style="display:none">
 
-    <div id="__MODULE_ID__sync_div" style="clear:both;float:right; height:35px;">
-        <div class="control addTaskControl" style="float:right; height:23px;" id="__MODULE_ID__synchronise_calendar_div">
+    <div id="__MODULE_ID___sync_div" style="clear:both;float:right; height:35px;">
+        <div class="control addTaskControl" style="float:right; height:23px;" id="__MODULE_ID___synchronise_calendar_div">
             <a href="javascript:_getTimesheetForModuleId(__MODULE_ID__).backgroundObtainUserCalendars();">SYNCHRONISE WITH GOOGLE CALENDAR</a>
         </div>
-        <div id="__MODULE_ID__sync_div_choice" class="modtitle tabtitle addTaskEntry">
-            <select class="selectedtab tabtitle addTaskEntryTextbox" style="font-size: smaller;" id="__MODULE_ID__calendar_choice">
+        <div id="__MODULE_ID___sync_div_choice" class="modtitle tabtitle addTaskEntry">
+            <select class="selectedtab tabtitle addTaskEntryTextbox" style="font-size: smaller;" id="__MODULE_ID___calendar_choice">
             </select>
             <a href="javascript:_getTimesheetForModuleId(__MODULE_ID__).closeSyncCal();" class="stealImage delbox"></a>
             <img onclick="_getTimesheetForModuleId(__MODULE_ID__).backgroundSynchroniseWithGcal();" src="http://timesheetmod.googlecode.com/svn/trunk/images/calendar_sync.png" style="cursor:pointer;float:right;"/>
         </div>
     </div>
-    <div id="__MODULE_ID__controls" style="float:right;clear:both;width:100%;">
-        <div class="control addTaskControl" id="__MODULE_ID__add_task_control">
+    <div id="__MODULE_ID___controls" style="float:right;clear:both;width:100%;">
+        <div class="control addTaskControl" id="__MODULE_ID___add_task_control">
             <a href="javascript:_getTimesheetForModuleId(__MODULE_ID__).addTask();">ADD TASK</a></div>
-        <div id="__MODULE_ID__add_task_entry" class="modtitle tabtitle addTaskEntry">
-            <input class="selectedtab tabtitle addTaskEntryTextbox" type="text" id="__MODULE_ID__new_task_name"/>
+        <div id="__MODULE_ID___add_task_entry" class="modtitle tabtitle addTaskEntry">
+            <input class="selectedtab tabtitle addTaskEntryTextbox" type="text" id="__MODULE_ID___new_task_name"/>
             <a href="javascript:_getTimesheetForModuleId(__MODULE_ID__).closeAddTask();" class="stealImage delbox"></a>
             <a href="javascript:_getTimesheetForModuleId(__MODULE_ID__).submitNewTaskName();" class="stealImage maxbox"></a>
         </div>
     </div>
-    <div id="__MODULE_ID__messages">
+    <div id="__MODULE_ID___messages">
     </div>
-    <div id="__MODULE_ID__task_list">
-        <div id="__MODULE_ID__title" class="title">
-            <table id="__MODULE_ID__timer_header_table" cellspacing="0" cellpadding="2">
+    <div id="__MODULE_ID___task_list">
+        <div id="__MODULE_ID___title" class="title">
+            <table id="__MODULE_ID___timer_header_table" cellspacing="0" cellpadding="2">
                 <tr>
-                    <td id="__MODULE_ID__no_handle" class="modtitle tabtitle invisihandle">&nbsp;</td>
-                    <td id="__MODULE_ID__task_name_title_div" class="modtitle title_heading task_name">TASK NAME</td>
-                    <td id="__MODULE_ID__total_time_title_div" class="modtitle title_heading total_time">TOTAL</td>
-                    <td id="__MODULE_ID__status_title_div" class="modtitle title_heading status">STATUS</td>
-                    <td id="__MODULE_ID__change_title_div" class="modtitle title_heading change">&nbsp;</td>
+                    <td id="__MODULE_ID___no_handle" class="modtitle tabtitle invisihandle">&nbsp;</td>
+                    <td id="__MODULE_ID___task_name_title_div" class="modtitle title_heading task_name">TASK NAME</td>
+                    <td id="__MODULE_ID___total_time_title_div" class="modtitle title_heading total_time">TOTAL</td>
+                    <td id="__MODULE_ID___status_title_div" class="modtitle title_heading status">STATUS</td>
+                    <td id="__MODULE_ID___change_title_div" class="modtitle title_heading change">&nbsp;</td>
                 </tr>
             </table>
         </div>
-        <ul id="__MODULE_ID__tasks">
+        <ul id="__MODULE_ID___tasks">
         </ul>
-        <div id="__MODULE_ID__current_task" style="clear:both;">
+        <div id="__MODULE_ID___current_task" style="clear:both;">
             <br/>
-            <table id="__MODULE_ID__current_task_timer_header_table" cellspacing="0" cellpadding="2">
+            <table id="__MODULE_ID___current_task_timer_header_table" cellspacing="0" cellpadding="2">
                 <tr>
-                    <td id="__MODULE_ID__current_task_no_handle" class="modtitle tabtitle invisihandle" style="border: solid 1px;">&nbsp;</td>
-                    <td id="__MODULE_ID__current_task_title_td" class="modtitle title_heading task_name">CURRENT TASK DURATION</td>
-                    <td id="__MODULE_ID__current_task_total_time_td" class="task_data current_total_time">
-                        <span id="__MODULE_ID__current_task_total_time_span" style="width:100%">None</span>
+                    <td id="__MODULE_ID___current_task_no_handle" class="modtitle tabtitle invisihandle" style="border: solid 1px;">&nbsp;</td>
+                    <td id="__MODULE_ID___current_task_title_td" class="modtitle title_heading task_name">CURRENT TASK DURATION</td>
+                    <td id="__MODULE_ID___current_task_total_time_td" class="task_data current_total_time">
+                        <span id="__MODULE_ID___current_task_total_time_span" style="width:100%">None</span>
                     </td>
-                    <td id="__MODULE_ID__current_task_status_title_div" class="title_heading status empty">&nbsp;</td>
-                    <td id="__MODULE_ID__current_task_change_title_div" class="title_heading change empty">&nbsp;</td>
+                    <td id="__MODULE_ID___current_task_status_title_div" class="title_heading status empty">&nbsp;</td>
+                    <td id="__MODULE_ID___current_task_change_title_div" class="title_heading change empty">&nbsp;</td>
                 </tr>
             </table>
         </div>
     </div>
 
     <script type="text/javascript" language="javascript">
-        Sortable.create('tasks', {handle:'handle_image',constraint:'vertical'})
+        Sortable.create('__MODULE_ID__tasks', {handle:'handle_image',constraint:'vertical'})
     </script>
 
     <div id="dataDiv" style="display:block;"><br/>
-        <span id="event_data_23_heading">event_data_23 - </span>
-        <span id="event_data_23">230707103435!|0:0:103438:103440||0:0:103442:103444||0:0:103729:105119|!|0:001354|</span>
+        <span id="event_data_8_heading">event_data_23 - </span>
+        <span id="event_data_8">080108103435!|0:0:103438:103440||0:0:103442:103444||0:0:103729:105119|!|0:001354|</span>
         <br/>
         <span id="task_names_heading">task_names - </span>
         <span id="task_names">test2|test3</span>
@@ -123,25 +493,26 @@
         <span id="summary_date_format">1</span>
     </div>
 </div>
-<div id="__MODULE_ID__summaryContent" style="display:none">
-    <div id="__MODULE_ID__summary">
-        <div id="__MODULE_ID__summary_controls"><br/>
+<div id="__MODULE_ID___summaryContent" style="display:none">
+    <div id="__MODULE_ID___summary">
+        <div id="__MODULE_ID___summary_controls"><br/>
 
-            <div id="__MODULE_ID__summary_previous" style="float:left;width:25%;text-align:left;">
-                <span id="__MODULE_ID__previous_control" class="control addTaskControl"><a href="javascript:drawPeriod__MODULE_ID__(1);">PREVIOUS</a></span>
+            <div id="__MODULE_ID___summary_previous" style="float:left;width:25%;text-align:left;">
+                <span id="__MODULE_ID___previous_control" class="control addTaskControl"><a href="javascript:drawPeriod__MODULE_ID__(1);">PREVIOUS</a></span>
             </div>
-            <div id="__MODULE_ID__summary_display" style="float:left;width:49%;text-align:center;">
-                <span id="__MODULE_ID__summary_date_range" class="control controlNoHover" style="border: none;cursor:auto;"></span>
+            <div id="__MODULE_ID___summary_display" style="float:left;width:49%;text-align:center;">
+                <span id="__MODULE_ID___summary_date_range" class="control controlNoHover" style="border: none;cursor:auto;"></span>
             </div>
-            <div id="__MODULE_ID__summary_next" style="float:left;width:25%;text-align:right;">
-                <span id="__MODULE_ID__next_control" class="control addTaskControl" style="visibility:hidden;"><a href="javascript:drawPeriod__MODULE_ID__(0);">NEXT</a></span>
+            <div id="__MODULE_ID___summary_next" style="float:left;width:25%;text-align:right;">
+                <span id="__MODULE_ID___next_control" class="control addTaskControl" style="visibility:hidden;"><a href="javascript:drawPeriod__MODULE_ID__(0);">NEXT</a></span>
             </div>
         </div>
         <br clear="all"/>
-        <table id="__MODULE_ID__summary_table" cellspacing="0" cellpadding="0" style="clear:both;">
+        <table id="__MODULE_ID___summary_table" cellspacing="0" cellpadding="0" style="clear:both;">
         </table>
     </div>
 </div>
+</body>
 
 <script type="text/javascript">
     var timesheetv2___MODULE_ID__ = new TimeSheet_v2(__MODULE_ID__);
@@ -153,5 +524,4 @@
 
     _IG_RegisterOnloadHandler(initialise);
 </script>
-</body>
 </html>

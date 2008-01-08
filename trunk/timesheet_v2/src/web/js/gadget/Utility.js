@@ -67,14 +67,22 @@ function _setPrefArray(prefName, arrayData, moduleId)
 
 function _getTimesheetForModuleId(moduleId)
 {
-    return eval("timesheetv2_" + moduleId);
+    var name = "timesheetv2_" + moduleId;
+    return eval(name);
 }
 
 function _getTimesheetForElement(element)
 {
     var elementId = element.id;
     var splitId = elementId.split("_");
-    return _getTimesheetForModuleId(splitId[0]);
+    var moduleId = splitId[0];
+
+    if (!moduleId)
+    {
+        moduleId = "__MODULE_ID__";
+    }
+
+    return _getTimesheetForModuleId(moduleId);
 }
 
 function _getElementId(element, moduleId)

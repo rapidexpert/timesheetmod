@@ -1,12 +1,14 @@
-function DateRecord()
+function DateRecord(moduleId)
 {
     this._events = new Array();
     this._totals = new Array();
+    this.setModuleId(moduleId);
 }
 
 DateRecord.prototype._date = null;
 DateRecord.prototype._events = null;
 DateRecord.prototype._totals = null;
+DateRecord.prototype._moduleId = null;
 
 DateRecord.prototype.setDataFromString = function(dataString, version)
 {
@@ -32,7 +34,7 @@ DateRecord.prototype.setDataFromString = function(dataString, version)
             var eventString = eventSplit[i];
             if (eventString.length > 0)
             {
-                var event = new TimerEvent();
+                var event = new TimerEvent(this.getModuleId());
                 event.setDataFromString(eventString, version);
                 var currentStart = event.getStart();
                 var currentEnd = event.getEnd();
@@ -172,4 +174,12 @@ DateRecord.prototype.getDate = function()
 DateRecord.prototype.setDate = function(date)
 {
     this._date = date;
+}
+DateRecord.prototype.getModuleId = function()
+{
+    return this._moduleId;
+}
+DateRecord.prototype.setModuleId = function(moduleId)
+{
+    this._moduleId = moduleId;
 }
