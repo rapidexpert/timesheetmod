@@ -184,7 +184,7 @@ TimesheetDisplay.prototype.replaceWithContent = function(source)
 
                 timesheetData.setPrefArray("active_task_ids", activeTaskIds);
 
-                Sortable.create('tasks', {handle:'handle_image',constraint:'vertical'});
+                Sortable.create(this.getModuleElementId('tasks'), {handle:'handle_image',constraint:'vertical'});
             }
         }
     }
@@ -261,10 +261,7 @@ TimesheetDisplay.prototype.displayNewTask = function(taskId)
     nameTd.className = 'task_data task_name';
     nameDiv.id = this.getModuleElementId("name_div_" + taskId);
     nameDiv.style.width = "100%";
-    nameDiv.onclick = function()
-    {
-        _getTimesheetForElement(this).getDisplay().replaceWithTextBox(this);
-    };
+    nameDiv.onclick = "_getTimesheetForElement(this).getDisplay().replaceWithTextBox(this);";
     totalTimeTd.id = this.getModuleElementId("total_time_td_" + taskId);
     totalTimeTd.className = 'task_data total_time';
     totalTimeSpan.id = this.getModuleElementId("total_time_span_" + taskId);
@@ -284,13 +281,9 @@ TimesheetDisplay.prototype.displayNewTask = function(taskId)
     statusTimedImg.id = this.getModuleElementId("status_timed_img_" + taskId);
     statusTimedImg.className = "control";
     statusTimedImg.style.paddingLeft = "5px";
-    statusTimedImg.src = "http://timesheetmod.googlecode.com/svn/trunk/images/start.png"
+    statusTimedImg.src = "http://timesheetmod.googlecode.com/svn/trunk/images/start.png";
     statusTimedImg.alt = "Start At Time";
-    // todo
-    //    statusTimedImg.onclick = function()
-    //    {
-    //        _getTimesheetForElement(this).startStopTimerAtTime(this);
-    //    };
+    statusTimedImg.onclick = "_getTimesheetForElement(this).startStopTimerAtTime(this);";
 
     disableTd.id = this.getModuleElementId("disable_td_" + taskId);
     disableTd.className = 'task_data change';
@@ -329,7 +322,7 @@ TimesheetDisplay.prototype.displayNewTask = function(taskId)
     taskList.appendChild(listRow);
 
     Effect.BlindDown(listRow.id);
-    Sortable.create('tasks', {handle:'handle_image',constraint:'vertical'})
+    Sortable.create(this.getModuleElementId('tasks'), {handle:'handle_image',constraint:'vertical'})
 }
 
 TimesheetDisplay.prototype.getModuleElementId = function(elementId)
@@ -339,7 +332,8 @@ TimesheetDisplay.prototype.getModuleElementId = function(elementId)
 
 TimesheetDisplay.prototype.gel = function(elementId)
 {
-    return _gel(this.getModuleElementId(elementId));
+    var moduleElementId = this.getModuleElementId(elementId);
+    return _gel(moduleElementId);
 }
 
 TimesheetDisplay.prototype.drawPeriod = function(week)
