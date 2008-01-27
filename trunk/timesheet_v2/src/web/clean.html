@@ -1,0 +1,215 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<title></title>
+<style type="text/css">
+.tasks_table {
+    border: 1px solid;
+    border-color: black;
+    border-collapse: collapse;
+    empty-cells: show;
+    width: 33%;
+}
+
+.tasks_table th {
+    border: 1px solid;
+    font-variant: small-caps;
+    text-align: center;
+    padding: 2px;
+}
+
+.tasks_table tr {
+    border: 1px solid;
+    font-size: 75%;
+    line-height: 21px;
+    vertical-align: middle;
+}
+
+.tasks_table td {
+    border: 1px solid;
+    line-height: 21px;
+    padding: 0px;
+}
+
+.drag_drop_header {
+    width: 10px;
+    padding: 2px;
+}
+
+.task_name_header {
+    width: auto;
+}
+
+.total_header {
+    width: 25%;
+}
+
+.control_header {
+    width: 20%;
+}
+
+.disable_header {
+    width: 6%;
+}
+
+.drag_drog {
+    cursor: move;
+}
+
+.task_name {
+    text-align: left;
+    padding: 0px;
+    margin: 0px;
+}
+
+.task_name_upper_div {
+    text-align: left;
+    padding-left: 2px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-right: 0px;
+    width: 98%;
+    clear: both;
+    float: left;
+}
+
+.task_name_lower_div {
+    text-align: right;
+    border-top: 1px solid #c1bebe;
+    padding-left: 0px;
+    padding-top: 1px;
+    padding-bottom: 2px;
+    padding-right: 2px;
+    width: 98%;
+    clear: both;
+    float: left;
+}
+
+.total_upper_div {
+    text-align: center;
+    padding-left: 2px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-right: 0px;
+    width: 98%;
+    white-space: nowrap;
+    clear: both;
+    float: left;
+}
+
+.total_lower_div {
+    text-align: center;
+    border-top: 1px solid #c1bebe;
+    padding-left: 0px;
+    padding-top: 1px;
+    padding-bottom: 2px;
+    padding-right: 2px;
+    width: 98%;
+    white-space: nowrap;
+    clear: both;
+    float: left;
+}
+
+.timed_input {
+    width: 20px;
+    text-align: center;
+    height: 15px;
+    font-size: 80%;
+    border: 1px solid #ddd9d9;
+}
+
+.enabled_timer_control {
+    cursor: pointer;
+    padding-right: 2px;
+    padding-left: 2px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.control_upper_div {
+    text-align: center;
+    padding-left: 2px;
+    padding-top: 4px;
+    padding-bottom: 0px;
+    padding-right: 0px;
+    width: 98%;
+    white-space: nowrap;
+    clear: both;
+    float: left;
+}
+
+.control_lower_div {
+    text-align: center;
+    vertical-align: middle;
+    padding-left: 0px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-right: 2px;
+    border-top: 1px solid #c1bebe;
+    width: 98%;
+    white-space: nowrap;
+    clear: both;
+    float: left;
+}
+
+.disable {
+    text-align: center;
+}
+
+.tasks_background {
+    background-color: #eeecec;
+}
+
+.handle_image {
+    background-image: url( "http://timesheetmod.googlecode.com/svn/trunk/images/move.png" );
+    background-position: 0px;
+    background-repeat: repeat-y;
+}
+</style>
+</head>
+<body>
+
+    <table class="tasks_table" cellpadding="1" cellspacing="0">
+        <th class="drag_drop_header tasks_background"></th>
+        <th class="task_name_header tasks_background">Task Name</th>
+        <th class="total_header tasks_background">Total</th>
+        <th class="control_header tasks_background">Control</th>
+        <th class="disable_header tasks_background"></th>
+        <tr>
+            <td class="drag_drog tasks_background">
+                <div id="handle_div_0" class="handle_image">&nbsp;</div>
+            </td>
+            <td class="task_name">Test</td>
+            <td class="total">00h 00m 00s</td>
+            <td class="control"><img src="images/start.png" alt="Start Task" title="Start Task"/>
+                <img src="images/clock_play.png" alt="Start Task At Time" title="Start Task At Time"/></td>
+            <td class="disable"><img src="images/report_delete.png" alt="Disable Task" title="Disable Task"/></td>
+        </tr>
+        <tr>
+            <td class="drag_drog tasks_background">
+                <div id="handle_div_0" class="handle_image">&nbsp;</div>
+            </td>
+            <td class="task_name">
+                <div class="task_name_upper_div">Test 2</div>
+                <div class="task_name_lower_div">Start Task at:<br/>Stop Task at:</div>
+            </td>
+            <td class="total">
+                <div class="total_upper_div">00h 00m 00s</div>
+                <div class="total_lower_div">
+                    <input type="text" class="timed_input"/><b>:</b><input type="text" class="timed_input"/><br/>
+                    <input type="text" class="timed_input"/><b>:</b><input type="text" class="timed_input"/></div>
+            </td>
+            <td class="control">
+                <div class="control_upper_div">
+                    <img src="images/start.png" alt="Start Task" title="Start Task" class="enabled_timer_control"/>
+                    <img src="images/clock_play.png" alt="Start Task At Time" title="Start Task At Time" class="enabled_timer_control"/>
+                </div>
+                <div class="control_lower_div">&nbsp;<img src="images/start.png" alt="Start Task" title="Start Task" class="enabled_timer_control"/>
+                </div>
+                <br/>&nbsp;</td>
+            <td class="disable"><img src="images/report_delete.png" alt="Disable Task" title="Disable Task"/></td>
+        </tr>
+    </table>
+</body>
+</html>
