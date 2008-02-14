@@ -2,283 +2,179 @@
         "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
-<title></title>
-<script type="text/javascript" src="js/scriptaculous/prototype.js"></script>
-<script type="text/javascript" src="js/scriptaculous/scriptaculous.js"></script>
-<style type="text/css">
-.tasks_ul {
-    width: 100%;
-    overflow: visible;
-    list-style-type: none;
-    margin: 0;
-    padding: 0;
-}
-
-.tasks_li {
-    width: 100%;
-    margin: 0;
-    float: left;
-    clear: both;
-}
-
-.tasks_table {
-    border: 1px solid;
-    border-top: 0px;
-    border-color: black;
-    border-collapse: collapse;
-    empty-cells: show;
-    width: 33%;
-}
-
-.tasks_table tr {
-    border: 1px solid;
-    border-top: 0px;
-    font-size: 75%;
-    line-height: 21px;
-    vertical-align: middle;
-}
-
-.tasks_table td {
-    border: 1px solid;
-    border-top: 0px;
-    line-height: 21px;
-    padding: 0px;
-}
-
-.header {
-    border-top: 1px solid !important;
-    font-variant: small-caps;
-    text-align: center !important;
-    font-weight: bold;
-    cursor: auto !important;
-}
-
-.total {
-    width: 25%;
-}
-
-.control {
-    width: 20%;
-}
-
-.drag_drop {
-    cursor: move;
-    width: 10px;
-}
-
-.task_name {
-    text-align: left;
-    padding: 2px;
-    margin: 2px;
-    width: auto;
-}
-
-.task_name_upper_div {
-    text-align: left;
-    padding-left: 2px;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    padding-right: 0px;
-    width: 99%;
-    clear: both;
-    float: left;
-}
-
-.task_name_lower_div {
-    text-align: right;
-    border-top: 1px solid #c1bebe;
-    padding-left: 0px;
-    padding-top: 1px;
-    padding-bottom: 2px;
-    padding-right: 2px;
-    width: 99%;
-    clear: both;
-    float: left;
-}
-
-.total_upper_div {
-    text-align: center;
-    padding-left: 2px;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    padding-right: 0px;
-    width: 98%;
-    white-space: nowrap;
-    clear: both;
-    float: left;
-}
-
-.total_lower_div {
-    text-align: center;
-    border-top: 1px solid #c1bebe;
-    padding-left: 2px;
-    padding-top: 1px;
-    padding-bottom: 2px;
-    padding-right: 0px;
-    width: 98%;
-    white-space: nowrap;
-    clear: both;
-    float: left;
-}
-
-.timed_input {
-    width: 20px;
-    text-align: center;
-    height: 15px;
-    font-size: 80%;
-    border: 1px solid #ddd9d9;
-}
-
-.timed_input_invalid {
-    background-color: #f4cbcb;
-}
-
-.timed_input_ignored {
-    background-color: #8f8e8e;
-}
-
-.clear_timed_input {
-    width: auto;
-    text-align: center;
-    height: 19px;
-    font-size: 70%;
-    border: 1px solid #ddd9d9;
-    background-color: #f1eded;
-}
-
-.enabled_timer_control {
-    cursor: pointer;
-    padding-right: 2px;
-    padding-left: 2px;
-    padding-top: 0px;
-    padding-bottom: 0px;
-}
-
-.control_upper_div {
-    text-align: center;
-    padding-left: 2px;
-    padding-top: 4px;
-    padding-bottom: 0px;
-    padding-right: 0px;
-    width: 98%;
-    white-space: nowrap;
-    clear: both;
-    float: left;
-}
-
-.control_lower_div {
-    text-align: center;
-    vertical-align: middle;
-    padding-left: 0px;
-    padding-top: 2px;
-    padding-bottom: 2px;
-    padding-right: 2px;
-    border-top: 1px solid #c1bebe;
-    width: 98%;
-    white-space: nowrap;
-    clear: both;
-    float: left;
-}
-
-.disable {
-    text-align: center;
-    width: 6%;
-}
-
-.tasks_background {
-    background-color: #eeecec;
-}
-
-.handle_image {
-    background-image: url( "http://timesheetmod.googlecode.com/svn/trunk/images/move.png" );
-    background-position: 0px;
-    background-repeat: repeat-y;
-}
-
-.hidden {
-    display: none;
-    visibility: hidden;
-}
-</style>
+    <title>Test Clean</title>
 </head>
 <body>
 
-    <table class="tasks_table" cellpadding="1" cellspacing="0" id="tasks_table">
-        <tr>
-            <td class="header drag_drop tasks_background">&nbsp;</td>
-            <td class="task_name header tasks_background">Task Name</td>
-            <td class="header total tasks_background">Total</td>
-            <td class="header control tasks_background">Control</td>
-            <td class="header disable tasks_background">&nbsp;</td>
-        </tr>
-    </table>
-    <ul class="tasks_ul" id="task_list">
-        <li class="tasks_li" id="task_1">
-            <table class="tasks_table" cellpadding="1" cellspacing="0">
+<!-- Styles -->
+<link type="text/css" rel="stylesheet" href="css/timesheet.css">
+
+<!-- Imported Scripts -->
+<script type="text/javascript" src="js/scriptaculous/prototype.js"></script>
+<script type="text/javascript" src="js/scriptaculous/scriptaculous.js"></script>
+<script type="text/javascript" src="js/gadget/BasicTime.js"></script>
+<script type="text/javascript" src="js/gadget/DateRecord.js"></script>
+<script type="text/javascript" src="js/gadget/fakeig.js"></script>
+<script type="text/javascript" src="js/gadget/Task.js"></script>
+<script type="text/javascript" src="js/gadget/TimerEvent.js"></script>
+<script type="text/javascript" src="js/gadget/TimesheetDisplay.js"></script>
+<script type="text/javascript" src="js/gadget/Total.js"></script>
+<script type="text/javascript" src="js/gadget/Utility.js"></script>
+
+<div id="__MODULE_ID___taskContent" style="display:block">
+    <div id="__MODULE_ID___messages">
+    </div>
+    <div id="__MODULE_ID___task_list">
+        <table id="__MODULE_ID___timer_header_table" class="tasks_table" cellpadding="1" cellspacing="0">
+            <tr>
+                <td id="__MODULE_ID___handle_header" class="header drag_drop tasks_background">&nbsp;</td>
+                <td id="__MODULE_ID___task_name_header" class="header task_name tasks_background">Task Name</td>
+                <td id="__MODULE_ID___total_header" class="header total tasks_background">Total</td>
+                <td id="__MODULE_ID___control_header" class="header control tasks_background">Control</td>
+                <td id="__MODULE_ID___disable_header" class="header disable tasks_background">&nbsp;</td>
+            </tr>
+        </table>
+        <ul class="tasks_ul" id="__MODULE_ID___tasks">
+            <li class="tasks_li" id="task_1">
+                <table class="tasks_table" cellpadding="1" cellspacing="0">
+                    <tr>
+                        <td class="drag_drop tasks_background">
+                            <div id="handle_div_0" class="handle_image">&nbsp;</div>
+                        </td>
+                        <td class="task_name">
+                            <div class="task_name_upper_div">Test 1</div>
+                            <div class="task_name_lower_div hidden">Start Task at:<br/>Stop Task at:</div>
+                        </td>
+                        <td class="total">
+                            <div class="total_upper_div">00h 00m 00s</div>
+                            <div class="total_lower_div hidden">
+                                <input type="text" class="timed_input"/><b>:</b><input type="text" class="timed_input"/><br/>
+                                <input type="text" class="timed_input"/><b>:</b><input type="text" class="timed_input"/>
+                            </div>
+                        </td>
+                        <td class="control">
+                            <div class="control_upper_div">
+                                <img src="images/start.png" alt="Start Task" title="Start Task" class="enabled_timer_control"/>
+                                <img src="images/clock_play.png" alt="Start Task At Time" title="Start Task At Time" class="enabled_timer_control"/>
+                            </div>
+                            <div class="control_lower_div hidden">&nbsp;<img src="images/start.png" alt="Start Task" title="Start Task" class="enabled_timer_control"/>
+                                <br/>&nbsp;
+                            </div>
+                        </td>
+                        <td class="disable">
+                            <img src="images/report_delete.png" alt="Disable Task" title="Disable Task"/>
+                        </td>
+                    </tr>
+                </table>
+            </li>
+            <li class="tasks_li" id="task_2">
+                <table class="tasks_table" cellpadding="1" cellspacing="0">
+                    <tr>
+                        <td class="drag_drop tasks_background">
+                            <div id="handle_div_0" class="handle_image">&nbsp;</div>
+                        </td>
+                        <td class="task_name">
+                            <div class="task_name_upper_div">Test 2</div>
+                            <div class="task_name_lower_div">Start Task at:<br/>Stop Task at:</div>
+                        </td>
+                        <td class="total">
+                            <div class="total_upper_div">00h 00m 00s</div>
+                            <div class="total_lower_div">
+                                <input type="text" class="timed_input" value="12" maxlength="2"/><b>:</b><input type="text" class="timed_input timed_input_invalid" value="e" maxlength="2"/><br/>
+                                <input type="text" class="timed_input timed_input_ignored" maxlength="2"/><b>:</b><input type="text" class="timed_input timed_input_ignored" maxlength="2"/>
+                            </div>
+                        </td>
+                        <td class="control">
+                            <div class="control_upper_div">
+                                <img src="images/start.png" alt="Start Task" title="Start Task" class="enabled_timer_control"/>
+                                <img src="images/clock_play.png" alt="Start Task At Time" title="Start Task At Time" class="enabled_timer_control"/>
+                            </div>
+                            <div class="control_lower_div">&nbsp;<img src="images/start.png" alt="Start Task" title="Start Task" class="enabled_timer_control"/>
+                                <br/>&nbsp;<input type="button" class="clear_timed_input" title="Clear Stop Time" value="RESET"/>&nbsp;
+                            </div>
+                        </td>
+                        <td class="disable">
+                            <img src="images/report_delete.png" alt="Disable Task" title="Disable Task"/>
+                        </td>
+                    </tr>
+                </table>
+            </li>
+        </ul>
+        <div id="__MODULE_ID___current_task" style="clear:both;">
+            <br/>
+            <table id="__MODULE_ID___current_task_timer_header_table" cellspacing="0" cellpadding="2">
                 <tr>
-                    <td class="drag_drop tasks_background">
-                        <div id="handle_div_0" class="handle_image">&nbsp;</div>
+                    <td id="__MODULE_ID___current_task_no_handle" class="modtitle tabtitle invisihandle" style="border: solid 1px;">&nbsp;</td>
+                    <td id="__MODULE_ID___current_task_title_td" class="modtitle title_heading task_name">CURRENT TASK DURATION</td>
+                    <td id="__MODULE_ID___current_task_total_time_td" class="task_data current_total_time">
+                        <span id="__MODULE_ID___current_task_total_time_span" style="width:100%">None</span>
                     </td>
-                    <td class="task_name">
-                        <div class="task_name_upper_div">Test 1</div>
-                        <div class="task_name_lower_div hidden">Start Task at:<br/>Stop Task at:</div>
-                    </td>
-                    <td class="total">
-                        <div class="total_upper_div">00h 00m 00s</div>
-                        <div class="total_lower_div hidden">
-                            <input type="text" class="timed_input"/><b>:</b><input type="text" class="timed_input"/><br/>
-                            <input type="text" class="timed_input"/><b>:</b><input type="text" class="timed_input"/>
-                        </div>
-                    </td>
-                    <td class="control">
-                        <div class="control_upper_div">
-                            <img src="images/start.png" alt="Start Task" title="Start Task" class="enabled_timer_control"/>
-                            <img src="images/clock_play.png" alt="Start Task At Time" title="Start Task At Time" class="enabled_timer_control"/>
-                        </div>
-                        <div class="control_lower_div hidden">&nbsp;<img src="images/start.png" alt="Start Task" title="Start Task" class="enabled_timer_control"/>
-                            <br/>&nbsp;
-                        </div>
-                    </td>
-                    <td class="disable"><img src="images/report_delete.png" alt="Disable Task" title="Disable Task"/>
-                    </td>
+                    <td id="__MODULE_ID___current_task_status_title_div" class="title_heading status empty">&nbsp;</td>
+                    <td id="__MODULE_ID___current_task_change_title_div" class="title_heading change empty">&nbsp;</td>
                 </tr>
             </table>
-        </li>
-        <li class="tasks_li" id="task_2">
-            <table class="tasks_table" cellpadding="1" cellspacing="0">
-                <tr>
-                    <td class="drag_drop tasks_background">
-                        <div id="handle_div_0" class="handle_image">&nbsp;</div>
-                    </td>
-                    <td class="task_name">
-                        <div class="task_name_upper_div">Test 2</div>
-                        <div class="task_name_lower_div">Start Task at:<br/>Stop Task at:</div>
-                    </td>
-                    <td class="total">
-                        <div class="total_upper_div">00h 00m 00s</div>
-                        <div class="total_lower_div">
-                            <input type="text" class="timed_input" value="12" maxlength="2"/><b>:</b><input type="text" class="timed_input timed_input_invalid" value="e" maxlength="2"/><br/>
-                            <input type="text" class="timed_input timed_input_ignored" maxlength="2"/><b>:</b><input type="text" class="timed_input timed_input_ignored" maxlength="2"/>
-                        </div>
-                    </td>
-                    <td class="control">
-                        <div class="control_upper_div">
-                            <img src="images/start.png" alt="Start Task" title="Start Task" class="enabled_timer_control"/>
-                            <img src="images/clock_play.png" alt="Start Task At Time" title="Start Task At Time" class="enabled_timer_control"/>
-                        </div>
-                        <div class="control_lower_div">&nbsp;<img src="images/start.png" alt="Start Task" title="Start Task" class="enabled_timer_control"/>
-                            <br/>&nbsp;<input type="button" class="clear_timed_input" title="Clear Stop Time" value="RESET"/>&nbsp;
-                        </div>
-                    </td>
-                    <td class="disable"><img src="images/report_delete.png" alt="Disable Task" title="Disable Task"/>
-                    </td>
-                </tr>
-            </table>
-        </li>
-    </ul>
+        </div>
+    </div>
 
     <script type="text/javascript">
-        Sortable.create('task_list', {handle:'drag_drop',constraint:'vertical'})
+        Sortable.create('__MODULE_ID___tasks', {handle:'drag_drop',constraint:'vertical'})
     </script>
+</div>
+<div id="__MODULE_ID___summaryContent" style="display:block">
+    <div id="__MODULE_ID___summary">
+        <div id="__MODULE_ID___summary_controls"><br/>
+
+            <div id="__MODULE_ID___summary_previous" style="float:left;width:25%;text-align:left;">
+                <span id="__MODULE_ID___previous_control" class="control addTaskControl"><a href="javascript:drawPeriod__MODULE_ID__(1);">PREVIOUS</a></span>
+            </div>
+            <div id="__MODULE_ID___summary_display" style="float:left;width:49%;text-align:center;">
+                <span id="__MODULE_ID___summary_date_range" class="control controlNoHover" style="border: none;cursor:auto;"></span>
+            </div>
+            <div id="__MODULE_ID___summary_next" style="float:left;width:25%;text-align:right;">
+                <span id="__MODULE_ID___next_control" class="control addTaskControl" style="visibility:hidden;"><a href="javascript:drawPeriod__MODULE_ID__(0);">NEXT</a></span>
+            </div>
+        </div>
+        <br clear="all"/>
+        <table id="__MODULE_ID___summary_table" cellspacing="0" cellpadding="0" style="clear:both;">
+        </table>
+    </div>
+</div>
+<div id="dataDiv" style="display:block;"><br/>
+    <span id="event_data_8_heading">event_data_23 - </span>
+    <span id="event_data_8">080108103435!|0:0:103438:103440||0:0:103442:103444||0:0:103729:105119|!|0:001354|</span>
+    <br/>
+    <span id="task_names_heading">task_names - </span>
+    <span id="task_names">test2|test3</span>
+    <br/>
+    <span id="active_task_ids_heading">active_task_ids - </span>
+    <span id="active_task_ids">0|1</span>
+    <br/>
+    <span id="current_event_heading">current_event - </span>
+    <span id="current_event">1:230707105420</span>
+    <br/>
+    <span id="summary_round_heading">summary_round - </span>
+    <span id="summary_round">15</span>
+    <br/>
+    <span id="summary_zero_duration_format_heading">summary_zero_duration_format - </span>
+    <span id="summary_zero_duration_format">0</span>
+    <br/>
+    <span id="summary_format_heading">summary_format - </span>
+    <span id="summary_format">0</span>
+    <br/>
+    <span id="start_day_of_week_heading">start_day_of_week - </span>
+    <span id="start_day_of_week">M</span>
+    <br/>
+    <span id="hide_weekend_heading">hide_weekend - </span>
+    <span id="hide_weekend">1</span>
+    <br/>
+    <span id="current_version_heading">current_version - </span>
+    <span id="current_version">1</span>
+    <br/>
+    <span id="next_event_id_heading">next_event_id - </span>
+    <span id="next_event_id">1</span>
+    <br/>
+    <span id="summary_date_format_heading">summary_date_format - </span>
+    <span id="summary_date_format">1</span>
+</div>
 </body>
 </html>
