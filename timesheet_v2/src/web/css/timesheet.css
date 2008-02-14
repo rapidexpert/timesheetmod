@@ -1,0 +1,194 @@
+.tasks_ul {
+    width: 100%;
+    overflow: visible;
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+}
+
+.tasks_li {
+    width: 100%;
+    margin: 0;
+    float: left;
+    clear: both;
+}
+
+.tasks_table {
+    border: 1px solid;
+    border-top: 0px;
+    border-color: black;
+    border-collapse: collapse;
+    empty-cells: show;
+    width: 33%;
+}
+
+.tasks_table tr {
+    border: 1px solid;
+    border-top: 0px;
+    font-size: 75%;
+    line-height: 21px;
+    vertical-align: middle;
+}
+
+.tasks_table td {
+    border: 1px solid;
+    border-top: 0px;
+    line-height: 21px;
+    padding: 0px;
+}
+
+.header {
+    border-top: 1px solid !important;
+    font-variant: small-caps;
+    text-align: center !important;
+    font-weight: bold;
+    cursor: auto !important;
+}
+
+.total {
+    width: 25%;
+}
+
+.control {
+    width: 20%;
+}
+
+.drag_drop {
+    cursor: move;
+    width: 10px;
+}
+
+.task_name {
+    text-align: left;
+    padding: 2px;
+    margin: 2px;
+    width: auto;
+}
+
+.task_name_upper_div {
+    text-align: left;
+    padding-left: 2px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-right: 0px;
+    width: 99%;
+    clear: both;
+    float: left;
+}
+
+.task_name_lower_div {
+    text-align: right;
+    border-top: 1px solid #c1bebe;
+    padding-left: 0px;
+    padding-top: 1px;
+    padding-bottom: 2px;
+    padding-right: 2px;
+    width: 99%;
+    clear: both;
+    float: left;
+    white-space: nowrap;
+}
+
+.total_upper_div {
+    text-align: center;
+    padding-left: 2px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-right: 0px;
+    width: 98%;
+    white-space: nowrap;
+    clear: both;
+    float: left;
+}
+
+.total_lower_div {
+    text-align: center;
+    border-top: 1px solid #c1bebe;
+    padding-left: 2px;
+    padding-top: 1px;
+    padding-bottom: 2px;
+    padding-right: 0px;
+    width: 98%;
+    white-space: nowrap;
+    clear: both;
+    float: left;
+}
+
+.timed_input {
+    width: 20px;
+    text-align: center;
+    height: 15px;
+    font-size: 80%;
+    border: 1px solid #ddd9d9;
+}
+
+.timed_input_invalid {
+    background-color: #f4cbcb;
+}
+
+.timed_input_ignored {
+    background-color: #8f8e8e;
+}
+
+.clear_timed_input {
+    width: auto;
+    text-align: center;
+    height: 19px;
+    font-size: 70%;
+    border: 1px solid #ddd9d9;
+    background-color: #f1eded;
+}
+
+.enabled_timer_control {
+    cursor: pointer;
+    padding-right: 2px;
+    padding-left: 2px;
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+.control_upper_div {
+    text-align: center;
+    padding-left: 2px;
+    padding-top: 4px;
+    padding-bottom: 0px;
+    padding-right: 0px;
+    width: 98%;
+    white-space: nowrap;
+    clear: both;
+    float: left;
+}
+
+.control_lower_div {
+    text-align: center;
+    vertical-align: middle;
+    padding-left: 0px;
+    padding-top: 2px;
+    padding-bottom: 2px;
+    padding-right: 2px;
+    border-top: 1px solid #c1bebe;
+    width: 98%;
+    white-space: nowrap;
+    clear: both;
+    float: left;
+}
+
+.disable {
+    text-align: center;
+    width: 6%;
+}
+
+.tasks_background {
+    background-color: #eeecec;
+}
+
+.handle_image {
+    background-image: url( "http://timesheetmod.googlecode.com/svn/trunk/images/move.png" );
+    background-position: 0px;
+    background-repeat: repeat-y;
+}
+
+.hidden {
+    display: none;
+    visibility: hidden;
+}
