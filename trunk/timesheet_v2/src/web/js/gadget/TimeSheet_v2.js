@@ -238,13 +238,14 @@ TimeSheet_v2.prototype.initialiseTaskList = function()
 
             if (taskId && taskId != "undefined")
             {
-                var immediateStatusControl = this.gel("status_immediate_img_" + taskId);
-                immediateStatusControl.src = "http://timesheetmod.googlecode.com/svn/trunk/images/stop_immediate.png";
-                immediateStatusControl.alt = "Stop";
-                var timedStatusControl = this.gel("status_timed_img_" + taskId);
-                timedStatusControl.src = "http://timesheetmod.googlecode.com/svn/trunk/images/stop.png";
-                timedStatusControl.alt = "Stop at Time";
-                this.refreshCurrentTimer();
+                //todo
+                //                var immediateStatusControl = this.gel("status_immediate_img_" + taskId);
+                //                immediateStatusControl.src = "http://timesheetmod.googlecode.com/svn/trunk/images/stop_immediate.png";
+                //                immediateStatusControl.alt = "Stop";
+                //                var timedStatusControl = this.gel("status_timed_img_" + taskId);
+                //                timedStatusControl.src = "http://timesheetmod.googlecode.com/svn/trunk/images/stop.png";
+                //                timedStatusControl.alt = "Stop at Time";
+                //                this.refreshCurrentTimer();
             }
             else
             {
