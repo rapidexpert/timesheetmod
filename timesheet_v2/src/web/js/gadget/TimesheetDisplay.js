@@ -231,93 +231,123 @@ TimesheetDisplay.prototype.replaceWithTextBox = function(source)
 
 TimesheetDisplay.prototype.displayNewTask = function(taskId)
 {
-    var taskList = this.gel("tasks");
-    var listRow = document.createElement("li")
-    var taskTable = document.createElement("table");
+    var taskList = this.gel('tasks');
+    var listRow = document.createElement('li')
+    var taskTable = document.createElement('table');
     var lastRow = taskTable.rows.length;
     var taskRow = taskTable.insertRow(lastRow);
 
-    var handleTd = document.createElement("td");
-    var handleDiv = document.createElement("div");
-    //var handleImage = document.createElement("img");
-    var nameTd = document.createElement("td");
-    var nameDiv = document.createElement("div");
-    var totalTimeTd = document.createElement("td");
-    var totalTimeSpan = document.createElement("span");
-    var statusTd = document.createElement("td");
-    var statusImmediateImg = document.createElement("img");
-    var statusTimedImg = document.createElement("img");
-    var disableTd = document.createElement("td");
+    var handleTd = document.createElement('td');
+    var handleDiv = document.createElement('div');
+    var nameTd = document.createElement('td');
+    var nameUpperDiv = document.createElement('div');
+    var nameLowerDiv = document.createElement('div');
+    var totalTd = document.createElement('td');
+    var totalUpperDiv = document.createElement('div');
+    var totalLowerDiv = document.createElement('div');
+    var controlTd = document.createElement('td');
+    var controlUpperDiv = document.createElement('div');
+    var controlLowerDiv = document.createElement('div');
+    var disableTd = document.createElement('td');
 
-    listRow.id = this.getModuleElementId("li_row_" + taskId);
+    listRow.id = this.getModuleElementId('li_row_' + taskId);
     listRow.style.position = 'relative';
-    taskTable.id = this.getModuleElementId("table_" + taskId);
-    taskRow.id = this.getModuleElementId("row_" + taskId);
-    handleTd.id = this.getModuleElementId("handle_td_" + taskId);
-    handleTd.className = "modtitle tabtitle handle";
-    handleDiv.id = this.getModuleElementId("handle_div_" + taskId);
-    handleDiv.className = "handle_image";
-    nameTd.id = this.getModuleElementId("name_td_" + taskId);
-    nameTd.className = 'task_data task_name';
-    nameDiv.id = this.getModuleElementId("name_div_" + taskId);
-    nameDiv.style.width = "100%";
-    nameDiv.onclick = "_getTimesheetForElement(this).getDisplay().replaceWithTextBox(this);";
-    totalTimeTd.id = this.getModuleElementId("total_time_td_" + taskId);
-    totalTimeTd.className = 'task_data total_time';
-    totalTimeSpan.id = this.getModuleElementId("total_time_span_" + taskId);
-    totalTimeSpan.style.width = "100%"
-    statusTd.id = this.getModuleElementId("status_td_" + taskId);
-    statusTd.className = 'task_data status';
-    statusImmediateImg.id = this.getModuleElementId("status_immediate_img_" + taskId);
-    statusImmediateImg.className = "control";
-    statusImmediateImg.src = "http://timesheetmod.googlecode.com/svn/trunk/images/start_immediate.png"
-    statusImmediateImg.alt = "Start";
+    listRow.className = 'tasks_li';
 
-    statusImmediateImg.onclick = function()
-    {
-        _getTimesheetForElement(this).startStopTimer(this);
-    };
+    taskTable.id = this.getModuleElementId('table_' + taskId);
 
-    statusTimedImg.id = this.getModuleElementId("status_timed_img_" + taskId);
-    statusTimedImg.className = "control";
-    statusTimedImg.style.paddingLeft = "5px";
-    statusTimedImg.src = "http://timesheetmod.googlecode.com/svn/trunk/images/start.png";
-    statusTimedImg.alt = "Start At Time";
-    statusTimedImg.onclick = "_getTimesheetForElement(this).startStopTimerAtTime(this);";
+    taskRow.id = this.getModuleElementId('row_' + taskId);
 
-    disableTd.id = this.getModuleElementId("disable_td_" + taskId);
-    disableTd.className = 'task_data change';
+    handleTd.id = this.getModuleElementId('handle_td_' + taskId);
+    handleTd.className = 'drag_drop tasks_background';
+    handleDiv.id = this.getModuleElementId('handle_div_' + taskId);
+    handleDiv.className = 'handle_image';
+
+    nameTd.id = this.getModuleElementId('name_td_' + taskId);
+    nameTd.className = 'task_name';
+    nameUpperDiv.id = this.getModuleElementId('name_upper_div_' + taskId);
+    nameUpperDiv.className = 'task_name_upper_div';
+    nameLowerDiv.id = this.getModuleElementId('name_lower_div_' + taskId);
+    nameLowerDiv.className = 'task_name_lower_div hidden';
+//    nameDiv.onclick = '_getTimesheetForElement(this).getDisplay().replaceWithTextBox(this);';
+    totalTd.id = this.getModuleElementId('total_time_td_' + taskId);
+    totalTd.className = 'total';
+    totalUpperDiv.id = this.getModuleElementId('total_upper_div_' + taskId);
+    totalUpperDiv.className = 'total_upper_div';
+    totalLowerDiv.id = this.getModuleElementId('total_lower_div_' + taskId);
+    totalLowerDiv.className = 'total_lower_div hidden';
+
+    controlTd.id = this.getModuleElementId('control_td_' + taskId);
+    controlTd.className = 'control';
+    controlUpperDiv.id = this.getModuleElementId('control_upper_div_' + taskId);
+    controlUpperDiv.className = 'control_upper_div';
+    controlLowerDiv.id = this.getModuleElementId('control_lower_div_' + taskId);
+    controlLowerDiv.className = 'control_lower_div hidden';
+
+    disableTd.id = this.getModuleElementId('disable_td_' + taskId);
+    disableTd.className = 'disable';
+
+
+//    statusImmediateImg.onclick = function()
+    //    {
+    //        _getTimesheetForElement(this).startStopTimer(this);
+    //    };
+    //
+    //    statusTimedImg.id = this.getModuleElementId('status_timed_img_' + taskId);
+    //    statusTimedImg.className = 'control';
+    //    statusTimedImg.style.paddingLeft = '5px';
+    //    statusTimedImg.src = 'http://timesheetmod.googlecode.com/svn/trunk/images/start.png';
+    //    statusTimedImg.alt = 'Start At Time';
+    //    statusTimedImg.onclick = '_getTimesheetForElement(this).startStopTimerAtTime(this);';
+    //
+    //
+    taskTable.className = "tasks_table";
+    taskTable.cellPadding = 1;
+    taskTable.cellSpacing = 0;
 
     var timesheetData = this.getTimesheetData();
     var taskName = timesheetData.getTaskName(taskId);
 
-    handleDiv.innerHTML = "&nbsp;";
-    nameDiv.innerHTML = taskName;
+    handleDiv.innerHTML = '&nbsp;';
+
+    nameUpperDiv.innerHTML = taskName;
+    nameLowerDiv.innerHTML = 'Start Task at:<br/>Stop Task at:';
+
     var total = timesheetData.getTodaysEventData().getTotalForTask(taskId);
     if (total)
     {
-        totalTimeSpan.innerHTML = this.getDurationDisplayString(total.getDuration());
+        totalUpperDiv.innerHTML = this.getDurationDisplayString(total.getDuration());
     }
     else
     {
-        totalTimeSpan.innerHTML = this.getDurationDisplayString();
+        totalUpperDiv.innerHTML = this.getDurationDisplayString();
     }
-    disableTd.innerHTML = '<a href="javascript:_getTimesheetForElement(this).disableTask(' + taskId
-            + ', true);" class="delbox stealImage"></a>';
+
+    totalLowerDiv.innerHTML =
+    '<input type="text" class="timed_input"/><b>:</b><input type="text" class="timed_input"/><br/><input type="text" class="timed_input"/><b>:</b><input type="text" class="timed_input"/>'
+
+    controlUpperDiv.innerHTML =
+    '<img src="images/start.png" alt="Start Task" title="Start Task" class="enabled_timer_control"/> <img src="images/clock_play.png" alt="Start Task At Time" title="Start Task At Time" class="enabled_timer_control"/>';
+    controlLowerDiv.innerHTML =
+    '&nbsp;<img src="images/start.png" alt="Start Task" title="Start Task" class="enabled_timer_control"/><br/>&nbsp;<input type="button" class="clear_timed_input" title="Clear Stop Time" value="RESET"/>&nbsp;';
+
+    disableTd.innerHTML = '<img src="images/report_delete.png" alt="Disable Task" title="Disable Task"/>';
 
     handleTd.appendChild(handleDiv);
     taskRow.appendChild(handleTd);
-    nameTd.appendChild(nameDiv);
+    nameTd.appendChild(nameUpperDiv);
+    nameTd.appendChild(nameLowerDiv);
     taskRow.appendChild(nameTd);
-    totalTimeTd.appendChild(totalTimeSpan);
-    taskRow.appendChild(totalTimeTd);
-    statusTd.appendChild(statusImmediateImg);
-    statusTd.appendChild(statusTimedImg);
-    taskRow.appendChild(statusTd);
+    totalTd.appendChild(totalUpperDiv);
+    totalTd.appendChild(totalLowerDiv);
+    taskRow.appendChild(totalTd);
+    controlTd.appendChild(controlUpperDiv);
+    controlTd.appendChild(controlLowerDiv);
+    taskRow.appendChild(controlTd);
     taskRow.appendChild(disableTd);
 
     listRow.appendChild(taskTable);
-    listRow.style.display = "none";
+    listRow.style.display = 'none';
 
     taskList.appendChild(listRow);
 
