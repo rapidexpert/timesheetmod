@@ -1,6 +1,7 @@
 .timed_text_input {
-    width: 24px;
+    width: 26px;
     text-align: center;
+    margin-top: 0px;
     height: 15px;
     font-size: 80%;
     border: 1px solid #ddd9d9;
@@ -9,10 +10,62 @@
 .timed_date_input {
     width: 60px;
     text-align: center;
-    height: 18px;
+    height: 19px;
     margin-top: 2px;
-    margin-bottom: 1px;
+    margin-bottom: 2px;
     font-size: 80%;
     border: 1px solid #ddd9d9;
     border-collapse: collapse;
+}
+
+* html .total_upper_div {
+    text-align: center;
+    padding-left: 2px;
+    padding-top: 3px;
+    padding-bottom: 0px;
+    padding-right: 0px;
+    width: 98%;
+    white-space: nowrap;
+    clear: both;
+    float: left;
+    height: 24px;
+}
+
+*+html .total_upper_div {
+    text-align: center;
+    padding-left: 2px;
+    padding-top: 4px;
+    padding-bottom: 1px;
+    padding-right: 0px;
+    width: 98%;
+    white-space: nowrap;
+    clear: both;
+    float: left;
+    height: 24px;
+}
+
+* html .control_upper_div {
+    text-align: center;
+    padding-left: 2px;
+    padding-top: 3px;
+    padding-bottom: 0px;
+    padding-right: 0px;
+    width: 98%;
+    white-space: nowrap;
+    clear: both;
+    float: left;
+    height: 24px;
+}
+
+*+html .control_upper_div {
+    text-align: center;
+    padding-left: 2px;
+    padding-top: 3px;
+    padding-bottom: 1px;
+    padding-right: 0px;
+    width: 98%;
+    white-space: nowrap;
+    clear: both;
+    float: left;
+    height: 24px;
 }

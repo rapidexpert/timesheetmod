@@ -90,7 +90,7 @@ function _getElementId(element, moduleId)
     return moduleId + "_" + element;
 }
 
-function _validateNumericalTextInput(mandatory, event, linkedInput)
+function _validateNumericalTextInput(mandatory, event, maxNum, linkedInput)
 {
     if (!event)
     {
@@ -120,7 +120,19 @@ function _validateNumericalTextInput(mandatory, event, linkedInput)
     }
     else
     {
-        target.className = 'timed_text_input';
+        if (maxNum)
+        {
+            var value = _pInt(trimmedValue);
+            if (value <= maxNum)
+            {
+                target.className = 'timed_text_input';
+            }
+            else
+            {
+                target.className = 'timed_text_input timed_input_invalid';
+            }
+        }
+
         if (linkedInput)
         {
             _validateNumericalTextInput(true, linkedTarget)
