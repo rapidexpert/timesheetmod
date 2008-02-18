@@ -229,6 +229,18 @@ TimesheetDisplay.prototype.replaceWithTextBox = function(source)
     textElement.select();
 }
 
+TimesheetDisplay.prototype.addOnKeyUpEvent = function(input, mandatory, linkedInput)
+{
+    input.onkeyup = function(event)
+    {
+        if (!event)
+        {
+            event = window.event;
+        }
+        return _validateNumericalTextInput(mandatory, event, linkedInput);
+    }
+}
+
 TimesheetDisplay.prototype.displayNewTask = function(taskId)
 {
     var taskList = this.gel('tasks');
@@ -340,12 +352,12 @@ TimesheetDisplay.prototype.displayNewTask = function(taskId)
     var timedInput = document.createElement('input');
     timedInput.className = 'timed_text_input timed_input_invalid';
     timedInput.maxLength = 2;
-    timedInput.setAttribute('onKeyUp', 'return _validateNumericalTextInput(true, event);');
-    timedInput.setAttribute('onBlur', 'return _validateNumericalTextInput(true, event);');
+    this.addOnKeyUpEvent(timedInput, true, null);
     timedInput.id = startHourInputId;
 
     var timedInputTwo = timedInput.cloneNode(true);
     timedInputTwo.id = startMinuteInputId;
+    this.addOnKeyUpEvent(timedInputTwo, true, null);
 
     var dateInputOne = document.createElement('select');
     dateInputOne.className = 'timed_date_input';
@@ -358,17 +370,11 @@ TimesheetDisplay.prototype.displayNewTask = function(taskId)
     var timedInputThree = timedInput.cloneNode(true);
     timedInputThree.id = endHourInputId;
     timedInputThree.className = 'timed_text_input timed_input_ignored';
-    timedInputThree.setAttribute('onKeyUp', 'return _validateNumericalTextInput(false, event, "' + endMinuteInputId
-            + '");');
-    timedInputThree.setAttribute('onBlur', 'return _validateNumericalTextInput(false, event,  "' + endMinuteInputId
-            + '");');
+    this.addOnKeyUpEvent(timedInputThree, false, endMinuteInputId);
 
     var timedInputFour = timedInputThree.cloneNode(true);
     timedInputFour.id = endMinuteInputId;
-    timedInputFour.setAttribute('onKeyUp', 'return _validateNumericalTextInput(false, event, "' + endHourInputId
-            + '");');
-    timedInputFour.setAttribute('onBlur', 'return _validateNumericalTextInput(false, event,  "' + endHourInputId
-            + '");');
+    this.addOnKeyUpEvent(timedInputFour, false, endHourInputId);
 
     var dateInputTwo = document.createElement('select');
     dateInputTwo.className = 'timed_date_input';

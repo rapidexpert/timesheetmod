@@ -92,6 +92,10 @@ function _getElementId(element, moduleId)
 
 function _validateNumericalTextInput(mandatory, event, linkedInput)
 {
+    if (!event)
+    {
+        event = window.event;
+    }
     var target = event.target || event.srcElement;
     var linkedTarget = _gel(linkedInput);
     target = target ? target : event;
@@ -117,6 +121,10 @@ function _validateNumericalTextInput(mandatory, event, linkedInput)
     else
     {
         target.className = 'timed_text_input';
+        if (linkedInput)
+        {
+            _validateNumericalTextInput(true, linkedTarget)
+        }
     }
 
     return contentLength;
