@@ -89,3 +89,35 @@ function _getElementId(element, moduleId)
 {
     return moduleId + "_" + element;
 }
+
+function _validateNumericalTextInput(mandatory, event, linkedInput)
+{
+    var target = event.target || event.srcElement;
+    var linkedTarget = _gel(linkedInput);
+    target = target ? target : event;
+    var trimmedValue = _trim(target.value);
+
+    var linkedInputValid = linkedInput ? _validateNumericalTextInput(false, linkedTarget) : false;
+    mandatory = mandatory || linkedInputValid;
+
+    var validation = /^\d\d?$/;
+
+    var contentLength = trimmedValue.length > 0;
+    if (!validation.match(trimmedValue))
+    {
+        if (mandatory || contentLength > 0)
+        {
+            target.className = 'timed_text_input timed_input_invalid';
+        }
+        else
+        {
+            target.className = 'timed_text_input timed_input_ignored';
+        }
+    }
+    else
+    {
+        target.className = 'timed_text_input';
+    }
+
+    return contentLength;
+}

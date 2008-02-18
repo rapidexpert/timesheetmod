@@ -311,7 +311,7 @@ TimesheetDisplay.prototype.displayNewTask = function(taskId)
     handleDiv.innerHTML = '&nbsp;';
 
     nameUpperDiv.innerHTML = taskName;
-    nameLowerDiv.innerHTML = 'Start Task at:<br/>Stop Task at:';
+    nameLowerDiv.innerHTML = 'Start Task at:<br/>&nbsp;<br/>Stop Task at:<br/>&nbsp;';
 
     var total = timesheetData.getTodaysEventData().getTotalForTask(taskId);
     if (total)
@@ -323,13 +323,77 @@ TimesheetDisplay.prototype.displayNewTask = function(taskId)
         totalUpperDiv.innerHTML = this.getDurationDisplayString();
     }
 
-    totalLowerDiv.innerHTML =
-    '<input type="text" class="timed_input"/><b>:</b><input type="text" class="timed_input"/><br/><input type="text" class="timed_input"/><b>:</b><input type="text" class="timed_input"/>'
+//    totalLowerDiv.innerHTML = '<input type="text" class="timed_input" maxlength="2"/><b>:</b><input type="text" class="timed_input" maxlength="2"/><br/><input type="text" class="timed_input" maxlength="2"/><b>:</b><input type="text" class="timed_input" maxlength="2"/>'
+    var startHourInputId = this.getModuleElementId('start_hour_input_' + taskId);
+    var startMinuteInputId = this.getModuleElementId('start_minute_input_' + taskId);
+    var startDateInputId = this.getModuleElementId('start_date_input_' + taskId);
+    var endHourInputId = this.getModuleElementId('end_hour_input_' + taskId);
+    var endMinuteInputId = this.getModuleElementId('end_minute_input_' + taskId);
+
+    var colonSpan = document.createElement('span');
+    colonSpan.innerHTML = '<b>:</b>';
+    var colonSpanTwo = colonSpan.cloneNode(true);
+    var newLine = document.createElement('br');
+    var newLineTwo = document.createElement('br');
+    var newLineThree = document.createElement('br');
+
+    var timedInput = document.createElement('input');
+    timedInput.className = 'timed_text_input timed_input_invalid';
+    timedInput.maxLength = 2;
+    timedInput.setAttribute('onKeyUp', 'return _validateNumericalTextInput(true, event);');
+    timedInput.setAttribute('onBlur', 'return _validateNumericalTextInput(true, event);');
+    timedInput.id = startHourInputId;
+
+    var timedInputTwo = timedInput.cloneNode(true);
+    timedInputTwo.id = startMinuteInputId;
+
+    var dateInputOne = document.createElement('select');
+    dateInputOne.className = 'timed_date_input';
+    dateInputOne.id = startDateInputId;
+    var dateOptionInputOne = document.createElement('option');
+    dateOptionInputOne.value = '18';
+    dateOptionInputOne.innerHTML = '18/02';
+    dateInputOne.appendChild(dateOptionInputOne);
+
+    var timedInputThree = timedInput.cloneNode(true);
+    timedInputThree.id = endHourInputId;
+    timedInputThree.className = 'timed_text_input timed_input_ignored';
+    timedInputThree.setAttribute('onKeyUp', 'return _validateNumericalTextInput(false, event, "' + endMinuteInputId
+            + '");');
+    timedInputThree.setAttribute('onBlur', 'return _validateNumericalTextInput(false, event,  "' + endMinuteInputId
+            + '");');
+
+    var timedInputFour = timedInputThree.cloneNode(true);
+    timedInputFour.id = endMinuteInputId;
+    timedInputFour.setAttribute('onKeyUp', 'return _validateNumericalTextInput(false, event, "' + endHourInputId
+            + '");');
+    timedInputFour.setAttribute('onBlur', 'return _validateNumericalTextInput(false, event,  "' + endHourInputId
+            + '");');
+
+    var dateInputTwo = document.createElement('select');
+    dateInputTwo.className = 'timed_date_input';
+    dateInputTwo.id = startDateInputId;
+    var dateOptionInputTwo = document.createElement('option');
+    dateOptionInputTwo.value = '18';
+    dateOptionInputTwo.innerHTML = '18/02';
+    dateInputTwo.appendChild(dateOptionInputTwo);
+
+    totalLowerDiv.appendChild(timedInput);
+    totalLowerDiv.appendChild(colonSpan);
+    totalLowerDiv.appendChild(timedInputTwo);
+    totalLowerDiv.appendChild(newLine);
+    totalLowerDiv.appendChild(dateInputOne);
+    totalLowerDiv.appendChild(newLineTwo);
+    totalLowerDiv.appendChild(timedInputThree);
+    totalLowerDiv.appendChild(colonSpanTwo);
+    totalLowerDiv.appendChild(timedInputFour);
+    totalLowerDiv.appendChild(newLineThree);
+    totalLowerDiv.appendChild(dateInputTwo);
 
     controlUpperDiv.innerHTML =
     '<img src="images/start.png" alt="Start Task" title="Start Task" class="enabled_timer_control"/> <img src="images/clock_play.png" alt="Start Task At Time" title="Start Task At Time" class="enabled_timer_control"/>';
     controlLowerDiv.innerHTML =
-    '&nbsp;<img src="images/start.png" alt="Start Task" title="Start Task" class="enabled_timer_control"/><br/>&nbsp;<input type="button" class="clear_timed_input" title="Clear Stop Time" value="RESET"/>&nbsp;';
+    '&nbsp;<img src="images/start.png" alt="Start Task" title="Start Task" class="enabled_timer_control"/><br/>&nbsp;<input type="button" class="clear_timed_input" title="Clear Stop Time" value="RESET"/>&nbsp;<br/>&nbsp;<br/>&nbsp;';
 
     disableTd.innerHTML = '<img src="images/report_delete.png" alt="Disable Task" title="Disable Task"/>';
 

@@ -1,0 +1,18 @@
+.timed_text_input {
+    width: 24px;
+    text-align: center;
+    height: 15px;
+    font-size: 80%;
+    border: 1px solid #ddd9d9;
+}
+
+.timed_date_input {
+    width: 60px;
+    text-align: center;
+    height: 18px;
+    margin-top: 2px;
+    margin-bottom: 1px;
+    font-size: 80%;
+    border: 1px solid #ddd9d9;
+    border-collapse: collapse;
+}
