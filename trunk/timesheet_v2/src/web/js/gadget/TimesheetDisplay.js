@@ -229,7 +229,7 @@ TimesheetDisplay.prototype.replaceWithTextBox = function(source)
     textElement.select();
 }
 
-TimesheetDisplay.prototype.addOnKeyUpEvent = function(input, mandatory, linkedInput)
+TimesheetDisplay.prototype.addOnKeyUpEvent = function(input, mandatory, maxNum, linkedInput)
 {
     input.onkeyup = function(event)
     {
@@ -237,7 +237,7 @@ TimesheetDisplay.prototype.addOnKeyUpEvent = function(input, mandatory, linkedIn
         {
             event = window.event;
         }
-        return _validateNumericalTextInput(mandatory, event, linkedInput);
+        return _validateNumericalTextInput(mandatory, event, maxNum, linkedInput);
     }
 }
 
@@ -335,7 +335,6 @@ TimesheetDisplay.prototype.displayNewTask = function(taskId)
         totalUpperDiv.innerHTML = this.getDurationDisplayString();
     }
 
-//    totalLowerDiv.innerHTML = '<input type="text" class="timed_input" maxlength="2"/><b>:</b><input type="text" class="timed_input" maxlength="2"/><br/><input type="text" class="timed_input" maxlength="2"/><b>:</b><input type="text" class="timed_input" maxlength="2"/>'
     var startHourInputId = this.getModuleElementId('start_hour_input_' + taskId);
     var startMinuteInputId = this.getModuleElementId('start_minute_input_' + taskId);
     var startDateInputId = this.getModuleElementId('start_date_input_' + taskId);
@@ -349,57 +348,57 @@ TimesheetDisplay.prototype.displayNewTask = function(taskId)
     var newLineTwo = document.createElement('br');
     var newLineThree = document.createElement('br');
 
-    var timedInput = document.createElement('input');
-    timedInput.className = 'timed_text_input timed_input_invalid';
-    timedInput.maxLength = 2;
-    this.addOnKeyUpEvent(timedInput, true, null);
-    timedInput.id = startHourInputId;
+    var startHourInput = document.createElement('input');
+    startHourInput.className = 'timed_text_input timed_input_invalid';
+    startHourInput.maxLength = 2;
+    this.addOnKeyUpEvent(startHourInput, true, 23, null);
+    startHourInput.id = startHourInputId;
 
-    var timedInputTwo = timedInput.cloneNode(true);
-    timedInputTwo.id = startMinuteInputId;
-    this.addOnKeyUpEvent(timedInputTwo, true, null);
+    var startMinuteInput = startHourInput.cloneNode(true);
+    startMinuteInput.id = startMinuteInputId;
+    this.addOnKeyUpEvent(startMinuteInput, true, 59, null);
 
-    var dateInputOne = document.createElement('select');
-    dateInputOne.className = 'timed_date_input';
-    dateInputOne.id = startDateInputId;
+    var startDateInput = document.createElement('select');
+    startDateInput.className = 'timed_date_input';
+    startDateInput.id = startDateInputId;
     var dateOptionInputOne = document.createElement('option');
     dateOptionInputOne.value = '18';
     dateOptionInputOne.innerHTML = '18/02';
-    dateInputOne.appendChild(dateOptionInputOne);
+    startDateInput.appendChild(dateOptionInputOne);
 
-    var timedInputThree = timedInput.cloneNode(true);
-    timedInputThree.id = endHourInputId;
-    timedInputThree.className = 'timed_text_input timed_input_ignored';
-    this.addOnKeyUpEvent(timedInputThree, false, endMinuteInputId);
+    var endHourInput = startHourInput.cloneNode(true);
+    endHourInput.id = endHourInputId;
+    endHourInput.className = 'timed_text_input timed_input_ignored';
+    this.addOnKeyUpEvent(endHourInput, false, 23, endMinuteInputId);
 
-    var timedInputFour = timedInputThree.cloneNode(true);
-    timedInputFour.id = endMinuteInputId;
-    this.addOnKeyUpEvent(timedInputFour, false, endHourInputId);
+    var endMinuteInput = endHourInput.cloneNode(true);
+    endMinuteInput.id = endMinuteInputId;
+    this.addOnKeyUpEvent(endMinuteInput, false, 59, endHourInputId);
 
-    var dateInputTwo = document.createElement('select');
-    dateInputTwo.className = 'timed_date_input';
-    dateInputTwo.id = startDateInputId;
+    var endDateInput = document.createElement('select');
+    endDateInput.className = 'timed_date_input';
+    endDateInput.id = startDateInputId;
     var dateOptionInputTwo = document.createElement('option');
     dateOptionInputTwo.value = '18';
     dateOptionInputTwo.innerHTML = '18/02';
-    dateInputTwo.appendChild(dateOptionInputTwo);
+    endDateInput.appendChild(dateOptionInputTwo);
 
-    totalLowerDiv.appendChild(timedInput);
+    totalLowerDiv.appendChild(startHourInput);
     totalLowerDiv.appendChild(colonSpan);
-    totalLowerDiv.appendChild(timedInputTwo);
+    totalLowerDiv.appendChild(startMinuteInput);
     totalLowerDiv.appendChild(newLine);
-    totalLowerDiv.appendChild(dateInputOne);
+    totalLowerDiv.appendChild(startDateInput);
     totalLowerDiv.appendChild(newLineTwo);
-    totalLowerDiv.appendChild(timedInputThree);
+    totalLowerDiv.appendChild(endHourInput);
     totalLowerDiv.appendChild(colonSpanTwo);
-    totalLowerDiv.appendChild(timedInputFour);
+    totalLowerDiv.appendChild(endMinuteInput);
     totalLowerDiv.appendChild(newLineThree);
-    totalLowerDiv.appendChild(dateInputTwo);
+    totalLowerDiv.appendChild(endDateInput);
 
     controlUpperDiv.innerHTML =
-    '<img src="images/start.png" alt="Start Task" title="Start Task" class="enabled_timer_control"/> <img src="images/clock_play.png" alt="Start Task At Time" title="Start Task At Time" class="enabled_timer_control"/>';
+    '<img src="images/start.png" alt="Start Task" title="Start Task" class="enabled_timer_control"/>&nbsp;<img src="images/clock_play.png" alt="Start Task At Time" title="Start Task At Time" class="enabled_timer_control"/>';
     controlLowerDiv.innerHTML =
-    '&nbsp;<img src="images/start.png" alt="Start Task" title="Start Task" class="enabled_timer_control"/><br/>&nbsp;<input type="button" class="clear_timed_input" title="Clear Stop Time" value="RESET"/>&nbsp;<br/>&nbsp;<br/>&nbsp;';
+    '&nbsp;<input type="button" class="timer_control_button" title="Start Timer" value="START"/>&nbsp;<br/>&nbsp;<br/>&nbsp;<input type="button" class="timer_control_button" title="Clear Stop Time" value="RESET"/>&nbsp;<br/>&nbsp;';
 
     disableTd.innerHTML = '<img src="images/report_delete.png" alt="Disable Task" title="Disable Task"/>';
 
