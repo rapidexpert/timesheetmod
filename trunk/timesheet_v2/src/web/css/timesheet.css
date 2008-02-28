@@ -14,7 +14,6 @@
 }
 
 .tasks_table {
-    border: 1px solid;
     border-top: 0px;
     border-color: black;
     border-collapse: collapse;
@@ -23,7 +22,6 @@
 }
 
 .tasks_table tr {
-    border: 1px solid;
     border-top: 0px;
     font-size: 75%;
     line-height: 21px;
@@ -47,6 +45,12 @@
 
 .total {
     width: 25%;
+}
+
+.current_total {
+    width: 25%;
+    font-variant: normal;
+    font-weight: normal;
 }
 
 .control {
@@ -115,6 +119,10 @@
     height: 24px;
 }
 
+.current_total {
+    font-style: italic;
+}
+
 .total_lower_div {
     text-align: center;
     border-top: 1px solid #c1bebe;
@@ -171,6 +179,7 @@
     font-size: 70%;
     border: 1px solid #ddd9d9;
     background-color: #f1eded;
+    cursor: pointer;
 }
 
 .timer_control_button, x:-moz-any-link {
@@ -181,6 +190,7 @@
     font-size: 70%;
     border: 1px solid #ddd9d9;
     background-color: #f1eded;
+    cursor: pointer;
 }
 
 .enabled_timer_control {
@@ -226,6 +236,10 @@
 
 .tasks_background {
     background-color: #eeecec;
+}
+
+.no_border {
+    border-style: none !important;
 }
 
 .handle_image {

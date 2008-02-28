@@ -238,14 +238,15 @@ TimeSheet_v2.prototype.initialiseTaskList = function()
 
             if (taskId && taskId != "undefined")
             {
-                //todo
-                //                var immediateStatusControl = this.gel("status_immediate_img_" + taskId);
-                //                immediateStatusControl.src = "http://timesheetmod.googlecode.com/svn/trunk/images/stop_immediate.png";
-                //                immediateStatusControl.alt = "Stop";
-                //                var timedStatusControl = this.gel("status_timed_img_" + taskId);
-                //                timedStatusControl.src = "http://timesheetmod.googlecode.com/svn/trunk/images/stop.png";
-                //                timedStatusControl.alt = "Stop at Time";
-                //                this.refreshCurrentTimer();
+                var immediateStatusControl = this.gel("immediate_control_" + taskId);
+                immediateStatusControl.src = "images/stop.png";
+                immediateStatusControl.alt = "Stop Task";
+                immediateStatusControl.title = "Stop Task";
+                var timedStatusControl = this.gel("timed_control_" + taskId);
+                timedStatusControl.src = "images/clock_stop.png";
+                timedStatusControl.alt = "Stop Task at Time";
+                timedStatusControl.title = "Stop Task at Time";
+                this.refreshCurrentTimer();
             }
             else
             {
@@ -559,10 +560,10 @@ TimeSheet_v2.prototype.refreshCurrentTimer = function()
     var taskId = currentEvent.getTask().getId();
     var currentTime = new Date();
 
-    var timeSpan = this.gel("total_time_span_" + taskId);
+    var timeSpan = this.gel("total_upper_div_" + taskId);
     var currentTotalTimeSpan = this.gel("current_task_total_time_span");
-    timeSpan.className = "currentTimer";
-    currentTotalTimeSpan.className = "currentTimer";
+    timeSpan.className = "total_upper_div current_total";
+    currentTotalTimeSpan.className = "current_total";
 
     var endTime = new BasicTime();
     endTime.setDataFromDate(currentTime);
