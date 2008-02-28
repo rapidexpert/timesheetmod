@@ -395,8 +395,12 @@ TimesheetDisplay.prototype.displayNewTask = function(taskId)
     totalLowerDiv.appendChild(newLineThree);
     totalLowerDiv.appendChild(endDateInput);
 
-    controlUpperDiv.innerHTML =
-    '<img src="images/start.png" alt="Start Task" title="Start Task" class="enabled_timer_control"/>&nbsp;<img src="images/clock_play.png" alt="Start Task At Time" title="Start Task At Time" class="enabled_timer_control"/>';
+    var immediateControlId = this.getModuleElementId('immediate_control_' + taskId);
+    var timedControlId = this.getModuleElementId('timed_control_' + taskId);
+
+    controlUpperDiv.innerHTML = '<img src="images/start.png" id="' + immediateControlId
+            + '" alt="Start Task" title="Start Task" class="enabled_timer_control"/>&nbsp;<img src="images/clock_play.png" id="'
+            + timedControlId + '" alt="Start Task At Time" title="Start Task At Time" class="enabled_timer_control"/>';
     controlLowerDiv.innerHTML =
     '&nbsp;<input type="button" class="timer_control_button" title="Start Timer" value="START"/>&nbsp;<br/>&nbsp;<br/>&nbsp;<input type="button" class="timer_control_button" title="Clear Stop Time" value="RESET"/>&nbsp;<br/>&nbsp;';
 
