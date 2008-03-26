@@ -1447,6 +1447,11 @@ function getEventXml__MODULE_ID__(taskName, eventId, start, end)
             break;
         }
     }
+
+	if (!timezoneToken)
+	{
+		timezoneToken = "UTC+0000";
+	}
     
     var formattedTimezone = timezoneToken.slice(3,6) + ":" + timezoneToken.slice(6, timezoneToken.length);
 
