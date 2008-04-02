@@ -105,8 +105,8 @@ BasicTime.prototype.toDate = function()
 
     if (date)
     {
-        currentDate.setDate(parseInt(this.getDate(), 10));
         currentDate.setMonth(parseInt(this.getMonth(), 10) - 1);
+        currentDate.setDate(parseInt(this.getDate(), 10));
         currentDate.setYear(parseInt("20" + this.getYear(), 10));
     }
     currentDate.setHours(parseInt(this.getHours(), 10), parseInt(this.getMinutes(), 10), parseInt(this.getSeconds(), 10), 0)
